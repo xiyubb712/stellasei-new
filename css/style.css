@@ -71,7 +71,7 @@ html, body {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  touch-action: none;
+  touch-action: pan-x;
 }
 
 /* 壁纸 - 极简风格 */
