@@ -245,7 +245,7 @@ console.log('[启动] 全局调试对象已创建：window.StarSui');
 
 /**
  * 初始化应用高度（解决iOS白边问题）
- * 参考原作者miya的实现，用CSS变量--app-height动态设置高度
+ * 完全参考原作者miya的实现，用CSS变量--app-height动态设置高度
  * iOS情况下高度加1px，避免白边
  */
 function initAppHeight() {
@@ -256,42 +256,59 @@ function initAppHeight() {
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
     (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   
+  // 检测是否是移动端
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  
   // 检测是否是PWA模式（添加到主屏幕）
   const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
     window.navigator.standalone === true;
   
-  console.log('[应用高度] iOS:', isIOS, 'PWA模式:', isStandalone);
+  console.log('[应用高度] iOS:', isIOS, '移动端:', isMobile, 'PWA模式:', isStandalone);
   
-  // 设置高度的核心函数
+  // 计算键盘高度（参考原作者）
+  function keyboardInsetPx() {
+    const vv = window.visualViewport;
+    if (!vv) return 0;
+    return Math.max(0, Math.round(window.innerHeight - vv.height - (vv.offsetTop || 0)));
+  }
+  
+  // 设置高度的核心函数（完全参考原作者setHNow）
   function setAppHeightNow() {
     const innerH = window.innerHeight || 0;
+    const kbOpen = keyboardInsetPx() > 40;
     let finalH = innerH;
     
     if (isIOS) {
-      // iOS PWA模式下，用屏幕高度来计算
-      if (isStandalone) {
+      // iOS PWA模式下，键盘没打开时用屏幕高度来计算
+      if (isStandalone && !kbOpen) {
         const sH = window.screen.height || 0;
         const sW = window.screen.width || 0;
         const exp = window.innerWidth > window.innerHeight ? Math.min(sH, sW) : Math.max(sH, sW);
         if (exp > 0) finalH = Math.max(finalH, exp);
       }
       // 关键！iOS情况下高度加1px，避免白边
-      finalH = finalH + 1;
-    } else {
-      // 非iOS，用visualViewport来计算
-      const clientH = document.documentElement.clientHeight || 0;
-      const vv = window.visualViewport;
-      const vvH = vv ? vv.height : 0;
-      const vvTop = vv ? (vv.offsetTop || 0) : 0;
-      finalH = Math.max(innerH, clientH, vvH + vvTop);
+      const rH = finalH + 1;
+      // 只有移动端才做"高度变化小于2px就不更新"的判断
+      if (isMobile && lastAppHeight > 0 && Math.abs(rH - lastAppHeight) < 2) return;
+      lastAppHeight = rH;
+      document.documentElement.style.setProperty('--app-height', rH + 'px');
+      console.log('[应用高度] iOS设置为:', rH + 'px');
+      return;
     }
     
-    // 高度变化小于2px就不更新，避免频繁重绘
-    if (lastAppHeight > 0 && Math.abs(finalH - lastAppHeight) < 2) return;
-    
-    lastAppHeight = finalH;
-    document.documentElement.style.setProperty('--app-height', finalH + 'px');
-    console.log('[应用高度] 设置为:', finalH + 'px');
+    // 非iOS，用visualViewport来计算
+    const clientH = document.documentElement.clientHeight || 0;
+    const vv = window.visualViewport;
+    const vvH = vv ? vv.height : 0;
+    const vvTop = vv ? (vv.offsetTop || 0) : 0;
+    finalH = Math.max(innerH, clientH, vvH + vvTop);
+    const rH = finalH;
+    // 只有移动端才做"高度变化小于2px就不更新"的判断
+    if (isMobile && lastAppHeight > 0 && Math.abs(rH - lastAppHeight) < 2) return;
+    lastAppHeight = rH;
+    document.documentElement.style.setProperty('--app-height', rH + 'px');
+    console.log('[应用高度] 设置为:', rH + 'px');
   }
   
   // 用requestAnimationFrame节流
