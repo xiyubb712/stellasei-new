@@ -19,8 +19,6 @@ html, body {
   left: 0;
   right: 0;
   bottom: 0;
-  touch-action: none;
-  -webkit-overflow-scrolling: auto;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
   background: #f8f5f2;
   color: #333;
@@ -47,7 +45,6 @@ html, body {
   overflow: hidden;
   margin: 0;
   padding: 0;
-  touch-action: none;
 }
 
 /* 安全区域适配 */
@@ -74,6 +71,7 @@ html, body {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  touch-action: none;
 }
 
 /* 壁纸 - 极简风格 */
@@ -1918,7 +1916,6 @@ html, body {
     repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(180, 160, 130, 0.05) 28px, rgba(180, 160, 130, 0.05) 29px);
   padding-bottom: 30px;
   font-family: Georgia, 'Times New Roman', 'Songti SC', serif;
-  touch-action: pan-y;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -3497,7 +3494,6 @@ html, body {
   overflow-y: auto;
   padding: 20px 16px;
   scroll-behavior: smooth;
-  touch-action: pan-y;
   -webkit-overflow-scrolling: touch;
 }
 
