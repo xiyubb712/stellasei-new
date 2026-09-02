@@ -324,6 +324,25 @@ function initAppHeight() {
     }
   }
   
+  // 切回前台时重新计算高度（参考原作者）
+  document.addEventListener('visibilitychange', function() {
+    if (document.hidden) return;
+    requestAnimationFrame(function() {
+      if (document.hidden) return;
+      var y = window.scrollY || window.pageYOffset || 0;
+      if (isIOS && y > 0) window.scrollTo(0, 0);
+      lastAppHeight = 0;
+      setAppHeightNow();
+    });
+  });
+  
+  // 页面加载完成后重新计算高度
+  window.addEventListener('load', function() {
+    lastAppHeight = 0;
+    setAppHeightNow();
+    setTimeout(setAppHeightNow, 300);
+  });
+  
   // 暴露全局函数，方便手动刷新
   window.refreshAppHeight = function(force) {
     if (force) lastAppHeight = 0;
