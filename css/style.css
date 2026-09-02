@@ -6,7 +6,6 @@
   padding: 0;
   box-sizing: border-box;
 }
-
 html, body {
   width: 100%;
   min-height: var(--app-height, 100dvh);
@@ -22,12 +21,10 @@ html, body {
   -webkit-user-select: none;
   user-select: none;
 }
-
 /* 隐藏类 */
 .hidden {
   display: none !important;
 }
-
 /* ============================================
    手机屏幕（直接全屏显示）
    ============================================ */
@@ -41,7 +38,6 @@ html, body {
   margin: 0;
   padding: 0;
 }
-
 #app-container {
   position: absolute;
   top: 0;
@@ -71,7 +67,6 @@ html, body {
   padding-left: env(safe-area-inset-left);
   padding-right: env(safe-area-inset-right);
 }
-
 /* 壁纸 - 极简风格 */
 #wallpaper {
   position: absolute;
@@ -84,7 +79,6 @@ html, body {
   background-position: center;
   z-index: 0;
 }
-
 /* 桌面内容 */
 #desktop-content {
   position: relative;
@@ -93,12 +87,10 @@ html, body {
   z-index: 1;
   overflow: hidden;
 }
-
 /* 页面指示器（已隐藏） */
 #page-indicators {
   display: none !important;
 }
-
 /* 桌面网格 */
 .desktop-grid {
   display: grid;
@@ -106,7 +98,6 @@ html, body {
   width: 100%;
   height: 100%;
 }
-
 /* 桌面项目 */
 .desktop-item {
   display: flex;
@@ -115,11 +106,9 @@ html, body {
   cursor: pointer;
   transition: transform 0.2s ease;
 }
-
 .desktop-item:active {
   transform: scale(0.95);
 }
-
 /* 应用图标 */
 .app-icon {
   display: flex;
@@ -127,7 +116,6 @@ html, body {
   align-items: center;
   gap: 6px;
 }
-
 .app-icon-image {
   width: 50px;
   height: 50px;
@@ -141,13 +129,11 @@ html, body {
   box-shadow: 0 1px 6px rgba(0, 0, 0, 0.06);
   color: #5a4a3a;
 }
-
 .app-icon-image .icon-svg {
   width: 22px;
   height: 22px;
   opacity: 0.85;
 }
-
 .app-icon-name {
   font-size: 11px;
   color: #5a4a3a;
@@ -159,27 +145,23 @@ html, body {
   font-weight: 500;
   opacity: 0.9;
 }
-
 /* SVG图标通用样式 */
 .icon-svg {
   width: 24px;
   height: 24px;
   display: block;
 }
-
 /* 状态栏图标 */
 .status-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
 }
-
 .status-icon-svg {
   width: 16px;
   height: 16px;
   display: block;
 }
-
 /* 小组件占位 */
 .widget-placeholder {
   width: 100%;
@@ -193,7 +175,6 @@ html, body {
   font-size: 14px;
   color: rgba(255, 255, 255, 0.8);
 }
-
 /* ============================================
    底部Dock栏 - 极简风格
    ============================================ */
@@ -216,7 +197,6 @@ html, body {
   box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.5);
 }
-
 .dock-item {
   display: flex;
   flex-direction: column;
@@ -225,11 +205,9 @@ html, body {
   cursor: pointer;
   transition: transform 0.2s ease;
 }
-
 .dock-item:active {
   transform: scale(0.9);
 }
-
 .dock-icon {
   width: 44px;
   height: 44px;
@@ -241,20 +219,17 @@ html, body {
   color: #5a4a3a;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
 }
-
 .dock-icon .icon-svg {
   width: 20px;
   height: 20px;
   opacity: 0.85;
 }
-
 .dock-name {
   font-size: 9px;
   color: #5a4a3a;
   font-weight: 500;
   opacity: 0.85;
 }
-
 /* ============================================
    应用容器
    ============================================ */
@@ -270,7 +245,6 @@ html, body {
   z-index: 50;
   
 }
-
 /* ============================================
    导航栏
    ============================================ */
@@ -291,7 +265,6 @@ html, body {
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
   z-index: 60;
 }
-
 .nav-button {
   width: 36px;
   height: 36px;
@@ -305,16 +278,13 @@ html, body {
   color: #5a4a3a;
   transition: background 0.2s ease;
 }
-
 .nav-button .icon-svg {
   width: 20px;
   height: 20px;
 }
-
 .nav-button:active {
   background: rgba(90, 74, 58, 0.1);
 }
-
 #nav-title {
   flex: 1;
   text-align: center;
@@ -322,7 +292,6 @@ html, body {
   font-weight: 600;
   color: #3a3028;
 }
-
 /* ============================================
    应用错误页面
    ============================================ */
@@ -330,25 +299,21 @@ html, body {
   padding: 60px 20px;
   text-align: center;
 }
-
 .app-error-icon {
   font-size: 64px;
   margin-bottom: 20px;
 }
-
 .app-error-title {
   font-size: 20px;
   font-weight: 600;
   color: #333;
   margin-bottom: 8px;
 }
-
 .app-error-app {
   font-size: 14px;
   color: #999;
   margin-bottom: 12px;
 }
-
 .app-error-message {
   font-size: 14px;
   color: #666;
@@ -357,7 +322,6 @@ html, body {
   background: #f5f5f5;
   border-radius: 8px;
 }
-
 .app-error-button {
   padding: 12px 32px;
   border: none;
@@ -369,27 +333,22 @@ html, body {
   cursor: pointer;
   transition: transform 0.2s ease;
 }
-
 .app-error-button:active {
   transform: scale(0.95);
 }
-
 /* ============================================
    滚动条样式
    ============================================ */
 ::-webkit-scrollbar {
   width: 4px;
 }
-
 ::-webkit-scrollbar-track {
   background: transparent;
 }
-
 ::-webkit-scrollbar-thumb {
   background: rgba(0, 0, 0, 0.2);
   border-radius: 2px;
 }
-
 /* ============================================
    动画
    ============================================ */
@@ -397,7 +356,6 @@ html, body {
   from { opacity: 0; }
   to { opacity: 1; }
 }
-
 @keyframes slideUp {
   from {
     opacity: 0;
@@ -408,30 +366,20 @@ html, body {
     transform: translateY(0);
   }
 }
-
 .fade-in {
   animation: fadeIn 0.3s ease;
 }
-
 .slide-up {
   animation: slideUp 0.3s ease;
 }
-
-
 /* ============================================
-
 /* ============================================
-
 /* ============================================
-
 /* ============================================
-
 /* ============================================
-
 /* ============================================
    设置页面 - 白金高级风（白金配色、紧凑网格）
    ============================================ */
-
 /* 杂志风顶部装饰条 */
 .minimal-magazine-bar {
   display: flex;
@@ -442,7 +390,6 @@ html, body {
   border-bottom: 1px solid #f0e8d8;
   flex-wrap: nowrap;
 }
-
 .minimal-magazine-vol {
   font-family: Georgia, 'Times New Roman', serif;
   font-size: 10px;
@@ -451,14 +398,12 @@ html, body {
   letter-spacing: 2px;
   text-transform: uppercase;
 }
-
 .minimal-magazine-dot {
   width: 3px;
   height: 3px;
   border-radius: 50%;
   background: #e0d4c0;
 }
-
 .minimal-magazine-editorial {
   font-size: 9px;
   font-weight: 600;
@@ -466,7 +411,6 @@ html, body {
   letter-spacing: 3px;
   text-transform: uppercase;
 }
-
 .minimal-magazine-date {
   font-family: Georgia, 'Times New Roman', serif;
   font-size: 9px;
@@ -475,7 +419,6 @@ html, body {
   margin-left: auto;
   white-space: nowrap;
 }
-
 /* 设置页面返回按钮 */
 .minimal-back-btn {
   width: 28px;
@@ -492,17 +435,13 @@ html, body {
   flex-shrink: 0;
   margin-right: 4px;
 }
-
 .minimal-back-btn:hover {
   background: rgba(201, 169, 110, 0.2);
   transform: scale(1.05);
 }
-
 .minimal-back-btn:active {
   transform: scale(0.95);
 }
-
-
 /* 导航栏英文标签 */
 .minimal-nav-en {
   font-size: 9px;
@@ -511,11 +450,9 @@ html, body {
   text-transform: uppercase;
   margin-left: auto;
 }
-
 .minimal-nav-item.active .minimal-nav-en {
   color: #c9a96e;
 }
-
 /* 设置页面容器 */
 .minimal-page {
   position: relative;
@@ -528,8 +465,6 @@ html, body {
   background: linear-gradient(180deg, #fdfbf7 0%, #faf6ef 100%);
   box-sizing: border-box;
 }
-
-
 /* 顶部Hero：点睛之笔 - 超大编号 */
 .minimal-hero {
   display: flex;
@@ -539,7 +474,6 @@ html, body {
   padding-bottom: 24px;
   border-bottom: 1px solid #e8dcc8;
 }
-
 .minimal-hero-number {
   font-family: Georgia, 'Times New Roman', serif;
   font-size: 72px;
@@ -549,12 +483,10 @@ html, body {
   letter-spacing: -3px;
   flex-shrink: 0;
 }
-
 .minimal-hero-text {
   flex: 1;
   padding-bottom: 8px;
 }
-
 .minimal-hero-title {
   font-family: Georgia, 'Times New Roman', serif;
   font-size: 30px;
@@ -563,7 +495,6 @@ html, body {
   margin: 0 0 8px;
   letter-spacing: 2px;
 }
-
 .minimal-hero-sub {
   font-size: 11px;
   color: #b8a898;
@@ -571,7 +502,6 @@ html, body {
   letter-spacing: 4px;
   text-transform: uppercase;
 }
-
 /* 艺术装饰元素 - 三条渐变线 */
 .minimal-hero-deco {
   display: flex;
@@ -579,17 +509,14 @@ html, body {
   gap: 6px;
   padding-bottom: 12px;
 }
-
 .minimal-hero-deco span {
   display: block;
   height: 1px;
   background: linear-gradient(90deg, #c9a96e, transparent);
 }
-
 .minimal-hero-deco span:nth-child(1) { width: 32px; opacity: 1; }
 .minimal-hero-deco span:nth-child(2) { width: 20px; opacity: 0.6; }
 .minimal-hero-deco span:nth-child(3) { width: 12px; opacity: 0.3; }
-
 /* 极简导航：纯文字，无图标 */
 .minimal-nav {
   display: flex;
@@ -597,7 +524,6 @@ html, body {
   gap: 2px;
   margin-bottom: 40px;
 }
-
 .minimal-nav-item {
   display: flex;
   align-items: center;
@@ -608,15 +534,12 @@ html, body {
   position: relative;
   border-bottom: 1px solid transparent;
 }
-
 .minimal-nav-item:active {
   background: rgba(201, 169, 110, 0.1);
 }
-
 .minimal-nav-item.active {
   border-bottom-color: #c9a96e;
 }
-
 .minimal-nav-num {
   font-family: Georgia, 'Times New Roman', serif;
   font-size: 12px;
@@ -625,11 +548,9 @@ html, body {
   font-weight: 400;
   width: 24px;
 }
-
 .minimal-nav-item.active .minimal-nav-num {
   color: #c9a96e;
 }
-
 .minimal-nav-name {
   font-size: 13px;
   font-weight: 500;
@@ -637,34 +558,28 @@ html, body {
   letter-spacing: 2px;
   transition: all 0.3s ease;
 }
-
 .minimal-nav-item.active .minimal-nav-name {
   color: #5a4a3a;
   font-weight: 600;
 }
-
 .minimal-nav-line {
   flex: 1;
   height: 1px;
   background: #f0e8d8;
 }
-
 /* 内容区域 */
 .minimal-content {
   animation: minimalFadeIn 0.4s ease;
 }
-
 @keyframes minimalFadeIn {
   from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
 }
-
 /* 极简列表 */
 .minimal-list {
   display: flex;
   flex-direction: column;
 }
-
 .minimal-list-item {
   display: flex;
   justify-content: space-between;
@@ -674,17 +589,14 @@ html, body {
   cursor: pointer;
   transition: all 0.2s ease;
 }
-
 .minimal-list-item:active {
   background: rgba(201, 169, 110, 0.1);
 }
-
 .minimal-list-left {
   display: flex;
   align-items: center;
   gap: 18px;
 }
-
 .minimal-list-index {
   font-family: Georgia, 'Times New Roman', serif;
   font-size: 13px;
@@ -693,33 +605,28 @@ html, body {
   font-weight: 400;
   width: 26px;
 }
-
 .minimal-list-text {
   display: flex;
   flex-direction: column;
   gap: 3px;
 }
-
 .minimal-list-name {
   font-size: 15px;
   font-weight: 500;
   color: #5a4a3a;
   letter-spacing: 1px;
 }
-
 .minimal-list-en {
   font-size: 10px;
   color: #c4b8a8;
   letter-spacing: 2px;
   text-transform: uppercase;
 }
-
 .minimal-list-right {
   display: flex;
   align-items: center;
   gap: 14px;
 }
-
 .minimal-status {
   font-size: 10px;
   font-weight: 500;
@@ -729,26 +636,22 @@ html, body {
   color: #b8a898;
   letter-spacing: 1px;
 }
-
 .minimal-status.on {
   background: linear-gradient(135deg, #c9a96e, #b8945a);
   color: #fff;
 }
-
 .minimal-arrow {
   font-family: Georgia, serif;
   font-size: 16px;
   color: #d4c8b8;
   font-weight: 300;
 }
-
 /* 紧凑网格（白金配色） */
 .minimal-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
 }
-
 .minimal-grid-item {
   background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(10px);
@@ -759,13 +662,11 @@ html, body {
   transition: all 0.2s ease;
   position: relative;
 }
-
 .minimal-grid-item:active {
   transform: scale(0.96);
   background: rgba(255, 255, 255, 0.95);
   border-color: #e8dcc8;
 }
-
 .minimal-grid-number {
   font-family: Georgia, 'Times New Roman', serif;
   font-size: 18px;
@@ -774,7 +675,6 @@ html, body {
   margin-bottom: 14px;
   font-style: italic;
 }
-
 .minimal-grid-name {
   font-size: 14px;
   font-weight: 600;
@@ -782,7 +682,6 @@ html, body {
   margin-bottom: 3px;
   letter-spacing: 1px;
 }
-
 .minimal-grid-en {
   font-size: 9px;
   color: #c4b8a8;
@@ -790,33 +689,27 @@ html, body {
   text-transform: uppercase;
   margin-bottom: 8px;
 }
-
 .minimal-grid-desc {
   font-size: 10px;
   color: #b8a898;
   line-height: 1.5;
 }
-
 .minimal-grid-item.danger .minimal-grid-name {
   color: #c48b8b;
 }
-
 .minimal-grid-item.danger .minimal-grid-number {
   color: #e8d0d0;
 }
-
 /* 存储空间 */
 .minimal-storage {
   padding: 0 8px;
 }
-
 .minimal-storage-hero {
   display: flex;
   align-items: flex-end;
   gap: 28px;
   margin-bottom: 32px;
 }
-
 .minimal-storage-number {
   font-family: Georgia, 'Times New Roman', serif;
   font-size: 64px;
@@ -825,12 +718,10 @@ html, body {
   line-height: 1;
   letter-spacing: -2px;
 }
-
 .minimal-storage-text {
   flex: 1;
   padding-bottom: 6px;
 }
-
 .minimal-storage-size {
   font-family: Georgia, 'Times New Roman', serif;
   font-size: 22px;
@@ -838,33 +729,28 @@ html, body {
   color: #5a4a3a;
   margin-bottom: 4px;
 }
-
 .minimal-storage-label {
   font-size: 10px;
   color: #b8a898;
   letter-spacing: 3px;
   text-transform: uppercase;
 }
-
 .minimal-storage-bar {
   width: 100%;
   height: 2px;
   background: #f0e8d8;
   margin-bottom: 32px;
 }
-
 .minimal-storage-fill {
   height: 100%;
   background: linear-gradient(90deg, #c9a96e, #b8945a);
   width: 0%;
   transition: width 0.6s ease;
 }
-
 .minimal-storage-list {
   display: flex;
   flex-direction: column;
 }
-
 .minimal-storage-item {
   display: flex;
   justify-content: space-between;
@@ -872,13 +758,11 @@ html, body {
   padding: 16px 8px;
   border-bottom: 1px solid #f5efe5;
 }
-
 .minimal-storage-left {
   display: flex;
   align-items: center;
   gap: 14px;
 }
-
 .minimal-storage-index {
   font-family: Georgia, 'Times New Roman', serif;
   font-size: 11px;
@@ -886,14 +770,12 @@ html, body {
   color: #d4c8b8;
   width: 22px;
 }
-
 .minimal-storage-name {
   font-size: 13px;
   color: #8b7b6b;
   font-weight: 500;
   letter-spacing: 1px;
 }
-
 .minimal-storage-size {
   font-family: Georgia, 'Times New Roman', serif;
   font-size: 13px;
@@ -901,7 +783,6 @@ html, body {
   font-weight: 400;
   font-style: italic;
 }
-
 .minimal-storage-loading {
   padding: 28px;
   text-align: center;
@@ -910,17 +791,14 @@ html, body {
   font-style: italic;
   font-family: Georgia, serif;
 }
-
 /* 关于页面 */
 .minimal-about {
   text-align: center;
   padding: 32px 20px;
 }
-
 .minimal-about-hero {
   margin-bottom: 40px;
 }
-
 .minimal-about-mark {
   font-family: Georgia, 'Times New Roman', serif;
   font-size: 56px;
@@ -929,7 +807,6 @@ html, body {
   margin-bottom: 20px;
   font-style: italic;
 }
-
 .minimal-about-name {
   font-family: Georgia, 'Times New Roman', serif;
   font-size: 26px;
@@ -938,21 +815,18 @@ html, body {
   margin: 0 0 10px;
   letter-spacing: 4px;
 }
-
 .minimal-about-version {
   font-size: 11px;
   color: #b8a898;
   letter-spacing: 4px;
   margin: 0;
 }
-
 .minimal-about-divider {
   width: 40px;
   height: 1px;
   background: linear-gradient(90deg, transparent, #c9a96e, transparent);
   margin: 0 auto 36px;
 }
-
 .minimal-about-info {
   display: flex;
   flex-direction: column;
@@ -961,7 +835,6 @@ html, body {
   max-width: 260px;
   margin: 0 auto 40px;
 }
-
 .minimal-about-row {
   display: flex;
   justify-content: space-between;
@@ -969,17 +842,14 @@ html, body {
   padding-bottom: 14px;
   border-bottom: 1px solid #f5efe5;
 }
-
 .minimal-about-label {
   color: #b8a898;
   letter-spacing: 2px;
 }
-
 .minimal-about-value {
   color: #5a4a3a;
   font-weight: 500;
 }
-
 .minimal-about-footer {
   font-size: 10px;
   color: #d4c8b8;
@@ -987,8 +857,6 @@ html, body {
   text-transform: uppercase;
   margin: 0;
 }
-
-
 /* 刷新应用按钮 */
 .minimal-refresh-section {
   margin: 32px 0;
@@ -998,7 +866,6 @@ html, body {
   border-radius: 12px;
   text-align: center;
 }
-
 .minimal-refresh-btn {
   display: inline-flex;
   align-items: center;
@@ -1016,16 +883,13 @@ html, body {
   box-shadow: 0 4px 12px rgba(201, 169, 110, 0.25);
   font-family: inherit;
 }
-
 .minimal-refresh-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(201, 169, 110, 0.35);
 }
-
 .minimal-refresh-btn:active {
   transform: translateY(0);
 }
-
 .minimal-refresh-hint {
   font-size: 11px;
   color: #b8a898;
@@ -1033,7 +897,6 @@ html, body {
   letter-spacing: 1px;
   line-height: 1.6;
 }
-
 /* 接口详情页 */
 .minimal-back {
   display: flex;
@@ -1049,11 +912,9 @@ html, body {
   font-weight: 500;
   letter-spacing: 1px;
 }
-
 .minimal-back:active {
   color: #c9a96e;
 }
-
 .minimal-detail-hero {
   display: flex;
   align-items: flex-end;
@@ -1062,7 +923,6 @@ html, body {
   padding-bottom: 28px;
   border-bottom: 1px solid #e8dcc8;
 }
-
 .minimal-detail-number {
   font-family: Georgia, 'Times New Roman', serif;
   font-size: 72px;
@@ -1071,12 +931,10 @@ html, body {
   line-height: 0.9;
   letter-spacing: -3px;
 }
-
 .minimal-detail-text {
   flex: 1;
   padding-bottom: 6px;
 }
-
 .minimal-detail-title {
   font-family: Georgia, 'Times New Roman', serif;
   font-size: 26px;
@@ -1085,7 +943,6 @@ html, body {
   margin: 0 0 8px;
   letter-spacing: 2px;
 }
-
 .minimal-detail-sub {
   font-size: 11px;
   color: #b8a898;
@@ -1093,20 +950,17 @@ html, body {
   letter-spacing: 4px;
   text-transform: uppercase;
 }
-
 .minimal-form {
   display: flex;
   flex-direction: column;
   gap: 36px;
   margin-bottom: 48px;
 }
-
 .minimal-form-item {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
-
 .minimal-form-label {
   font-size: 10px;
   font-weight: 600;
@@ -1114,7 +968,6 @@ html, body {
   letter-spacing: 3px;
   text-transform: uppercase;
 }
-
 .minimal-input {
   width: 100%;
   padding: 14px 0;
@@ -1129,23 +982,19 @@ html, body {
   font-weight: 300;
   letter-spacing: 0.5px;
 }
-
 .minimal-input:focus {
   outline: none;
   border-bottom-color: #c9a96e;
 }
-
 .minimal-input::placeholder {
   color: #d4c8b8;
   font-style: italic;
 }
-
 .minimal-actions {
   display: flex;
   flex-direction: column;
   gap: 14px;
 }
-
 .minimal-btn {
   width: 100%;
   padding: 18px;
@@ -1158,34 +1007,28 @@ html, body {
   letter-spacing: 3px;
   border-radius: 14px;
 }
-
 .minimal-btn-primary {
   background: linear-gradient(135deg, #c9a96e 0%, #b8945a 100%);
   color: #fff;
   box-shadow: 0 4px 16px rgba(201, 169, 110, 0.45);
 }
-
 .minimal-btn-primary:active {
   transform: scale(0.98);
   box-shadow: 0 2px 8px rgba(201, 169, 110, 0.2);
 }
-
 .minimal-btn-ghost {
   background: transparent;
   color: #b8a898;
   border: 1px solid #e8dcc8;
 }
-
 .minimal-btn-ghost:active {
   background: rgba(201, 169, 110, 0.1);
   color: #c9a96e;
   transform: scale(0.98);
 }
-
 .minimal-test-result {
   margin-top: 28px;
 }
-
 .minimal-result {
   padding: 14px 18px;
   font-size: 12px;
@@ -1197,11 +1040,9 @@ html, body {
   border-left: 2px solid;
   border-radius: 0 12px 12px 0;
 }
-
 .minimal-result-loading { background: #faf6ef; color: #b8a898; border-color: #e8dcc8; }
 .minimal-result-ok { background: #faf6ef; color: #c9a96e; border-color: #c9a96e; }
 .minimal-result-warn { background: #faf0f0; color: #c48b8b; border-color: #c48b8b; }
-
 /* 白金Toast */
 .minimal-toast {
   position: fixed;
@@ -1222,35 +1063,22 @@ html, body {
   border-radius: 14px;
   border: 1px solid rgba(201, 169, 110, 0.5);
 }
-
 .minimal-toast.show {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
 }
-
-
-
-
-
-
-
-
-
 /* ============================================
    API配置 - 自动获取模型功能样式
    ============================================ */
-
 /* 输入框+按钮容器 */
 .minimal-input-with-btn {
   display: flex;
   gap: 10px;
   align-items: center;
 }
-
 .minimal-input-with-btn .minimal-input {
   flex: 1;
 }
-
 /* 获取模型按钮 */
 .minimal-fetch-btn {
   display: flex;
@@ -1268,23 +1096,19 @@ html, body {
   white-space: nowrap;
   flex-shrink: 0;
 }
-
 .minimal-fetch-btn:hover {
   background: rgba(201, 169, 110, 0.15);
   border-color: #c9a96e;
   transform: translateY(-1px);
 }
-
 .minimal-fetch-btn:active {
   transform: translateY(0);
 }
-
 .minimal-fetch-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
   transform: none;
 }
-
 /* 模型选择弹窗遮罩 */
 .minimal-modal-overlay {
   position: fixed;
@@ -1301,12 +1125,10 @@ html, body {
   padding: 20px;
   animation: fadeIn 0.2s ease;
 }
-
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
 }
-
 /* 弹窗容器 */
 .minimal-modal {
   background: #fdfbf7;
@@ -1320,12 +1142,10 @@ html, body {
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   animation: slideUp 0.3s ease;
 }
-
 @keyframes slideUp {
   from { transform: translateY(20px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
-
 /* 弹窗头部 */
 .minimal-modal-header {
   display: flex;
@@ -1335,7 +1155,6 @@ html, body {
   border-bottom: 1px solid #f0e8d8;
   position: relative;
 }
-
 .minimal-modal-title {
   font-family: Georgia, 'Times New Roman', serif;
   font-size: 20px;
@@ -1343,7 +1162,6 @@ html, body {
   color: #5a4a3a;
   margin: 0;
 }
-
 .minimal-modal-count {
   font-size: 11px;
   color: #c9a96e;
@@ -1352,7 +1170,6 @@ html, body {
   border-radius: 10px;
   font-weight: 600;
 }
-
 .minimal-modal-close {
   position: absolute;
   right: 20px;
@@ -1371,18 +1188,15 @@ html, body {
   align-items: center;
   transition: all 0.2s ease;
 }
-
 .minimal-modal-close:hover {
   background: rgba(0, 0, 0, 0.1);
   color: #5a4a3a;
 }
-
 /* 弹窗搜索框 */
 .minimal-modal-search {
   padding: 16px 24px;
   border-bottom: 1px solid #f5efe5;
 }
-
 .minimal-modal-input {
   width: 100%;
   padding: 12px 16px;
@@ -1394,24 +1208,20 @@ html, body {
   transition: all 0.2s ease;
   box-sizing: border-box;
 }
-
 .minimal-modal-input:focus {
   outline: none;
   border-color: #c9a96e;
   box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.1);
 }
-
 .minimal-modal-input::placeholder {
   color: #c4b8a8;
 }
-
 /* 模型列表 */
 .minimal-modal-list {
   flex: 1;
   overflow-y: auto;
   padding: 8px;
 }
-
 /* 模型列表项 */
 .minimal-modal-item {
   display: flex;
@@ -1422,16 +1232,13 @@ html, body {
   cursor: pointer;
   transition: all 0.15s ease;
 }
-
 .minimal-modal-item:hover {
   background: rgba(201, 169, 110, 0.08);
 }
-
 .minimal-modal-item:active {
   background: rgba(201, 169, 110, 0.15);
   transform: scale(0.98);
 }
-
 .minimal-modal-item-index {
   font-family: Georgia, 'Times New Roman', serif;
   font-size: 12px;
@@ -1440,23 +1247,18 @@ html, body {
   width: 28px;
   flex-shrink: 0;
 }
-
 .minimal-modal-item:hover .minimal-modal-item-index {
   color: #c9a96e;
 }
-
 .minimal-modal-item-name {
   font-size: 14px;
   color: #5a4a3a;
   font-weight: 500;
   word-break: break-all;
 }
-
-
 /* ============================================
    对话API列表样式
    ============================================ */
-
 /* 全局接口说明 */
 .api-global-note {
   display: flex;
@@ -1471,13 +1273,11 @@ html, body {
   font-size: 13px;
   line-height: 1.6;
 }
-
 .api-global-note svg {
   flex-shrink: 0;
   margin-top: 2px;
   color: #c9a96e;
 }
-
 /* 新增API按钮 */
 .minimal-add-api-btn {
   display: flex;
@@ -1497,23 +1297,19 @@ html, body {
   margin-left: auto;
   box-shadow: 0 4px 12px rgba(201, 169, 110, 0.5);
 }
-
 .minimal-add-api-btn:hover {
   transform: translateY(-1px);
   box-shadow: 0 6px 16px rgba(201, 169, 110, 0.4);
 }
-
 .minimal-add-api-btn:active {
   transform: translateY(0);
 }
-
 /* API列表网格 */
 .api-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 16px;
 }
-
 /* API卡片 */
 .api-card {
   background: #fff;
@@ -1527,19 +1323,16 @@ html, body {
   position: relative;
   overflow: hidden;
 }
-
 .api-card:hover {
   border-color: #e0d4c0;
   box-shadow: 0 8px 24px rgba(139, 115, 85, 0.1);
   transform: translateY(-2px);
 }
-
 /* 默认API卡片 */
 .api-card-default {
   border-color: #c9a96e;
   background: linear-gradient(135deg, #fdfbf7 0%, #faf5ec 100%);
 }
-
 .api-card-default::before {
   content: '';
   position: absolute;
@@ -1549,14 +1342,12 @@ html, body {
   height: 3px;
   background: linear-gradient(90deg, #c9a96e, #e0c896, #c9a96e);
 }
-
 /* 卡片头部 */
 .api-card-header {
   display: flex;
   align-items: center;
   gap: 8px;
 }
-
 .api-card-name {
   font-size: 16px;
   font-weight: 600;
@@ -1566,7 +1357,6 @@ html, body {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-
 .api-card-badge {
   font-size: 10px;
   font-weight: 700;
@@ -1576,7 +1366,6 @@ html, body {
   border-radius: 8px;
   flex-shrink: 0;
 }
-
 .api-card-model {
   font-size: 13px;
   color: #8b7b6b;
@@ -1585,14 +1374,12 @@ html, body {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-
 .api-card-provider {
   font-size: 11px;
   color: #c4b8a8;
   font-family: Georgia, 'Times New Roman', serif;
   font-style: italic;
 }
-
 /* 卡片操作按钮 */
 .api-card-actions {
   display: flex;
@@ -1601,7 +1388,6 @@ html, body {
   padding-top: 12px;
   border-top: 1px solid #f5efe5;
 }
-
 .api-card-btn {
   width: 32px;
   height: 32px;
@@ -1615,44 +1401,36 @@ html, body {
   align-items: center;
   transition: all 0.15s ease;
 }
-
 .api-card-btn:hover {
   background: rgba(139, 115, 85, 0.15);
   color: #5a4a3a;
   transform: scale(1.05);
 }
-
 .api-card-btn:active {
   transform: scale(0.95);
 }
-
 .api-card-btn-danger:hover {
   background: rgba(220, 53, 69, 0.1);
   color: #dc3545;
 }
-
 .api-card-btn-primary:hover {
   background: rgba(201, 169, 110, 0.15);
   color: #c9a96e;
 }
-
 /* API编辑器弹窗 */
 .api-editor-modal {
   max-width: 480px;
 }
-
 .api-editor-form {
   padding: 24px;
   overflow-y: auto;
   flex: 1;
 }
-
 .api-editor-actions {
   display: flex;
   gap: 12px;
   margin-top: 24px;
 }
-
 .api-editor-actions .minimal-btn {
   flex: 1;
   display: flex;
@@ -1660,11 +1438,9 @@ html, body {
   align-items: center;
   gap: 8px;
 }
-
 .api-editor-test-result {
   margin-top: 16px;
 }
-
 /* 下拉选择框 */
 .minimal-select {
   appearance: none;
@@ -1674,30 +1450,24 @@ html, body {
   padding-right: 40px;
   cursor: pointer;
 }
-
 .minimal-select:focus {
   outline: none;
   border-color: #c9a96e;
   box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.1);
 }
-
 /* 响应式：小屏幕单列 */
 @media (max-width: 480px) {
   .api-grid {
     grid-template-columns: 1fr;
   }
 }
-
-
 /* ============================================
    语音API编辑器样式
    ============================================ */
-
 /* 语音编辑器弹窗 */
 .voice-editor-modal {
   max-height: 90vh;
 }
-
 /* 滑块值显示 */
 .slider-value {
   margin-left: auto;
@@ -1706,7 +1476,6 @@ html, body {
   color: #c9a96e;
   font-family: Georgia, 'Times New Roman', serif;
 }
-
 /* 滑块样式 */
 .minimal-slider {
   width: 100%;
@@ -1719,7 +1488,6 @@ html, body {
   cursor: pointer;
   margin: 12px 0 8px;
 }
-
 .minimal-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
@@ -1732,12 +1500,10 @@ html, body {
   box-shadow: 0 2px 8px rgba(201, 169, 110, 0.5);
   transition: all 0.15s ease;
 }
-
 .minimal-slider::-webkit-slider-thumb:hover {
   transform: scale(1.15);
   box-shadow: 0 4px 12px rgba(201, 169, 110, 0.4);
 }
-
 .minimal-slider::-moz-range-thumb {
   width: 20px;
   height: 20px;
@@ -1747,7 +1513,6 @@ html, body {
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(201, 169, 110, 0.5);
 }
-
 /* 滑块标签 */
 .slider-labels {
   display: flex;
@@ -1757,18 +1522,15 @@ html, body {
   font-family: Georgia, 'Times New Roman', serif;
   font-style: italic;
 }
-
 /* 语音输入框+按钮 */
 .voice-input-with-btn {
   display: flex;
   gap: 10px;
   align-items: center;
 }
-
 .voice-input-with-btn .minimal-input {
   flex: 1;
 }
-
 /* 试听按钮 */
 .voice-play-btn {
   width: 44px;
@@ -1784,24 +1546,20 @@ html, body {
   transition: all 0.2s ease;
   flex-shrink: 0;
 }
-
 .voice-play-btn:hover {
   background: rgba(201, 169, 110, 0.15);
   border-color: #c9a96e;
   transform: scale(1.05);
 }
-
 .voice-play-btn:active {
   transform: scale(0.95);
 }
-
 /* 语音操作按钮行 */
 .voice-actions-row {
   display: flex;
   gap: 12px;
   margin: 8px 0 20px;
 }
-
 .voice-actions-row .minimal-btn {
   flex: 1;
   display: flex;
@@ -1809,13 +1567,11 @@ html, body {
   align-items: center;
   gap: 6px;
 }
-
 /* 小按钮 */
 .minimal-btn-sm {
-  padding: 10px 14px;
+  padding: 8px 12px;
   font-size: 12px;
 }
-
 /* 语音开关项 */
 .voice-toggle-item {
   display: flex;
@@ -1827,23 +1583,19 @@ html, body {
   border-radius: 14px;
   margin-bottom: 24px;
 }
-
 .voice-toggle-text {
   flex: 1;
 }
-
 .voice-toggle-title {
   font-size: 14px;
   font-weight: 600;
   color: #5a4a3a;
   margin-bottom: 4px;
 }
-
 .voice-toggle-desc {
   font-size: 12px;
   color: #8b7b6b;
 }
-
 /* 开关样式 */
 .toggle-switch {
   position: relative;
@@ -1853,13 +1605,11 @@ html, body {
   flex-shrink: 0;
   margin-left: 16px;
 }
-
 .toggle-switch input {
   opacity: 0;
   width: 0;
   height: 0;
 }
-
 .toggle-slider {
   position: absolute;
   cursor: pointer;
@@ -1871,7 +1621,6 @@ html, body {
   transition: 0.3s;
   border-radius: 28px;
 }
-
 .toggle-slider:before {
   position: absolute;
   content: "";
@@ -1884,16 +1633,12 @@ html, body {
   border-radius: 50%;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
-
 .toggle-switch input:checked + .toggle-slider {
   background: linear-gradient(135deg, #c9a96e 0%, #b8945f 100%);
 }
-
 .toggle-switch input:checked + .toggle-slider:before {
   transform: translateX(20px);
 }
-
-
 /* 表单提示文字 */
 .form-hint {
   font-size: 11px;
@@ -1902,27 +1647,21 @@ html, body {
   font-family: Georgia, 'Times New Roman', serif;
   font-style: italic;
 }
-
-
 /* ============================================
    生图API编辑器样式
    ============================================ */
-
 /* 生图编辑器弹窗 */
 .image-editor-modal {
   max-height: 90vh;
 }
-
 /* 表单行（两列并排） */
 .form-row {
   display: flex;
   gap: 12px;
 }
-
 .form-row .minimal-form-item {
   flex: 1;
 }
-
 /* 文本域 */
 .minimal-textarea {
   width: 100%;
@@ -1938,27 +1677,17 @@ html, body {
   font-family: inherit;
   line-height: 1.6;
 }
-
 .minimal-textarea:focus {
   outline: none;
   border-color: #c9a96e;
   box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.1);
 }
-
 .minimal-textarea::placeholder {
   color: #c4b8a8;
 }
-
-
-
-
-
-
-
 /* ============================================
    联系人应用 - 档案/卷宗风格
    ============================================ */
-
 .archive-app {
   height: 100%;
   overflow-y: auto;
@@ -1971,14 +1700,12 @@ html, body {
   font-family: Georgia, 'Times New Roman', 'Songti SC', serif;
   -webkit-overflow-scrolling: touch;
 }
-
 /* ==================== 档案头部 ==================== */
 .archive-header {
   padding: 24px 20px 20px;
   border-bottom: 2px solid #2a2a2a;
   position: relative;
 }
-
 .archive-header::before {
   content: '';
   position: absolute;
@@ -1988,7 +1715,6 @@ html, body {
   height: 1px;
   background: #2a2a2a;
 }
-
 .archive-header-top {
   display: flex;
   justify-content: space-between;
@@ -1996,13 +1722,11 @@ html, body {
   margin-bottom: 16px;
   padding-top: 8px;
 }
-
 .archive-classification {
   display: flex;
   align-items: center;
   gap: 8px;
 }
-
 .classification-label {
   font-size: 10px;
   font-weight: 700;
@@ -2012,31 +1736,26 @@ html, body {
   padding: 3px 8px;
   text-transform: uppercase;
 }
-
 .classification-dot {
   width: 6px;
   height: 6px;
   background: #8b0000;
   border-radius: 50%;
 }
-
 .classification-text {
   font-size: 12px;
   color: #8b0000;
   font-weight: 600;
 }
-
 .archive-date {
   font-size: 11px;
   color: #666;
   letter-spacing: 1px;
   font-family: 'Courier New', monospace;
 }
-
 .archive-header-title {
   margin-bottom: 16px;
 }
-
 .archive-title {
   font-size: 32px;
   font-weight: 700;
@@ -2044,7 +1763,6 @@ html, body {
   margin: 0 0 4px 0;
   letter-spacing: 4px;
 }
-
 .archive-subtitle {
   font-size: 10px;
   letter-spacing: 4px;
@@ -2053,42 +1771,35 @@ html, body {
   margin: 0;
   font-family: 'Courier New', monospace;
 }
-
 .archive-header-info {
   display: flex;
   align-items: flex-end;
   gap: 20px;
 }
-
 .archive-info-item {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
-
 .info-label {
   font-size: 9px;
   color: #999;
   letter-spacing: 1px;
   text-transform: uppercase;
 }
-
 .info-value {
   font-size: 18px;
   font-weight: 700;
   color: #2a2a2a;
   font-family: 'Courier New', monospace;
 }
-
 .status-active {
   color: #2d5a27;
 }
-
 .archive-barcode {
   margin-left: auto;
   text-align: right;
 }
-
 .barcode-lines {
   height: 24px;
   background: repeating-linear-gradient(
@@ -2110,19 +1821,16 @@ html, body {
   width: 80px;
   margin-left: auto;
 }
-
 .barcode-text {
   font-size: 9px;
   color: #666;
   letter-spacing: 1px;
   font-family: 'Courier New', monospace;
 }
-
 /* ==================== 新增档案按钮 ==================== */
 .archive-actions {
   padding: 16px 20px;
 }
-
 .archive-new-btn {
   width: 100%;
   display: flex;
@@ -2138,7 +1846,6 @@ html, body {
   position: relative;
   overflow: hidden;
 }
-
 .archive-new-btn::before {
   content: '';
   position: absolute;
@@ -2148,35 +1855,29 @@ html, body {
   bottom: 4px;
   border: 1px dashed rgba(245, 241, 232, 0.3);
 }
-
 .archive-new-btn:hover {
   background: #3a3a3a;
   transform: translateY(-1px);
 }
-
 .new-btn-icon {
   font-size: 24px;
   font-weight: 300;
 }
-
 .new-btn-text {
   font-size: 16px;
   font-weight: 600;
   letter-spacing: 4px;
 }
-
 .new-btn-en {
   font-size: 10px;
   letter-spacing: 2px;
   opacity: 0.6;
   font-family: 'Courier New', monospace;
 }
-
 /* ==================== 档案目录 ==================== */
 .archive-directory {
   padding: 0 20px;
 }
-
 .directory-header {
   display: flex;
   align-items: baseline;
@@ -2185,14 +1886,12 @@ html, body {
   border-bottom: 1px solid #2a2a2a;
   margin-bottom: 16px;
 }
-
 .directory-title {
   font-size: 18px;
   font-weight: 700;
   color: #2a2a2a;
   letter-spacing: 2px;
 }
-
 .directory-en {
   font-size: 10px;
   color: #888;
@@ -2200,14 +1899,12 @@ html, body {
   text-transform: uppercase;
   font-family: 'Courier New', monospace;
 }
-
 /* ==================== 档案卡片 ==================== */
 .archive-cards {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
-
 .archive-card {
   background: #faf7f0;
   border: 1px solid #c4b8a8;
@@ -2217,48 +1914,41 @@ html, body {
   position: relative;
   box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.08);
 }
-
 .archive-card:hover {
   transform: translateY(-2px) rotate(-0.3deg);
   box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.12);
   border-color: #8b0000;
 }
-
 .card-corner {
   position: absolute;
   width: 12px;
   height: 12px;
   border: 2px solid #2a2a2a;
 }
-
 .card-corner.top-left {
   top: 6px;
   left: 6px;
   border-right: none;
   border-bottom: none;
 }
-
 .card-corner.top-right {
   top: 6px;
   right: 6px;
   border-left: none;
   border-bottom: none;
 }
-
 .card-corner.bottom-left {
   bottom: 6px;
   left: 6px;
   border-right: none;
   border-top: none;
 }
-
 .card-corner.bottom-right {
   bottom: 6px;
   right: 6px;
   border-left: none;
   border-top: none;
 }
-
 .card-header {
   display: flex;
   justify-content: space-between;
@@ -2267,7 +1957,6 @@ html, body {
   padding-bottom: 8px;
   border-bottom: 1px dashed #c4b8a8;
 }
-
 .card-no {
   font-size: 14px;
   font-weight: 700;
@@ -2275,7 +1964,6 @@ html, body {
   font-family: 'Courier New', monospace;
   letter-spacing: 1px;
 }
-
 .card-status {
   display: flex;
   align-items: center;
@@ -2286,7 +1974,6 @@ html, body {
   letter-spacing: 1px;
   font-family: 'Courier New', monospace;
 }
-
 .status-dot {
   width: 6px;
   height: 6px;
@@ -2294,32 +1981,27 @@ html, body {
   border-radius: 50%;
   animation: pulse 2s infinite;
 }
-
 @keyframes pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.4; }
 }
-
 .card-body {
   display: flex;
   gap: 16px;
   align-items: center;
 }
-
 .card-avatar {
   width: 70px;
   height: 70px;
   position: relative;
   flex-shrink: 0;
 }
-
 .card-avatar img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   filter: grayscale(20%);
 }
-
 .avatar-placeholder {
   width: 100%;
   height: 100%;
@@ -2332,7 +2014,6 @@ html, body {
   background: #e8e0d0;
   font-family: Georgia, serif;
 }
-
 .avatar-frame {
   position: absolute;
   top: -3px;
@@ -2342,12 +2023,10 @@ html, body {
   border: 2px solid #2a2a2a;
   pointer-events: none;
 }
-
 .card-info {
   flex: 1;
   min-width: 0;
 }
-
 .card-name {
   font-size: 20px;
   font-weight: 700;
@@ -2355,7 +2034,6 @@ html, body {
   margin: 0 0 2px 0;
   letter-spacing: 2px;
 }
-
 .card-name-en {
   font-size: 10px;
   color: #888;
@@ -2364,13 +2042,11 @@ html, body {
   text-transform: uppercase;
   font-family: 'Courier New', monospace;
 }
-
 .card-tags {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
 }
-
 .card-tag {
   font-size: 10px;
   padding: 2px 8px;
@@ -2378,7 +2054,6 @@ html, body {
   color: #f5f1e8;
   letter-spacing: 1px;
 }
-
 .card-footer {
   display: flex;
   justify-content: space-between;
@@ -2387,7 +2062,6 @@ html, body {
   padding-top: 8px;
   border-top: 1px dashed #c4b8a8;
 }
-
 .card-barcode {
   height: 16px;
   width: 60px;
@@ -2403,13 +2077,11 @@ html, body {
     transparent 5px
   );
 }
-
 .card-date {
   font-size: 10px;
   color: #888;
   font-family: 'Courier New', monospace;
 }
-
 /* ==================== 空状态 ==================== */
 .archive-empty {
   text-align: center;
@@ -2417,7 +2089,6 @@ html, body {
   border: 2px dashed #c4b8a8;
   background: rgba(255, 255, 255, 0.3);
 }
-
 .empty-stamp {
   display: inline-block;
   padding: 8px 20px;
@@ -2430,7 +2101,6 @@ html, body {
   margin-bottom: 24px;
   opacity: 0.6;
 }
-
 .empty-title {
   font-size: 18px;
   font-weight: 600;
@@ -2438,13 +2108,11 @@ html, body {
   margin-bottom: 8px;
   letter-spacing: 2px;
 }
-
 .empty-desc {
   font-size: 13px;
   color: #999;
   line-height: 1.8;
 }
-
 /* ==================== 档案底部装饰 ==================== */
 .archive-footer {
   margin-top: 30px;
@@ -2452,7 +2120,6 @@ html, body {
   border-top: 2px solid #2a2a2a;
   position: relative;
 }
-
 .footer-line {
   position: absolute;
   top: 6px;
@@ -2461,20 +2128,17 @@ html, body {
   height: 1px;
   background: #2a2a2a;
 }
-
 .footer-text {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 12px;
 }
-
 .footer-text span:first-child {
   font-size: 11px;
   color: #666;
   letter-spacing: 1px;
 }
-
 .footer-text span:last-child {
   font-size: 9px;
   color: #999;
@@ -2482,7 +2146,6 @@ html, body {
   text-transform: uppercase;
   font-family: 'Courier New', monospace;
 }
-
 .footer-stamp {
   display: inline-block;
   padding: 6px 16px;
@@ -2494,7 +2157,6 @@ html, body {
   transform: rotate(-3deg);
   opacity: 0.7;
 }
-
 /* ==================== 详情页 - 卷宗头部 ==================== */
 .archive-detail { background: #f0ebe0; }
 .detail-header {
@@ -2508,7 +2170,6 @@ html, body {
   cursor: pointer; font-size: 12px; letter-spacing: 1px; transition: all 0.2s; font-family: inherit;
 }
 .detail-back-btn:hover, .detail-edit-btn:hover { background: rgba(245,241,232,0.1); border-color: #f5f1e8; }
-
 /* ==================== 详情页 - 卷宗封面 ==================== */
 .detail-cover {
   padding: 30px 20px; background: linear-gradient(135deg, #2a2a2a 0%, #3a3a3a 100%);
@@ -2544,7 +2205,6 @@ html, body {
   margin-bottom: 6px; opacity: 0.8;
 }
 .cover-barcode .barcode-text { color: rgba(245,241,232,0.5); }
-
 /* ==================== 详情页 - 照片区 ==================== */
 .detail-photo-section {
   display: flex; gap: 20px; padding: 24px 20px; background: #faf7f0; border-bottom: 1px solid #c4b8a8;
@@ -2577,7 +2237,6 @@ html, body {
 }
 .detail-basic-info .info-value { font-size: 14px; color: #2a2a2a; font-weight: 600; text-align: right; }
 .detail-basic-info .info-value.highlight { color: #8b0000; font-weight: 700; }
-
 /* ==================== 详情页 - 分区通用样式 ==================== */
 .detail-section { padding: 20px; border-bottom: 1px solid #c4b8a8; }
 .section-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
@@ -2587,7 +2246,6 @@ html, body {
 .section-line { flex: 1; height: 1px; background: linear-gradient(90deg, #2a2a2a, transparent); }
 .section-content { padding-left: 36px; }
 .profile-text { font-size: 14px; color: #444; line-height: 2; text-indent: 2em; }
-
 /* ==================== 详情页 - 性格分析 ==================== */
 .personality-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
 .personality-tag {
@@ -2597,7 +2255,6 @@ html, body {
 .personality-tag::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: #8b0000; }
 .no-tags { font-size: 13px; color: #999; font-style: italic; }
 .personality-text { font-size: 14px; color: #444; line-height: 2; text-indent: 2em; }
-
 /* ==================== 详情页 - 签署区 ==================== */
 .detail-signature {
   display: flex; gap: 20px; padding: 24px 20px; background: #faf7f0;
@@ -2615,7 +2272,6 @@ html, body {
   border: 2px solid #8b0000; padding: 6px 12px; margin-bottom: 4px;
 }
 .stamp-date { font-size: 9px; color: #8b0000; font-family: 'Courier New', monospace; opacity: 0.7; }
-
 /* ==================== 详情页 - 危险操作区 ==================== */
 .detail-danger-zone { padding: 20px; background: #f5e8e8; border-top: 1px solid #d4a8a8; }
 .danger-btn {
@@ -2624,7 +2280,6 @@ html, body {
   cursor: pointer; font-size: 14px; font-weight: 600; letter-spacing: 2px; transition: all 0.2s; font-family: inherit;
 }
 .danger-btn:hover { background: #8b0000; color: #f5f1e8; }
-
 /* ==================== 编辑页 - 表单头部 ==================== */
 .archive-edit { background: #f5f1e8; }
 .edit-header {
@@ -2641,7 +2296,6 @@ html, body {
 .edit-title h2 { font-size: 18px; font-weight: 700; margin: 0 0 2px 0; letter-spacing: 2px; }
 .edit-title p { font-size: 10px; margin: 0; letter-spacing: 2px; opacity: 0.6; font-family: 'Courier New', monospace; }
 .edit-archive-no { font-size: 14px; font-family: 'Courier New', monospace; color: rgba(245,241,232,0.7); letter-spacing: 1px; }
-
 /* ==================== 编辑页 - 表单通用 ==================== */
 .archive-form { padding: 20px; }
 .form-section {
@@ -2654,7 +2308,6 @@ html, body {
 .form-section-no { font-size: 20px; font-weight: 700; color: rgba(42,42,42,0.2); font-family: Georgia, serif; }
 .form-section-title span:nth-child(2) { font-size: 16px; font-weight: 700; color: #2a2a2a; letter-spacing: 2px; }
 .form-section-en { font-size: 10px; color: #999; letter-spacing: 2px; text-transform: uppercase; font-family: 'Courier New', monospace; margin-left: auto; }
-
 /* 导入按钮 */
 .import-btn {
   display: flex; align-items: center; gap: 6px;
@@ -2706,7 +2359,6 @@ html, body {
 }
 .form-input::placeholder, .form-textarea::placeholder { color: #bbb; }
 .form-textarea { resize: vertical; min-height: 100px; line-height: 1.8; }
-
 /* ==================== 编辑页 - 照片上传 ==================== */
 .form-photo-section { text-align: center; }
 .photo-upload-area {
@@ -2723,7 +2375,6 @@ html, body {
 .upload-icon { font-size: 36px; font-weight: 300; color: #c4b8a8; }
 .upload-placeholder span:nth-child(2) { font-size: 13px; color: #666; }
 .upload-hint { font-size: 10px !important; color: #aaa !important; }
-
 /* ==================== 编辑页 - 提交按钮 ==================== */
 .form-submit { display: flex; gap: 16px; margin-top: 30px; padding-bottom: 20px; }
 .submit-btn {
@@ -2736,14 +2387,12 @@ html, body {
 .submit-save { background: #2a2a2a; color: #f5f1e8; }
 .submit-save:hover { background: #3a3a3a; transform: translateY(-1px); }
 .save-icon { font-size: 16px; }
-
 /* ==================== 列表页返回按钮 ==================== */
 .list-back-row {
   margin-bottom: 12px;
   padding-bottom: 12px;
   border-bottom: 1px solid rgba(42, 42, 42, 0.2);
 }
-
 .list-back-btn {
   display: flex;
   align-items: center;
@@ -2759,17 +2408,14 @@ html, body {
   transition: all 0.2s ease;
   font-family: inherit;
 }
-
 .list-back-btn:hover {
   background: #2a2a2a;
   color: #f5f1e8;
   transform: translateX(-2px);
 }
-
 /* ============================================
    聊天应用 - 浅色星空主题
    ============================================ */
-
 .chat-app {
   position: relative;
   height: 100%;
@@ -2779,7 +2425,6 @@ html, body {
   overflow: hidden;
   font-family: Georgia, 'Times New Roman', 'Songti SC', serif;
 }
-
 /* 星空背景装饰 */
 .chat-app::before {
   content: '';
@@ -2800,12 +2445,10 @@ html, body {
   z-index: 0;
   animation: chatStarsTwinkle 4s ease-in-out infinite;
 }
-
 @keyframes chatStarsTwinkle {
   0%, 100% { opacity: 0.6; }
   50% { opacity: 1; }
 }
-
 /* 银河带装饰 */
 .chat-app::after {
   content: '';
@@ -2829,7 +2472,6 @@ html, body {
   z-index: 0;
   animation: galaxyFloat 20s ease-in-out infinite;
 }
-
 @keyframes galaxyFloat {
   0%, 100% { 
     transform: rotate(-15deg) translate(0, 0);
@@ -2840,7 +2482,6 @@ html, body {
     opacity: 1;
   }
 }
-
 /* ==================== 聊天应用头部 ==================== */
 .chat-header {
   position: relative;
@@ -2852,14 +2493,12 @@ html, body {
   -webkit-backdrop-filter: blur(20px);
   flex-shrink: 0;
 }
-
 .chat-header-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 14px;
 }
-
 .chat-back-btn {
   display: flex;
   align-items: center;
@@ -2876,26 +2515,22 @@ html, body {
   transition: all 0.25s ease;
   font-family: inherit;
 }
-
 .chat-back-btn:hover {
   background: rgba(147, 130, 220, 0.15);
   border-color: rgba(147, 130, 220, 0.55);
   color: #9382dc;
   transform: translateX(-2px);
 }
-
 .chat-header-date {
   font-size: 11px;
   color: #b8a8d0;
   letter-spacing: 2px;
   font-family: 'Courier New', monospace;
 }
-
 .chat-header-title {
   margin-bottom: 2px;
   position: relative;
 }
-
 .chat-title {
   font-size: 26px;
   font-weight: 700;
@@ -2907,7 +2542,6 @@ html, body {
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
-
 .chat-subtitle {
   font-size: 9px;
   letter-spacing: 5px;
@@ -2916,7 +2550,6 @@ html, body {
   margin: 0;
   font-family: 'Courier New', monospace;
 }
-
 /* ==================== 聊天应用主体 ==================== */
 .chat-main {
   position: relative;
@@ -2925,7 +2558,6 @@ html, body {
   display: flex;
   overflow: hidden;
 }
-
 /* ==================== 左侧标签栏（星空星座风格） ==================== */
 .chat-tabs {
   width: 72px;
@@ -2939,7 +2571,6 @@ html, body {
   flex-shrink: 0;
   position: relative;
 }
-
 .tab-item {
   position: relative;
   padding: 14px 6px;
@@ -2953,17 +2584,14 @@ html, body {
   border-radius: 12px;
   margin: 0 6px 6px 6px;
 }
-
 .tab-item:hover {
   background: rgba(147, 130, 220, 0.08);
   transform: scale(1.02);
 }
-
 .tab-item.active {
   background: linear-gradient(135deg, rgba(147, 130, 220, 0.15), rgba(147, 130, 220, 0.1));
   box-shadow: 0 4px 12px rgba(147, 130, 220, 0.15);
 }
-
 .tab-item.active::before {
   content: '✦';
   position: absolute;
@@ -2973,12 +2601,10 @@ html, body {
   color: #9382dc;
   animation: tabStarTwinkle 2s ease-in-out infinite;
 }
-
 @keyframes tabStarTwinkle {
   0%, 100% { opacity: 0.4; transform: scale(0.8); }
   50% { opacity: 1; transform: scale(1.2); }
 }
-
 .tab-icon {
   width: 34px;
   height: 34px;
@@ -2991,14 +2617,12 @@ html, body {
   border: 1px solid rgba(147, 130, 220, 0.15);
   transition: all 0.3s ease;
 }
-
 .tab-item.active .tab-icon {
   background: linear-gradient(135deg, #9382dc, #d8a8c0);
   color: #fff;
   border-color: transparent;
   box-shadow: 0 4px 12px rgba(147, 130, 220, 0.5);
 }
-
 .tab-text {
   font-size: 11px;
   font-weight: 600;
@@ -3006,11 +2630,9 @@ html, body {
   letter-spacing: 1px;
   transition: all 0.3s ease;
 }
-
 .tab-item.active .tab-text {
   color: #5a4a6a;
 }
-
 .tab-en {
   font-size: 7px;
   color: #b0a0c0;
@@ -3019,36 +2641,29 @@ html, body {
   font-family: 'Courier New', monospace;
   transition: all 0.3s ease;
 }
-
 .tab-item.active .tab-en {
   color: #9382dc;
 }
-
 .tab-indicator {
   display: none;
 }
-
 /* ==================== 右边内容区域 ==================== */
 .chat-content {
   flex: 1;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
-
 .chat-content::-webkit-scrollbar {
   width: 3px;
 }
-
 .chat-content::-webkit-scrollbar-thumb {
   background: rgba(147, 130, 220, 0.2);
   border-radius: 2px;
 }
-
 /* ==================== 标签页通用 ==================== */
 .tab-page {
   padding: 16px;
 }
-
 .tab-page-header {
   margin-bottom: 16px;
   padding-bottom: 12px;
@@ -3057,7 +2672,6 @@ html, body {
   justify-content: space-between;
   align-items: flex-end;
 }
-
 .tab-page-title {
   font-size: 18px;
   font-weight: 700;
@@ -3066,7 +2680,6 @@ html, body {
   letter-spacing: 3px;
   font-family: Georgia, 'Times New Roman', serif;
 }
-
 .tab-page-en {
   font-size: 9px;
   color: #b0a0c0;
@@ -3074,11 +2687,9 @@ html, body {
   text-transform: uppercase;
   font-family: 'Courier New', monospace;
 }
-
 .tab-page-content {
   min-height: 200px;
 }
-
 /* ==================== 占位样式 ==================== */
 .chat-list-placeholder {
   display: flex;
@@ -3088,7 +2699,6 @@ html, body {
   padding: 60px 20px;
   text-align: center;
 }
-
 .placeholder-stamp {
   display: inline-block;
   padding: 8px 20px;
@@ -3102,7 +2712,6 @@ html, body {
   opacity: 0.7;
   border-radius: 4px;
 }
-
 .placeholder-title {
   font-size: 16px;
   font-weight: 600;
@@ -3110,24 +2719,20 @@ html, body {
   margin-bottom: 8px;
   letter-spacing: 2px;
 }
-
 .placeholder-desc {
   font-size: 12px;
   color: #a0a0b0;
   line-height: 1.8;
 }
-
 /* ==================== 聊天列表 ==================== */
 .chat-list-content {
   padding: 0;
 }
-
 .chat-session-list {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
-
 .chat-session-item {
   display: flex;
   align-items: center;
@@ -3142,25 +2747,21 @@ html, body {
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 }
-
 .chat-session-item:hover {
   background: rgba(255, 255, 255, 0.8);
   border-color: rgba(147, 130, 220, 0.45);
   transform: translateX(4px);
   box-shadow: 0 4px 16px rgba(147, 130, 220, 0.1);
 }
-
 .chat-session-item:active {
   transform: scale(0.98);
 }
-
 .session-avatar {
   position: relative;
   width: 48px;
   height: 48px;
   flex-shrink: 0;
 }
-
 .session-avatar img {
   width: 100%;
   height: 100%;
@@ -3169,7 +2770,6 @@ html, body {
   position: relative;
   z-index: 1;
 }
-
 .avatar-placeholder {
   width: 100%;
   height: 100%;
@@ -3184,7 +2784,6 @@ html, body {
   position: relative;
   z-index: 1;
 }
-
 .avatar-glow {
   position: absolute;
   top: -2px;
@@ -3197,32 +2796,27 @@ html, body {
   opacity: 0.5;
   z-index: 0;
 }
-
 .session-info {
   flex: 1;
   min-width: 0;
 }
-
 .session-name-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 4px;
 }
-
 .session-name {
   font-size: 14px;
   font-weight: 600;
   color: #4a4a5a;
   font-family: Georgia, 'Times New Roman', serif;
 }
-
 .session-time {
   font-size: 10px;
   color: #b0a0b0;
   font-family: 'Courier New', monospace;
 }
-
 .session-last-message {
   font-size: 12px;
   color: #9090a0;
@@ -3230,19 +2824,16 @@ html, body {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
 .session-arrow {
   color: #9382dc;
   flex-shrink: 0;
   opacity: 0.5;
   transition: all 0.3s ease;
 }
-
 .chat-session-item:hover .session-arrow {
   opacity: 1;
   transform: translateX(2px);
 }
-
 /* ==================== 空列表状态 ==================== */
 .chat-list-empty {
   display: flex;
@@ -3252,27 +2843,23 @@ html, body {
   padding: 50px 20px;
   text-align: center;
 }
-
 .empty-stars {
   position: relative;
   width: 70px;
   height: 70px;
   margin-bottom: 20px;
 }
-
 .empty-stars .star {
   position: absolute;
   color: #9382dc;
   animation: twinkle 2s ease-in-out infinite;
 }
-
 .empty-stars .star-1 {
   top: 8px;
   left: 12px;
   font-size: 16px;
   animation-delay: 0s;
 }
-
 .empty-stars .star-2 {
   top: 28px;
   right: 16px;
@@ -3280,19 +2867,16 @@ html, body {
   color: #9382dc;
   animation-delay: 0.5s;
 }
-
 .empty-stars .star-3 {
   bottom: 12px;
   left: 26px;
   font-size: 14px;
   animation-delay: 1s;
 }
-
 @keyframes twinkle {
   0%, 100% { opacity: 0.3; transform: scale(0.8); }
   50% { opacity: 1; transform: scale(1.1); }
 }
-
 .empty-title {
   font-size: 16px;
   font-weight: 600;
@@ -3300,14 +2884,12 @@ html, body {
   margin-bottom: 8px;
   font-family: Georgia, 'Times New Roman', serif;
 }
-
 .empty-desc {
   font-size: 12px;
   color: #a0a0b0;
   line-height: 1.7;
   margin-bottom: 20px;
 }
-
 .empty-action-btn {
   display: flex;
   align-items: center;
@@ -3323,50 +2905,43 @@ html, body {
   font-family: inherit;
   box-shadow: 0 4px 12px rgba(147, 130, 220, 0.45);
 }
-
 .empty-action-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(147, 130, 220, 0.55);
 }
-
 /* ==================== 联系人列表（聊天应用内） ==================== */
 .chat-contact-list {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
-
 .chat-contact-item {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 14px;
+  padding: 8px 12px;
   border-radius: 14px;
   cursor: pointer;
   transition: all 0.3s ease;
   background: rgba(255, 255, 255, 0.5);
   border: 1px solid rgba(147, 130, 220, 0.1);
 }
-
 .chat-contact-item:hover {
   background: rgba(255, 255, 255, 0.8);
   border-color: rgba(147, 130, 220, 0.45);
   transform: translateX(4px);
 }
-
 .contact-avatar-small {
   width: 40px;
   height: 40px;
   flex-shrink: 0;
 }
-
 .contact-avatar-small img {
   width: 100%;
   height: 100%;
   border-radius: 50%;
   object-fit: cover;
 }
-
 .avatar-placeholder-small {
   width: 100%;
   height: 100%;
@@ -3379,26 +2954,22 @@ html, body {
   font-size: 14px;
   font-weight: 600;
 }
-
 .contact-info-small {
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
-
 .contact-name-small {
   font-size: 13px;
   font-weight: 600;
   color: #4a4a5a;
   font-family: Georgia, 'Times New Roman', serif;
 }
-
 .contact-relation-small {
   font-size: 10px;
   color: #a0a0b0;
 }
-
 .contact-start-btn {
   padding: 5px 12px;
   background: rgba(147, 130, 220, 0.1);
@@ -3410,14 +2981,12 @@ html, body {
   transition: all 0.3s ease;
   font-family: inherit;
 }
-
 .chat-contact-item:hover .contact-start-btn {
   background: linear-gradient(135deg, #9382dc, #d8a8c0);
   color: #fff;
   border-color: transparent;
 }
 /* ==================== 聊天详情页 - 星空传讯（浅色版） ==================== */
-
 .chat-room {
   position: relative;
   width: 100%;
@@ -3427,7 +2996,6 @@ html, body {
   overflow: hidden;
   background: linear-gradient(160deg, #f5f3ff 0%, #f8f5f2 50%, #f0f4ff 100%);
 }
-
 /* 星空背景（浅色版） */
 .starfield {
   position: absolute;
@@ -3438,7 +3006,6 @@ html, body {
   overflow: hidden;
   z-index: 0;
 }
-
 .stars {
   position: absolute;
   top: 0;
@@ -3446,7 +3013,6 @@ html, body {
   width: 100%;
   height: 100%;
 }
-
 .stars-small {
   background-image: 
     radial-gradient(1px 1px at 20px 30px, rgba(147, 130, 220, 0.4), transparent),
@@ -3458,7 +3024,6 @@ html, body {
   background-size: 200px 200px;
   animation: starsMove 100s linear infinite;
 }
-
 .stars-medium {
   background-image: 
     radial-gradient(2px 2px at 50px 100px, rgba(147, 130, 220, 0.5), transparent),
@@ -3468,7 +3033,6 @@ html, body {
   background-size: 400px 400px;
   animation: starsMove 150s linear infinite;
 }
-
 .stars-large {
   background-image: 
     radial-gradient(3px 3px at 100px 200px, rgba(147, 130, 220, 0.6), transparent),
@@ -3477,17 +3041,14 @@ html, body {
   background-size: 600px 600px;
   animation: starsTwinkle 4s ease-in-out infinite;
 }
-
 @keyframes starsMove {
   from { transform: translateY(0); }
   to { transform: translateY(-200px); }
 }
-
 @keyframes starsTwinkle {
   0%, 100% { opacity: 0.5; }
   50% { opacity: 1; }
 }
-
 .nebula {
   position: absolute;
   top: -20%;
@@ -3500,12 +3061,10 @@ html, body {
     radial-gradient(ellipse at 50% 50%, rgba(180, 200, 255, 0.05) 0%, transparent 60%);
   animation: nebulaFloat 30s ease-in-out infinite;
 }
-
 @keyframes nebulaFloat {
   0%, 100% { transform: translate(0, 0) scale(1); }
   50% { transform: translate(20px, -20px) scale(1.05); }
 }
-
 /* 聊天头部（浅色版） */
 .chat-room-header {
   position: relative;
@@ -3519,7 +3078,6 @@ html, body {
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(147, 130, 220, 0.15);
 }
-
 .room-back-btn {
   width: 36px;
   height: 36px;
@@ -3534,13 +3092,11 @@ html, body {
   transition: all 0.25s ease;
   flex-shrink: 0;
 }
-
 .room-back-btn:hover {
   background: rgba(147, 130, 220, 0.15);
   border-color: rgba(147, 130, 220, 0.5);
   color: #9382dc;
 }
-
 .room-contact-info {
   flex: 1;
   display: flex;
@@ -3548,14 +3104,12 @@ html, body {
   gap: 12px;
   min-width: 0;
 }
-
 .room-avatar {
   position: relative;
   width: 42px;
   height: 42px;
   flex-shrink: 0;
 }
-
 .room-avatar img {
   width: 100%;
   height: 100%;
@@ -3564,7 +3118,6 @@ html, body {
   position: relative;
   z-index: 1;
 }
-
 .room-avatar-placeholder {
   width: 100%;
   height: 100%;
@@ -3579,7 +3132,6 @@ html, body {
   position: relative;
   z-index: 1;
 }
-
 .room-avatar-glow {
   position: absolute;
   top: -3px;
@@ -3593,26 +3145,22 @@ html, body {
   z-index: 0;
   animation: avatarGlow 3s ease-in-out infinite;
 }
-
 @keyframes avatarGlow {
   0%, 100% { opacity: 0.4; transform: scale(1); }
   50% { opacity: 0.7; transform: scale(1.05); }
 }
-
 .room-name-info {
   display: flex;
   flex-direction: column;
   gap: 2px;
   min-width: 0;
 }
-
 .room-name {
   font-size: 15px;
   font-weight: 600;
   color: #2a2a2a;
   font-family: Georgia, 'Times New Roman', serif;
 }
-
 .room-status {
   display: flex;
   align-items: center;
@@ -3620,7 +3168,6 @@ html, body {
   font-size: 11px;
   color: #6b5b85;
 }
-
 .status-dot-online {
   width: 6px;
   height: 6px;
@@ -3629,16 +3176,13 @@ html, body {
   box-shadow: 0 0 8px rgba(74, 222, 128, 0.5);
   animation: statusPulse 2s ease-in-out infinite;
 }
-
 @keyframes statusPulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.5; }
 }
-
 .room-header-actions {
   flex-shrink: 0;
 }
-
 .room-action-btn {
   width: 36px;
   height: 36px;
@@ -3652,13 +3196,11 @@ html, body {
   cursor: pointer;
   transition: all 0.25s ease;
 }
-
 .room-action-btn:hover {
   background: rgba(147, 130, 220, 0.15);
   border-color: rgba(147, 130, 220, 0.5);
   color: #9382dc;
 }
-
 /* 聊天消息区域（浅色版） */
 .chat-messages {
   position: relative;
@@ -3669,20 +3211,16 @@ html, body {
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
 }
-
 .chat-messages::-webkit-scrollbar {
   width: 4px;
 }
-
 .chat-messages::-webkit-scrollbar-track {
   background: transparent;
 }
-
 .chat-messages::-webkit-scrollbar-thumb {
   background: rgba(147, 130, 220, 0.2);
   border-radius: 2px;
 }
-
 /* 日期分隔线（浅色版） */
 .chat-date-divider {
   display: flex;
@@ -3690,13 +3228,11 @@ html, body {
   gap: 12px;
   margin: 16px 0 24px;
 }
-
 .date-line {
   flex: 1;
   height: 1px;
   background: linear-gradient(90deg, transparent, rgba(147, 130, 220, 0.45), transparent);
 }
-
 .date-text {
   font-size: 11px;
   color: #b8a8d0;
@@ -3704,7 +3240,6 @@ html, body {
   letter-spacing: 1px;
   white-space: nowrap;
 }
-
 /* 空消息状态（浅色版） */
 .chat-empty-messages {
   display: flex;
@@ -3714,7 +3249,6 @@ html, body {
   padding: 60px 20px;
   text-align: center;
 }
-
 .empty-signal-icon {
   width: 60px;
   height: 60px;
@@ -3725,12 +3259,10 @@ html, body {
   margin-bottom: 20px;
   animation: signalFloat 3s ease-in-out infinite;
 }
-
 @keyframes signalFloat {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-8px); }
 }
-
 .empty-signal-text {
   font-size: 16px;
   font-weight: 600;
@@ -3738,12 +3270,10 @@ html, body {
   margin-bottom: 8px;
   font-family: Georgia, 'Times New Roman', serif;
 }
-
 .empty-signal-sub {
   font-size: 13px;
   color: #b8a8d0;
 }
-
 /* 消息气泡（浅色版） */
 .message {
   display: flex;
@@ -3751,7 +3281,6 @@ html, body {
   max-width: 80%;
   animation: messageIn 0.4s ease-out;
 }
-
 @keyframes messageIn {
   from {
     opacity: 0;
@@ -3762,26 +3291,22 @@ html, body {
     transform: translateY(0);
   }
 }
-
 .message-me {
   margin-left: auto;
   flex-direction: row-reverse;
   align-items: flex-end;
 }
-
 .message-other {
   margin-right: auto;
   align-items: flex-start;
   gap: 10px;
 }
-
 .message-avatar {
   position: relative;
   width: 36px;
   height: 36px;
   flex-shrink: 0;
 }
-
 .message-avatar img {
   width: 100%;
   height: 100%;
@@ -3790,7 +3315,6 @@ html, body {
   position: relative;
   z-index: 1;
 }
-
 .message-avatar-placeholder {
   width: 100%;
   height: 100%;
@@ -3805,7 +3329,6 @@ html, body {
   position: relative;
   z-index: 1;
 }
-
 .message-avatar-glow {
   position: absolute;
   top: -2px;
@@ -3818,21 +3341,18 @@ html, body {
   opacity: 0.5;
   z-index: 0;
 }
-
 .message-content-wrap {
   display: flex;
   flex-direction: column;
   gap: 4px;
   min-width: 0;
 }
-
 .message-sender-name {
   font-size: 11px;
   color: #6b5b85;
   margin-left: 4px;
   font-family: Georgia, 'Times New Roman', serif;
 }
-
 .message-bubble {
   position: relative;
   padding: 12px 16px;
@@ -3840,19 +3360,17 @@ html, body {
   word-wrap: break-word;
   overflow: hidden;
 }
-
 /* 我的消息 - 浅马卡龙淡紫色 */
 .bubble-me {
   background: rgba(222, 214, 240, 0.82);
   color: #5a4a7a;
-  padding: 10px 14px;
+  padding: 8px 12px;
   position: relative;
   border-radius: 16px;
   box-shadow: 
     0 3px 10px rgba(147, 130, 220, 0.25),
     inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
-
 /* 右上角小星星装饰 */
 .bubble-me::after {
   content: '✦';
@@ -3864,12 +3382,10 @@ html, body {
   text-shadow: 0 0 4px rgba(147, 130, 220, 0.5);
   animation: starTwinkle 2s ease-in-out infinite;
 }
-
 @keyframes starTwinkle {
   0%, 100% { opacity: 0.6; transform: scale(0.9); }
   50% { opacity: 1; transform: scale(1.1); }
 }
-
 .bubble-shimmer {
   position: absolute;
   top: 0;
@@ -3879,55 +3395,63 @@ html, body {
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
   animation: shimmer 3s ease-in-out infinite;
 }
-
 @keyframes shimmer {
   0% { left: -100%; }
   50%, 100% { left: 100%; }
 }
-
 /* 对方消息 - 浅色版（白色背景，深色文字） */
 .bubble-other {
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.88);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(147, 130, 220, 0.12);
-  color: #3a3a3a;
-  border-bottom-left-radius: 4px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(147, 130, 220, 0.15);
+  color: #4a4a5a;
+  padding: 8px 12px;
+  position: relative;
+  border-radius: 16px;
+  box-shadow: 
+    0 3px 10px rgba(147, 130, 220, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
+/* 左上角小星星装饰 */
+.bubble-other::before {
+  content: '✧';
+  position: absolute;
+  top: -5px;
+  left: -4px;
+  font-size: 11px;
+  color: #d8a8c0;
+  text-shadow: 0 0 4px rgba(216, 168, 192, 0.5);
+  animation: starTwinkle 2.5s ease-in-out infinite;
+}
 .bubble-signal {
   position: absolute;
   top: -1px;
   left: -1px;
   right: -1px;
   bottom: -1px;
-  border-radius: 18px;
-  border-bottom-left-radius: 4px;
+  border-radius: 16px;
   background: linear-gradient(135deg, rgba(147, 130, 220, 0.2), transparent, rgba(147, 130, 220, 0.15));
   z-index: -1;
   filter: blur(8px);
   opacity: 0.4;
 }
-
 .message-text {
   font-size: 14px;
   line-height: 1.6;
   position: relative;
   z-index: 1;
 }
-
 .message-time {
   font-size: 10px;
   color: #b0a090;
   font-family: 'Courier New', monospace;
   margin: 0 4px;
 }
-
 .message-me .message-time {
   text-align: right;
 }
-
 /* 输入区域（浅色版） */
 .chat-input-area {
   position: relative;
@@ -3938,14 +3462,12 @@ html, body {
   -webkit-backdrop-filter: blur(20px);
   border-top: 1px solid rgba(147, 130, 220, 0.12);
 }
-
 .input-wrapper {
   position: relative;
   display: flex;
   align-items: flex-end;
   gap: 10px;
 }
-
 .input-glow {
   position: absolute;
   top: -2px;
@@ -3959,18 +3481,16 @@ html, body {
   z-index: 0;
   transition: opacity 0.3s ease;
 }
-
 .input-wrapper:focus-within .input-glow {
   opacity: 0.5;
 }
-
 .chat-input {
   flex: 1;
   padding: 12px 16px;
   background: rgba(255, 255, 255, 0.9);
   border: 1px solid rgba(147, 130, 220, 0.15);
   border-radius: 22px;
-  color: #3a3a3a;
+  color: #4a4a5a;
   font-size: 14px;
   font-family: inherit;
   resize: none;
@@ -3980,17 +3500,14 @@ html, body {
   max-height: 120px;
   transition: all 0.3s ease;
 }
-
 .chat-input:focus {
   background: rgba(255, 255, 255, 1);
   border-color: rgba(147, 130, 220, 0.55);
   box-shadow: 0 0 0 3px rgba(147, 130, 220, 0.08);
 }
-
 .chat-input::placeholder {
   color: #b0a090;
 }
-
 .send-signal-btn {
   width: 44px;
   height: 44px;
@@ -4008,16 +3525,13 @@ html, body {
   flex-shrink: 0;
   box-shadow: 0 4px 16px rgba(147, 130, 220, 0.5);
 }
-
 .send-signal-btn:hover {
   transform: scale(1.08);
   box-shadow: 0 6px 20px rgba(147, 130, 220, 0.4);
 }
-
 .send-signal-btn:active {
   transform: scale(0.95);
 }
-
 .input-hint {
   display: flex;
   align-items: center;
@@ -4028,12 +3542,10 @@ html, body {
   color: #b0a090;
   letter-spacing: 1px;
 }
-
 .hint-star {
   color: rgba(147, 130, 220, 0.5);
   font-size: 8px;
 }
-
 /* 响应式调整 */
 @media (max-width: 380px) {
   .message {
