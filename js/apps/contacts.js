@@ -1,29 +1,612 @@
 /**
- * 星绥小手机 - 联系人应用（基础版占位）
- * 极简风格，SVG线性图标
+ * 星绥小手机 - 联系人应用（档案/卷宗风格）
+ * 角色档案管理：档案目录、角色卷宗、档案填写
+ * 设计风格：米白纸张质感 + 深灰/黑色文字 + 档案元素装饰
  */
 
 const ContactsApp = {
   container: null,
+  currentView: 'list', // list / detail / edit
+  currentContactId: null,
+  
+  // ==================== 数据存储 ====================
+  
+  getContacts() {
+    const contacts = Storage.get('contacts-list');
+    return contacts || [];
+  },
+  
+  saveContacts(contacts) {
+    Storage.set('contacts-list', contacts);
+  },
+  
+  getContactById(id) {
+    const contacts = this.getContacts();
+    return contacts.find(c => c.id === id);
+  },
+  
+  // 生成档案编号
+  generateArchiveNo() {
+    const contacts = this.getContacts();
+    const num = String(contacts.length + 1).padStart(3, '0');
+    return `NO.${num}`;
+  },
+  
+  addContact(contact) {
+    const contacts = this.getContacts();
+    const newContact = {
+      id: 'contact_' + Date.now(),
+      archiveNo: contact.archiveNo || this.generateArchiveNo(),
+      name: contact.name || '',
+      nameEn: contact.nameEn || '',
+      avatar: contact.avatar || '',
+      description: contact.description || '',
+      personality: contact.personality || '',
+      relationship: contact.relationship || '',
+      age: contact.age || '',
+      birthday: contact.birthday || '',
+      height: contact.height || '',
+      tags: contact.tags || [],
+      createdAt: Date.now(),
+      updatedAt: Date.now()
+    };
+    contacts.push(newContact);
+    this.saveContacts(contacts);
+    return newContact;
+  },
+  
+  updateContact(id, updates) {
+    const contacts = this.getContacts();
+    const index = contacts.findIndex(c => c.id === id);
+    if (index !== -1) {
+      contacts[index] = {
+        ...contacts[index],
+        ...updates,
+        updatedAt: Date.now()
+      };
+      this.saveContacts(contacts);
+      return contacts[index];
+    }
+    return null;
+  },
+  
+  deleteContact(id) {
+    const contacts = this.getContacts();
+    const newContacts = contacts.filter(c => c.id !== id);
+    this.saveContacts(newContacts);
+  },
+  
+  // ==================== 渲染入口 ====================
   
   render(container, params = {}) {
     this.container = container;
     
-    container.innerHTML = `
-      <div class="app-placeholder">
-        <div class="app-placeholder-icon">${getIcon('contacts')}</div>
-        <div class="app-placeholder-title">联系人</div>
-        <div class="app-placeholder-desc">角色管理功能开发中<br>敬请期待...</div>
-      </div>
-    `;
+    if (params.view === 'detail' && params.id) {
+      this.currentView = 'detail';
+      this.currentContactId = params.id;
+      this.renderDetail(params.id);
+    } else if (params.view === 'edit') {
+      this.currentView = 'edit';
+      this.currentContactId = params.id || null;
+      this.renderEditForm(params.id || null);
+    } else {
+      this.currentView = 'list';
+      this.currentContactId = null;
+      this.renderList();
+    }
     
-    console.log('[联系人应用] 渲染完成');
+    console.log('[联系人应用] 渲染完成，视图:', this.currentView);
   },
   
+  // ==================== 档案目录页（联系人列表） ====================
+  
+  renderList() {
+    const contacts = this.getContacts();
+    const today = new Date().toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '.');
+    
+    this.container.innerHTML = `
+      <div class="archive-app">
+        <!-- 档案头部 -->
+        <div class="archive-header">
+          <div class="archive-header-top">
+            <div class="archive-classification">
+              <span class="classification-label">CLASSIFIED</span>
+              <span class="classification-dot"></span>
+              <span class="classification-text">机密档案</span>
+            </div>
+            <div class="archive-date">${today}</div>
+          </div>
+          <div class="archive-header-title">
+            <h1 class="archive-title">角色档案库</h1>
+            <p class="archive-subtitle">CHARACTER ARCHIVE DATABASE</p>
+          </div>
+          <div class="archive-header-info">
+            <div class="archive-info-item">
+              <span class="info-label">档案总数</span>
+              <span class="info-value">${String(contacts.length).padStart(3, '0')}</span>
+            </div>
+            <div class="archive-info-item">
+              <span class="info-label">档案状态</span>
+              <span class="info-value status-active">ACTIVE</span>
+            </div>
+            <div class="archive-barcode">
+              <div class="barcode-lines"></div>
+              <span class="barcode-text">ARCHIVE-${String(contacts.length).padStart(4, '0')}</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 新增档案按钮 -->
+        <div class="archive-actions">
+          <button class="archive-new-btn" onclick="ContactsApp.renderEditForm(null)">
+            <span class="new-btn-icon">+</span>
+            <span class="new-btn-text">建立新档案</span>
+            <span class="new-btn-en">NEW ARCHIVE</span>
+          </button>
+        </div>
+        
+        <!-- 档案目录 -->
+        <div class="archive-directory">
+          <div class="directory-header">
+            <span class="directory-title">档案目录</span>
+            <span class="directory-en">DIRECTORY</span>
+          </div>
+          
+          ${contacts.length === 0 ? `
+            <div class="archive-empty">
+              <div class="empty-stamp">
+                <span>NO ARCHIVE</span>
+              </div>
+              <div class="empty-title">暂无档案记录</div>
+              <div class="empty-desc">点击上方「建立新档案」按钮<br>创建第一份角色档案</div>
+            </div>
+          ` : `
+            <div class="archive-cards">
+              ${contacts.map((contact, index) => `
+                <div class="archive-card" onclick="ContactsApp.renderDetail('${contact.id}')">
+                  <div class="card-corner top-left"></div>
+                  <div class="card-corner top-right"></div>
+                  <div class="card-corner bottom-left"></div>
+                  <div class="card-corner bottom-right"></div>
+                  
+                  <div class="card-header">
+                    <span class="card-no">${contact.archiveNo || 'NO.' + String(index + 1).padStart(3, '0')}</span>
+                    <span class="card-status">
+                      <span class="status-dot"></span>
+                      ACTIVE
+                    </span>
+                  </div>
+                  
+                  <div class="card-body">
+                    <div class="card-avatar">
+                      ${contact.avatar 
+                        ? `<img src="${contact.avatar}" alt="${contact.name}">`
+                        : `<div class="avatar-placeholder">${contact.name ? contact.name.charAt(0) : '?'}</div>`
+                      }
+                      <div class="avatar-frame"></div>
+                    </div>
+                    <div class="card-info">
+                      <h3 class="card-name">${contact.name || '未命名'}</h3>
+                      <p class="card-name-en">${contact.nameEn || contact.name?.toUpperCase() || 'UNKNOWN'}</p>
+                      <div class="card-tags">
+                        ${contact.relationship ? `<span class="card-tag">${contact.relationship}</span>` : ''}
+                        ${contact.tags?.slice(0, 2).map(tag => `<span class="card-tag">${tag}</span>`).join('') || ''}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="card-footer">
+                    <div class="card-barcode"></div>
+                    <span class="card-date">${new Date(contact.createdAt).toLocaleDateString('zh-CN')}</span>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          `}
+        </div>
+        
+        <!-- 档案底部装饰 -->
+        <div class="archive-footer">
+          <div class="footer-line"></div>
+          <div class="footer-text">
+            <span>星绥小手机 · 角色档案库</span>
+            <span>STELLASEI · CHARACTER ARCHIVE</span>
+          </div>
+          <div class="footer-stamp">
+            <span>CONFIDENTIAL</span>
+          </div>
+        </div>
+      </div>
+    `;
+  },
+  
+  // ==================== 角色卷宗页（联系人详情） ====================
+  
+  renderDetail(id) {
+    const contact = this.getContactById(id);
+    if (!contact) {
+      this.renderList();
+      return;
+    }
+    
+    const today = new Date().toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '.');
+    
+    this.container.innerHTML = `
+      <div class="archive-app archive-detail">
+        <!-- 卷宗头部 -->
+        <div class="detail-header">
+          <button class="detail-back-btn" onclick="ContactsApp.renderList()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            <span>返回目录</span>
+          </button>
+          <button class="detail-edit-btn" onclick="ContactsApp.renderEditForm('${contact.id}')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+            </svg>
+            <span>编辑档案</span>
+          </button>
+        </div>
+        
+        <!-- 卷宗封面 -->
+        <div class="detail-cover">
+          <div class="cover-classification">
+            <span class="cover-label">TOP SECRET</span>
+            <span class="cover-dot"></span>
+            <span class="cover-text">最高机密</span>
+          </div>
+          <div class="cover-no">${contact.archiveNo || 'NO.001'}</div>
+          <div class="cover-title">
+            <h1 class="cover-name">${contact.name || '未命名'}</h1>
+            <p class="cover-name-en">${contact.nameEn || contact.name?.toUpperCase() || 'UNKNOWN'}</p>
+          </div>
+          <div class="cover-barcode">
+            <div class="barcode-lines-large"></div>
+            <span class="barcode-text">${contact.id.toUpperCase()}</span>
+          </div>
+        </div>
+        
+        <!-- 角色照片区 -->
+        <div class="detail-photo-section">
+          <div class="photo-frame">
+            <div class="photo-inner">
+              ${contact.avatar 
+                ? `<img src="${contact.avatar}" alt="${contact.name}">`
+                : `<div class="photo-placeholder">${contact.name ? contact.name.charAt(0) : '?'}</div>`
+              }
+            </div>
+            <div class="photo-tape tape-top-left"></div>
+            <div class="photo-tape tape-top-right"></div>
+            <div class="photo-caption">
+              <span>${contact.name || '未命名'}</span>
+              <span>${new Date(contact.createdAt).toLocaleDateString('zh-CN')}</span>
+            </div>
+          </div>
+          
+          <div class="detail-basic-info">
+            <div class="info-row">
+              <span class="info-label">姓名</span>
+              <span class="info-value">${contact.name || '-'}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">英文名</span>
+              <span class="info-value">${contact.nameEn || '-'}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">年龄</span>
+              <span class="info-value">${contact.age || '-'}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">生日</span>
+              <span class="info-value">${contact.birthday || '-'}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">身高</span>
+              <span class="info-value">${contact.height || '-'}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">关系</span>
+              <span class="info-value highlight">${contact.relationship || '-'}</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 角色设定区 -->
+        <div class="detail-section">
+          <div class="section-header">
+            <span class="section-no">01</span>
+            <span class="section-title">角色设定</span>
+            <span class="section-en">PROFILE</span>
+            <div class="section-line"></div>
+          </div>
+          <div class="section-content">
+            <p class="profile-text">${contact.description || '暂无角色设定，点击编辑档案添加'}</p>
+          </div>
+        </div>
+        
+        <!-- 性格分析区 -->
+        <div class="detail-section">
+          <div class="section-header">
+            <span class="section-no">02</span>
+            <span class="section-title">性格分析</span>
+            <span class="section-en">PERSONALITY</span>
+            <div class="section-line"></div>
+          </div>
+          <div class="section-content">
+            <div class="personality-tags">
+              ${contact.tags?.length > 0 
+                ? contact.tags.map(tag => `<span class="personality-tag">${tag}</span>`).join('')
+                : '<span class="no-tags">暂无性格标签</span>'
+              }
+            </div>
+            <p class="personality-text">${contact.personality || '暂无性格分析，点击编辑档案添加'}</p>
+          </div>
+        </div>
+        
+        <!-- 档案签署区 -->
+        <div class="detail-signature">
+          <div class="signature-left">
+            <div class="signature-label">档案建立日期</div>
+            <div class="signature-date">${new Date(contact.createdAt).toLocaleDateString('zh-CN')}</div>
+          </div>
+          <div class="signature-right">
+            <div class="signature-label">最后更新</div>
+            <div class="signature-date">${new Date(contact.updatedAt).toLocaleDateString('zh-CN')}</div>
+          </div>
+          <div class="signature-stamp">
+            <span>VERIFIED</span>
+            <span class="stamp-date">${today}</span>
+          </div>
+        </div>
+        
+        <!-- 危险操作区 -->
+        <div class="detail-danger-zone">
+          <button class="danger-btn" onclick="ContactsApp.confirmDelete('${contact.id}')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+            </svg>
+            <span>销毁档案</span>
+          </button>
+        </div>
+      </div>
+    `;
+  },
+  
+  // ==================== 档案填写页（新增/编辑表单） ====================
+  
+  renderEditForm(id = null) {
+    const contact = id ? this.getContactById(id) : null;
+    const isEdit = !!contact;
+    const archiveNo = contact?.archiveNo || this.generateArchiveNo();
+    
+    this.container.innerHTML = `
+      <div class="archive-app archive-edit">
+        <!-- 表单头部 -->
+        <div class="edit-header">
+          <button class="edit-back-btn" onclick="${isEdit ? `ContactsApp.renderDetail('${id}')` : 'ContactsApp.renderList()'}">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+          </button>
+          <div class="edit-title">
+            <h2>${isEdit ? '编辑档案' : '建立新档案'}</h2>
+            <p>${isEdit ? 'EDIT ARCHIVE' : 'NEW ARCHIVE'}</p>
+          </div>
+          <div class="edit-archive-no">${archiveNo}</div>
+        </div>
+        
+        <!-- 档案表单 -->
+        <div class="archive-form">
+          <!-- 照片上传区 -->
+          <div class="form-section form-photo-section">
+            <div class="form-section-title">
+              <span class="form-section-no">01</span>
+              <span>角色照片</span>
+              <span class="form-section-en">PHOTO</span>
+            </div>
+            <div class="photo-upload-area" onclick="document.getElementById('avatar-input').click()">
+              <div id="avatar-preview" class="photo-upload-preview">
+                ${contact?.avatar 
+                  ? `<img src="${contact.avatar}" alt="头像预览">`
+                  : `<div class="upload-placeholder">
+                      <div class="upload-icon">+</div>
+                      <span>点击上传照片</span>
+                      <span class="upload-hint">建议使用正方形照片</span>
+                    </div>`
+                }
+              </div>
+              <input type="file" id="avatar-input" accept="image/*" style="display:none" onchange="ContactsApp.handleAvatarUpload(event)">
+            </div>
+          </div>
+          
+          <!-- 基本信息区 -->
+          <div class="form-section">
+            <div class="form-section-title">
+              <span class="form-section-no">02</span>
+              <span>基本信息</span>
+              <span class="form-section-en">BASIC INFO</span>
+            </div>
+            
+            <div class="form-grid">
+              <div class="form-item">
+                <label class="form-label">姓名 <span class="required">*</span></label>
+                <input type="text" class="form-input" id="contact-name" 
+                  value="${contact?.name || ''}" placeholder="请输入角色姓名">
+              </div>
+              
+              <div class="form-item">
+                <label class="form-label">英文名/拼音</label>
+                <input type="text" class="form-input" id="contact-nameEn" 
+                  value="${contact?.nameEn || ''}" placeholder="请输入英文名或拼音">
+              </div>
+              
+              <div class="form-item">
+                <label class="form-label">年龄</label>
+                <input type="text" class="form-input" id="contact-age" 
+                  value="${contact?.age || ''}" placeholder="请输入年龄">
+              </div>
+              
+              <div class="form-item">
+                <label class="form-label">生日</label>
+                <input type="text" class="form-input" id="contact-birthday" 
+                  value="${contact?.birthday || ''}" placeholder="例如：01.01">
+              </div>
+              
+              <div class="form-item">
+                <label class="form-label">身高</label>
+                <input type="text" class="form-input" id="contact-height" 
+                  value="${contact?.height || ''}" placeholder="例如：180cm">
+              </div>
+              
+              <div class="form-item">
+                <label class="form-label">关系</label>
+                <input type="text" class="form-input" id="contact-relationship" 
+                  value="${contact?.relationship || ''}" placeholder="例如：情侣、朋友、师生">
+              </div>
+            </div>
+          </div>
+          
+          <!-- 角色设定区 -->
+          <div class="form-section">
+            <div class="form-section-title">
+              <span class="form-section-no">03</span>
+              <span>角色设定</span>
+              <span class="form-section-en">PROFILE</span>
+            </div>
+            
+            <div class="form-item">
+              <label class="form-label">角色简介</label>
+              <textarea class="form-textarea" id="contact-description" 
+                placeholder="简单介绍一下这个角色的背景、外貌、特点等..." rows="4">${contact?.description || ''}</textarea>
+            </div>
+          </div>
+          
+          <!-- 性格分析区 -->
+          <div class="form-section">
+            <div class="form-section-title">
+              <span class="form-section-no">04</span>
+              <span>性格分析</span>
+              <span class="form-section-en">PERSONALITY</span>
+            </div>
+            
+            <div class="form-item">
+              <label class="form-label">性格标签（用逗号分隔）</label>
+              <input type="text" class="form-input" id="contact-tags" 
+                value="${contact?.tags?.join(', ') || ''}" placeholder="例如：温柔, 腹黑, 傲娇">
+            </div>
+            
+            <div class="form-item">
+              <label class="form-label">性格详细描述</label>
+              <textarea class="form-textarea" id="contact-personality" 
+                placeholder="详细描述角色的性格特点、行为习惯、喜好等..." rows="4">${contact?.personality || ''}</textarea>
+            </div>
+          </div>
+          
+          <!-- 提交按钮 -->
+          <div class="form-submit">
+            <button class="submit-btn submit-cancel" onclick="${isEdit ? `ContactsApp.renderDetail('${id}')` : 'ContactsApp.renderList()'}">
+              取消
+            </button>
+            <button class="submit-btn submit-save" onclick="ContactsApp.saveContact('${id || ''}')">
+              <span class="save-icon">✓</span>
+              <span>${isEdit ? '保存修改' : '建立档案'}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+  },
+  
+  // ==================== 头像上传处理 ====================
+  
+  handleAvatarUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const avatarData = e.target.result;
+      const preview = document.getElementById('avatar-preview');
+      if (preview) {
+        preview.innerHTML = `<img src="${avatarData}" alt="头像预览">`;
+      }
+      this._tempAvatar = avatarData;
+    };
+    reader.readAsDataURL(file);
+  },
+  
+  // ==================== 保存档案 ====================
+  
+  saveContact(id = null) {
+    const name = document.getElementById('contact-name').value.trim();
+    const nameEn = document.getElementById('contact-nameEn').value.trim();
+    const age = document.getElementById('contact-age').value.trim();
+    const birthday = document.getElementById('contact-birthday').value.trim();
+    const height = document.getElementById('contact-height').value.trim();
+    const relationship = document.getElementById('contact-relationship').value.trim();
+    const description = document.getElementById('contact-description').value.trim();
+    const tagsInput = document.getElementById('contact-tags').value.trim();
+    const personality = document.getElementById('contact-personality').value.trim();
+    
+    // 解析标签
+    const tags = tagsInput ? tagsInput.split(/[,，]/).map(t => t.trim()).filter(t => t) : [];
+    
+    // 获取头像
+    let avatar = this._tempAvatar || '';
+    if (!avatar && id) {
+      const existing = this.getContactById(id);
+      avatar = existing?.avatar || '';
+    }
+    
+    if (!name) {
+      alert('请输入角色姓名');
+      return;
+    }
+    
+    const contactData = {
+      name,
+      nameEn,
+      age,
+      birthday,
+      height,
+      relationship,
+      description,
+      tags,
+      personality,
+      avatar
+    };
+    
+    if (id) {
+      this.updateContact(id, contactData);
+      this._tempAvatar = null;
+      this.renderDetail(id);
+    } else {
+      const newContact = this.addContact(contactData);
+      this._tempAvatar = null;
+      this.renderDetail(newContact.id);
+    }
+  },
+  
+  // ==================== 销毁档案 ====================
+  
+  confirmDelete(id) {
+    const contact = this.getContactById(id);
+    if (!contact) return;
+    
+    if (confirm(`确定要销毁「${contact.name}」的档案吗？销毁后无法恢复。`)) {
+      this.deleteContact(id);
+      this.renderList();
+    }
+  },
+  
+  // ==================== 关闭应用 ====================
+  
   onClose() {
+    this._tempAvatar = null;
     console.log('[联系人应用] 关闭');
   }
 };
 
 window.ContactsApp = ContactsApp;
-console.log('[联系人应用] 模块加载完成');
+console.log('[联系人应用] 模块加载完成（档案/卷宗风格）');
