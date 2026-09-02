@@ -2660,3 +2660,32 @@ html, body {
 .submit-save { background: #2a2a2a; color: #f5f1e8; }
 .submit-save:hover { background: #3a3a3a; transform: translateY(-1px); }
 .save-icon { font-size: 16px; }
+
+/* ==================== 列表页返回按钮 ==================== */
+.list-back-row {
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(42, 42, 42, 0.2);
+}
+
+.list-back-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: transparent;
+  color: #2a2a2a;
+  border: 1px solid #2a2a2a;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.list-back-btn:hover {
+  background: #2a2a2a;
+  color: #f5f1e8;
+  transform: translateX(-2px);
+}

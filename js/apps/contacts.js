@@ -108,6 +108,15 @@ const ContactsApp = {
       <div class="archive-app">
         <!-- 档案头部 -->
         <div class="archive-header">
+          <!-- 返回按钮 -->
+          <div class="list-back-row">
+            <button class="list-back-btn" onclick="ContactsApp.goBack()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+              </svg>
+              <span>返回主页</span>
+            </button>
+          </div>
           <div class="archive-header-top">
             <div class="archive-classification">
               <span class="classification-label">CLASSIFIED</span>
@@ -597,6 +606,18 @@ const ContactsApp = {
     if (confirm(`确定要销毁「${contact.name}」的档案吗？销毁后无法恢复。`)) {
       this.deleteContact(id);
       this.renderList();
+    }
+  },
+  
+  // ==================== 返回主页 ====================
+  
+  goBack() {
+    if (typeof AppRouter !== 'undefined' && AppRouter.close) {
+      AppRouter.close();
+    } else {
+      console.log('[联系人应用] 返回主页');
+      // 尝试触发返回事件
+      window.dispatchEvent(new CustomEvent('app-close', { detail: { app: 'contacts' } }));
     }
   },
   
