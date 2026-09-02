@@ -200,7 +200,7 @@ html, body {
 #dock {
   position: relative;
   height: 85px;
-  margin: 0 16px calc(20px + env(safe-area-inset-bottom));
+  margin: 0 16px calc(8px + env(safe-area-inset-bottom));
   padding: 10px 16px;
   border-radius: 22px;
   background: rgba(255, 255, 255, 0.65);
