@@ -250,12 +250,22 @@ const ContactsApp = {
             </svg>
             <span>返回目录</span>
           </button>
-          <button class="detail-edit-btn" onclick="ContactsApp.renderEditForm('${contact.id}')">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
-            </svg>
-            <span>编辑档案</span>
-          </button>
+          <div class="detail-header-actions">
+            <button class="detail-export-btn" onclick="ContactsApp.exportContact('${contact.id}')" title="导出角色文档">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              <span>导出</span>
+            </button>
+            <button class="detail-edit-btn" onclick="ContactsApp.renderEditForm('${contact.id}')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+              </svg>
+              <span>编辑档案</span>
+            </button>
+          </div>
         </div>
         
         <!-- 卷宗封面 -->
@@ -758,6 +768,166 @@ const ContactsApp = {
     message += '\n完整文档内容已保留在「角色设定」中。';
     
     alert(message);
+  },
+  
+  // ==================== 角色文档导出 ====================
+  
+  // 导出角色文档
+  exportContact(id) {
+    const contact = this.getContactById(id);
+    if (!contact) {
+      alert('未找到该角色档案');
+      return;
+    }
+    
+    // 弹出格式选择
+    const format = prompt(
+      '请选择导出格式：\n\n' +
+      '1. 输入 "txt" - 纯文本格式\n' +
+      '2. 输入 "md" - Markdown格式（推荐）\n' +
+      '3. 输入 "json" - JSON格式\n\n' +
+      '请输入格式（txt/md/json）：',
+      'md'
+    );
+    
+    if (!format) return;
+    
+    const formatLower = format.toLowerCase().trim();
+    let content = '';
+    let fileName = '';
+    let mimeType = '';
+    
+    if (formatLower === 'json') {
+      // JSON格式
+      const exportData = {
+        name: contact.name || '',
+        nameEn: contact.nameEn || '',
+        age: contact.age || '',
+        birthday: contact.birthday || '',
+        height: contact.height || '',
+        relationship: contact.relationship || '',
+        tags: contact.tags || [],
+        personality: contact.personality || '',
+        description: contact.description || '',
+        archiveNo: contact.archiveNo || '',
+        createdAt: contact.createdAt,
+        updatedAt: contact.updatedAt
+      };
+      content = JSON.stringify(exportData, null, 2);
+      fileName = `${contact.name || '角色'}_档案.json`;
+      mimeType = 'application/json';
+    } else if (formatLower === 'txt') {
+      // 纯文本格式
+      content = this.generateTextExport(contact);
+      fileName = `${contact.name || '角色'}_档案.txt`;
+      mimeType = 'text/plain';
+    } else {
+      // Markdown格式（默认）
+      content = this.generateMarkdownExport(contact);
+      fileName = `${contact.name || '角色'}_档案.md`;
+      mimeType = 'text/markdown';
+    }
+    
+    // 创建并下载文件
+    this.downloadFile(content, fileName, mimeType);
+    
+    console.log('[导出] 角色档案已导出:', fileName);
+  },
+  
+  // 生成Markdown格式导出
+  generateMarkdownExport(contact) {
+    let md = `# ${contact.name || '未命名'} 角色档案\n\n`;
+    md += `> 档案编号：${contact.archiveNo || '未知'}\n`;
+    md += `> 建立日期：${new Date(contact.createdAt).toLocaleDateString('zh-CN')}\n\n`;
+    md += `---\n\n`;
+    
+    md += `## 基本信息\n\n`;
+    md += `- **姓名**：${contact.name || '-'}\n`;
+    md += `- **英文名**：${contact.nameEn || '-'}\n`;
+    md += `- **年龄**：${contact.age || '-'}\n`;
+    md += `- **生日**：${contact.birthday || '-'}\n`;
+    md += `- **身高**：${contact.height || '-'}\n`;
+    md += `- **关系**：${contact.relationship || '-'}\n\n`;
+    
+    if (contact.tags && contact.tags.length > 0) {
+      md += `## 性格标签\n\n`;
+      md += contact.tags.map(tag => `\`${tag}\``).join(' ');
+      md += `\n\n`;
+    }
+    
+    if (contact.personality) {
+      md += `## 性格描述\n\n`;
+      md += `${contact.personality}\n\n`;
+    }
+    
+    if (contact.description) {
+      md += `## 角色设定\n\n`;
+      md += `${contact.description}\n\n`;
+    }
+    
+    md += `---\n\n`;
+    md += `*由星绥小手机导出 · ${new Date().toLocaleString('zh-CN')}*\n`;
+    
+    return md;
+  },
+  
+  // 生成纯文本格式导出
+  generateTextExport(contact) {
+    let txt = `========================================\n`;
+    txt += `  ${contact.name || '未命名'} 角色档案\n`;
+    txt += `========================================\n\n`;
+    txt += `档案编号：${contact.archiveNo || '未知'}\n`;
+    txt += `建立日期：${new Date(contact.createdAt).toLocaleDateString('zh-CN')}\n\n`;
+    txt += `----------------------------------------\n`;
+    txt += `【基本信息】\n`;
+    txt += `----------------------------------------\n`;
+    txt += `姓名：${contact.name || '-'}\n`;
+    txt += `英文名：${contact.nameEn || '-'}\n`;
+    txt += `年龄：${contact.age || '-'}\n`;
+    txt += `生日：${contact.birthday || '-'}\n`;
+    txt += `身高：${contact.height || '-'}\n`;
+    txt += `关系：${contact.relationship || '-'}\n\n`;
+    
+    if (contact.tags && contact.tags.length > 0) {
+      txt += `----------------------------------------\n`;
+      txt += `【性格标签】\n`;
+      txt += `----------------------------------------\n`;
+      txt += contact.tags.join('、');
+      txt += `\n\n`;
+    }
+    
+    if (contact.personality) {
+      txt += `----------------------------------------\n`;
+      txt += `【性格描述】\n`;
+      txt += `----------------------------------------\n`;
+      txt += `${contact.personality}\n\n`;
+    }
+    
+    if (contact.description) {
+      txt += `----------------------------------------\n`;
+      txt += `【角色设定】\n`;
+      txt += `----------------------------------------\n`;
+      txt += `${contact.description}\n\n`;
+    }
+    
+    txt += `========================================\n`;
+    txt += `由星绥小手机导出 · ${new Date().toLocaleString('zh-CN')}\n`;
+    txt += `========================================\n`;
+    
+    return txt;
+  },
+  
+  // 下载文件
+  downloadFile(content, fileName, mimeType) {
+    const blob = new Blob([content], { type: `${mimeType};charset=utf-8` });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   },
   
   // ==================== 保存档案 ====================
