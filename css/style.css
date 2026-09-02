@@ -574,9 +574,66 @@ html, body {
 /* ============================================
    设置页面 - 白金高级风（白金配色、紧凑网格）
    ============================================ */
+
+/* 杂志风顶部装饰条 */
+.minimal-magazine-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 28px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f0e8d8;
+}
+
+.minimal-magazine-vol {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 10px;
+  font-weight: 400;
+  color: #c9a96e;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.minimal-magazine-dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #e0d4c0;
+}
+
+.minimal-magazine-editorial {
+  font-size: 9px;
+  font-weight: 600;
+  color: #b8a898;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+.minimal-magazine-date {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 10px;
+  font-style: italic;
+  color: #c4b8a8;
+  margin-left: auto;
+}
+
+/* 导航栏英文标签 */
+.minimal-nav-en {
+  font-size: 9px;
+  color: #d4c8b8;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-left: auto;
+}
+
+.minimal-nav-item.active .minimal-nav-en {
+  color: #c9a96e;
+}
+
 .minimal-page {
-  padding: 40px 24px 60px;
+  padding: 32px 24px 60px;
   min-height: 100%;
+  min-height: 100dvh;
   background: linear-gradient(180deg, #fdfbf7 0%, #faf6ef 100%);
 }
 
@@ -1230,4 +1287,5 @@ html, body {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
 }
+
 
