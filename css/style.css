@@ -2490,11 +2490,11 @@ html, body {
 }
 
 /* ==================== 详情页 - 卷宗头部 ==================== */
-.archive-detail { background: #f0ebe0; padding-top: 68px; }
+.archive-detail { background: #f0ebe0; }
 .detail-header {
   display: flex; justify-content: space-between; align-items: center;
   padding: 16px 20px; background: #2a2a2a; color: #f5f1e8;
-  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;`n  box-sizing: border-box;
+  
 }
 .detail-back-btn, .detail-edit-btn {
   display: flex; align-items: center; gap: 8px; padding: 8px 14px;
@@ -2620,10 +2620,10 @@ html, body {
 .danger-btn:hover { background: #8b0000; color: #f5f1e8; }
 
 /* ==================== 编辑页 - 表单头部 ==================== */
-.archive-edit { background: #f5f1e8; padding-top: 68px; }
+.archive-edit { background: #f5f1e8; }
 .edit-header {
   display: flex; align-items: center; gap: 16px; padding: 16px 20px;
-  background: #2a2a2a; color: #f5f1e8; position: fixed; top: 0; left: 0; right: 0; z-index: 1000;`n  box-sizing: border-box;
+  background: #2a2a2a; color: #f5f1e8; 
 }
 .edit-back-btn {
   width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
