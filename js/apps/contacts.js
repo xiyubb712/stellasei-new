@@ -482,12 +482,21 @@ const ContactsApp = {
               <span class="form-section-no">03</span>
               <span>角色设定</span>
               <span class="form-section-en">PROFILE</span>
+              <button class="import-btn" onclick="document.getElementById('profile-import-input').click()" title="导入角色文档">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+                <span>导入</span>
+              </button>
+              <input type="file" id="profile-import-input" accept=".txt,.md,.json,.text" style="display:none" onchange="ContactsApp.handleProfileImport(event)">
             </div>
             
             <div class="form-item">
-              <label class="form-label">角色简介</label>
+              <label class="form-label">角色简介 <span class="form-hint">（导入文档后完整内容会保留在这里）</span></label>
               <textarea class="form-textarea" id="contact-description" 
-                placeholder="简单介绍一下这个角色的背景、外貌、特点等..." rows="4">${contact?.description || ''}</textarea>
+                placeholder="简单介绍一下这个角色的背景、外貌、特点等...也可以点击右上角导入按钮导入角色文档" rows="4">${contact?.description || ''}</textarea>
             </div>
           </div>
           
@@ -543,6 +552,212 @@ const ContactsApp = {
       this._tempAvatar = avatarData;
     };
     reader.readAsDataURL(file);
+  },
+  
+  // ==================== 角色文档导入 ====================
+  
+  // 处理角色文档导入
+  handleProfileImport(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const text = e.target.result;
+      try {
+        // 智能解析文档
+        const parsedData = this.parseProfileDocument(text, file.name);
+        
+        // 自动填充表单
+        this.fillContactForm(parsedData);
+        
+        // 提示成功
+        this.showImportToast(parsedData);
+        
+        console.log('[导入] 解析成功:', parsedData);
+      } catch (err) {
+        console.error('[导入] 解析失败:', err);
+        alert('文档解析失败，请检查文件格式是否正确。\n\n支持格式：.txt、.md、.json');
+      }
+    };
+    reader.onerror = () => {
+      alert('文件读取失败，请重试。');
+    };
+    reader.readAsText(file, 'UTF-8');
+    
+    // 重置input，允许重复导入同一文件
+    event.target.value = '';
+  },
+  
+  // 智能解析角色文档
+  parseProfileDocument(text, fileName = '') {
+    const result = {
+      name: '',
+      nameEn: '',
+      age: '',
+      birthday: '',
+      height: '',
+      relationship: '',
+      tags: [],
+      personality: '',
+      description: text.trim()  // 完整内容保留在角色设定中
+    };
+    
+    // 1. 尝试JSON格式解析
+    if (fileName.endsWith('.json') || text.trim().startsWith('{')) {
+      try {
+        const jsonData = JSON.parse(text);
+        if (typeof jsonData === 'object') {
+          // 映射JSON字段
+          if (jsonData.name) result.name = String(jsonData.name);
+          if (jsonData.nameEn) result.nameEn = String(jsonData.nameEn);
+          if (jsonData.english_name) result.nameEn = String(jsonData.english_name);
+          if (jsonData.age) result.age = String(jsonData.age);
+          if (jsonData.birthday) result.birthday = String(jsonData.birthday);
+          if (jsonData.height) result.height = String(jsonData.height);
+          if (jsonData.relationship) result.relationship = String(jsonData.relationship);
+          if (jsonData.tags) {
+            if (Array.isArray(jsonData.tags)) {
+              result.tags = jsonData.tags.map(t => String(t));
+            } else if (typeof jsonData.tags === 'string') {
+              result.tags = jsonData.tags.split(/[,，]/).map(t => t.trim()).filter(t => t);
+            }
+          }
+          if (jsonData.personality) result.personality = String(jsonData.personality);
+          if (jsonData.description) result.description = String(jsonData.description);
+          
+          // 如果JSON有内容，直接返回
+          if (result.name || result.personality || result.description) {
+            return result;
+          }
+        }
+      } catch (e) {
+        // JSON解析失败，继续用文本方式解析
+        console.log('[导入] 非JSON格式，使用文本解析');
+      }
+    }
+    
+    // 2. 键值对格式解析（支持中文冒号、英文冒号、等号）
+    const lines = text.split(/\r?\n/);
+    const kvPattern = /^\s*(姓名|名字|角色名|name|英文名|拼音|英文|nameEn|english_name|年龄|age|生日|出生日期|birthday|身高|height|关系|身份|relationship|标签|性格标签|tags|性格|性格描述|性格特点|personality|简介|角色设定|description)\s*[:：=]\s*(.+?)\s*$/i;
+    
+    for (const line of lines) {
+      const match = line.match(kvPattern);
+      if (match) {
+        const key = match[1].toLowerCase();
+        const value = match[2].trim();
+        
+        if (['姓名', '名字', '角色名', 'name'].includes(key) && !result.name) {
+          result.name = value;
+        } else if (['英文名', '拼音', '英文', 'nameen', 'english_name'].includes(key) && !result.nameEn) {
+          result.nameEn = value;
+        } else if (['年龄', 'age'].includes(key) && !result.age) {
+          result.age = value;
+        } else if (['生日', '出生日期', 'birthday'].includes(key) && !result.birthday) {
+          result.birthday = value;
+        } else if (['身高', 'height'].includes(key) && !result.height) {
+          result.height = value;
+        } else if (['关系', '身份', 'relationship'].includes(key) && !result.relationship) {
+          result.relationship = value;
+        } else if (['标签', '性格标签', 'tags'].includes(key) && result.tags.length === 0) {
+          result.tags = value.split(/[,，、]/).map(t => t.trim()).filter(t => t);
+        } else if (['性格', '性格描述', '性格特点', 'personality'].includes(key) && !result.personality) {
+          result.personality = value;
+        }
+      }
+    }
+    
+    // 3. 如果没有解析到姓名，尝试从第一行提取
+    if (!result.name && lines.length > 0) {
+      const firstLine = lines[0].trim();
+      if (firstLine && firstLine.length < 20 && !firstLine.includes(':') && !firstLine.includes('：')) {
+        // 检查是否像是一个名字（不包含常见的描述词）
+        const notNameKeywords = ['角色', '设定', '简介', '性格', '背景', '故事', '档案', 'profile', 'character'];
+        const isLikelyName = !notNameKeywords.some(kw => firstLine.toLowerCase().includes(kw));
+        if (isLikelyName) {
+          result.name = firstLine;
+        }
+      }
+    }
+    
+    return result;
+  },
+  
+  // 自动填充表单
+  fillContactForm(data) {
+    // 填充基本信息
+    if (data.name) {
+      const nameInput = document.getElementById('contact-name');
+      if (nameInput && !nameInput.value) nameInput.value = data.name;
+    }
+    if (data.nameEn) {
+      const nameEnInput = document.getElementById('contact-nameEn');
+      if (nameEnInput && !nameEnInput.value) nameEnInput.value = data.nameEn;
+    }
+    if (data.age) {
+      const ageInput = document.getElementById('contact-age');
+      if (ageInput && !ageInput.value) ageInput.value = data.age;
+    }
+    if (data.birthday) {
+      const birthdayInput = document.getElementById('contact-birthday');
+      if (birthdayInput && !birthdayInput.value) birthdayInput.value = data.birthday;
+    }
+    if (data.height) {
+      const heightInput = document.getElementById('contact-height');
+      if (heightInput && !heightInput.value) heightInput.value = data.height;
+    }
+    if (data.relationship) {
+      const relationshipInput = document.getElementById('contact-relationship');
+      if (relationshipInput && !relationshipInput.value) relationshipInput.value = data.relationship;
+    }
+    
+    // 填充角色设定（完整内容）
+    if (data.description) {
+      const descInput = document.getElementById('contact-description');
+      if (descInput) {
+        // 如果已经有内容，追加；否则直接填充
+        descInput.value = descInput.value ? descInput.value + '\n\n' + data.description : data.description;
+      }
+    }
+    
+    // 填充性格标签
+    if (data.tags && data.tags.length > 0) {
+      const tagsInput = document.getElementById('contact-tags');
+      if (tagsInput && !tagsInput.value) {
+        tagsInput.value = data.tags.join(', ');
+      }
+    }
+    
+    // 填充性格描述
+    if (data.personality) {
+      const personalityInput = document.getElementById('contact-personality');
+      if (personalityInput && !personalityInput.value) {
+        personalityInput.value = data.personality;
+      }
+    }
+  },
+  
+  // 显示导入成功提示
+  showImportToast(data) {
+    const fields = [];
+    if (data.name) fields.push('姓名');
+    if (data.nameEn) fields.push('英文名');
+    if (data.age) fields.push('年龄');
+    if (data.birthday) fields.push('生日');
+    if (data.height) fields.push('身高');
+    if (data.relationship) fields.push('关系');
+    if (data.tags.length > 0) fields.push('性格标签');
+    if (data.personality) fields.push('性格描述');
+    
+    let message = '✅ 文档导入成功！\n\n';
+    if (fields.length > 0) {
+      message += `已自动识别并填充：${fields.join('、')}\n`;
+    } else {
+      message += '未识别到结构化信息，完整内容已填入角色设定。\n';
+    }
+    message += '\n完整文档内容已保留在「角色设定」中。';
+    
+    alert(message);
   },
   
   // ==================== 保存档案 ====================
