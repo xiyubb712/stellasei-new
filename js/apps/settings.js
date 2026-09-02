@@ -26,8 +26,13 @@ const SettingsApp = {
     
     this.container.innerHTML = `
       <div class="minimal-page">
-        <!-- 顶部杂志风装饰条 -->
+        <!-- 顶部杂志风装饰条（包含返回按钮） -->
         <div class="minimal-magazine-bar">
+          <button class="minimal-back-btn" onclick="AppRouter.close()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+          </button>
           <span class="minimal-magazine-vol">VOL. 0${currentIndex + 1}</span>
           <span class="minimal-magazine-dot"></span>
           <span class="minimal-magazine-editorial">EDITORIAL</span>

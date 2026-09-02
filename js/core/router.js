@@ -165,6 +165,7 @@ const AppRouter = {
     if (this.appContainer) {
       this.appContainer.classList.remove('hidden');
     }
+    // 默认不显示系统导航栏，由应用自己决定是否显示
   },
 
   /**
@@ -176,6 +177,11 @@ const AppRouter = {
     }
     if (this.appContainer) {
       this.appContainer.classList.add('hidden');
+    }
+    // 隐藏导航栏
+    const navBar = document.getElementById('nav-bar');
+    if (navBar) {
+      navBar.classList.add('hidden');
     }
     
     // 重新渲染主屏幕
@@ -192,6 +198,12 @@ const AppRouter = {
     const statusBarTitle = document.getElementById('status-bar-title');
     if (statusBarTitle) {
       statusBarTitle.textContent = appInfo ? appInfo.name : '';
+    }
+    
+    // 更新导航栏标题
+    const navTitle = document.getElementById('nav-title');
+    if (navTitle) {
+      navTitle.textContent = appInfo ? appInfo.name : '';
     }
     
     // 显示/隐藏返回按钮

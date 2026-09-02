@@ -579,10 +579,11 @@ html, body {
 .minimal-magazine-bar {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   margin-bottom: 28px;
   padding-bottom: 12px;
   border-bottom: 1px solid #f0e8d8;
+  flex-wrap: nowrap;
 }
 
 .minimal-magazine-vol {
@@ -611,11 +612,39 @@ html, body {
 
 .minimal-magazine-date {
   font-family: Georgia, 'Times New Roman', serif;
-  font-size: 10px;
+  font-size: 9px;
   font-style: italic;
   color: #c4b8a8;
   margin-left: auto;
+  white-space: nowrap;
 }
+
+/* 设置页面返回按钮 */
+.minimal-back-btn {
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: rgba(201, 169, 110, 0.1);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  color: #c9a96e;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  margin-right: 4px;
+}
+
+.minimal-back-btn:hover {
+  background: rgba(201, 169, 110, 0.2);
+  transform: scale(1.05);
+}
+
+.minimal-back-btn:active {
+  transform: scale(0.95);
+}
+
 
 /* 导航栏英文标签 */
 .minimal-nav-en {
@@ -630,30 +659,34 @@ html, body {
   color: #c9a96e;
 }
 
+/* 设置页面容器 */
 .minimal-page {
+  position: relative;
   padding: 32px 24px 60px;
   min-height: 100%;
   min-height: 100dvh;
   background: linear-gradient(180deg, #fdfbf7 0%, #faf6ef 100%);
 }
 
+
 /* 顶部Hero：点睛之笔 - 超大编号 */
 .minimal-hero {
   display: flex;
-  align-items: flex-end;
-  gap: 24px;
-  margin-bottom: 40px;
-  padding-bottom: 28px;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 36px;
+  padding-bottom: 24px;
   border-bottom: 1px solid #e8dcc8;
 }
 
 .minimal-hero-number {
   font-family: Georgia, 'Times New Roman', serif;
-  font-size: 88px;
+  font-size: 72px;
   font-weight: 300;
   color: #c9a96e;
-  line-height: 0.9;
-  letter-spacing: -4px;
+  line-height: 1;
+  letter-spacing: -3px;
+  flex-shrink: 0;
 }
 
 .minimal-hero-text {
@@ -1287,5 +1320,11 @@ html, body {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
 }
+
+
+
+
+
+
 
 
