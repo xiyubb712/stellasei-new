@@ -1,4 +1,4 @@
-/* ============================================
+﻿/* ============================================
    星绥小手机 - 主样式
    ============================================ */
 
@@ -564,183 +564,508 @@ html, body {
   animation: slideUp 0.3s ease;
 }
 
+
 /* ============================================
-   设置页面 - 极简风格
+   设置页面 - 艺术极简风格
    ============================================ */
-.settings-page {
-  padding: 20px;
+.settings-art-page {
+  padding: 24px 20px 40px;
   min-height: 100%;
-  background: #f8f5f2;
+  background: linear-gradient(180deg, #faf8f5 0%, #f5f0eb 100%);
 }
 
-.settings-header {
-  text-align: center;
-  margin-bottom: 28px;
-  padding-top: 10px;
+.settings-hero {
+  margin-bottom: 32px;
+  padding-top: 8px;
 }
 
-.settings-icon {
-  width: 56px;
-  height: 56px;
-  margin: 0 auto 12px;
-  border-radius: 16px;
-  background: linear-gradient(135deg, #a89888 0%, #8b7b6b 100%);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #fff;
-  box-shadow: 0 4px 12px rgba(139, 123, 107, 0.3);
-}
-
-.settings-header-icon {
-  width: 28px;
-  height: 28px;
-}
-
-.settings-title {
-  font-size: 22px;
-  font-weight: 700;
-  color: #3a3028;
-  margin: 0;
-}
-
-.settings-group {
-  background: #fff;
-  border-radius: 14px;
-  overflow: hidden;
-  margin-bottom: 16px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
-}
-
-.settings-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 14px 18px;
-  border-bottom: 1px solid #f5f0eb;
-  cursor: pointer;
-  transition: background 0.15s ease;
-}
-
-.settings-item:last-child {
-  border-bottom: none;
-}
-
-.settings-item:active {
-  background: #f8f5f2;
-}
-
-.settings-item-left {
+.settings-hero-label {
   display: flex;
   align-items: center;
   gap: 12px;
+  margin-bottom: 16px;
 }
 
-.settings-item-icon {
+.hero-line {
   width: 28px;
-  height: 28px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #8b7b6b;
+  height: 1px;
+  background: #b8a898;
 }
 
-.settings-item-icon .icon-svg {
-  width: 20px;
-  height: 20px;
+.hero-text {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  color: #a89888;
+  text-transform: uppercase;
 }
 
-.settings-item-text {
-  font-size: 15px;
+.settings-hero-title {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 38px;
+  font-weight: 400;
+  line-height: 1.1;
   color: #3a3028;
-  font-weight: 500;
+  margin: 0 0 12px;
+  letter-spacing: -0.5px;
 }
 
-.settings-item-arrow {
-  font-size: 18px;
-  color: #c4b8ac;
+.hero-small {
+  font-size: 32px;
+}
+
+.ampersand {
+  font-style: italic;
+  color: #8b7b6b;
   font-weight: 300;
 }
 
-.settings-footer {
-  text-align: center;
-  margin-top: 32px;
-  padding: 20px;
+.hero-italic {
+  font-style: italic;
+  font-weight: 300;
+  color: #6a5a4a;
 }
 
-.settings-version {
-  font-size: 13px;
+.settings-hero-subtitle {
+  font-size: 14px;
   color: #a89888;
-  font-weight: 500;
+  margin: 0;
+  font-weight: 400;
+  letter-spacing: 0.5px;
 }
 
-.settings-subtitle {
-  font-size: 11px;
-  color: #c4b8ac;
-  margin-top: 4px;
+.settings-art-section {
+  margin-bottom: 24px;
 }
 
-.settings-reset-btn {
-  width: 100%;
-  margin-top: 16px;
-  padding: 14px;
-  border: none;
-  border-radius: 12px;
+.settings-art-card {
   background: #fff;
-  color: #d46565;
-  font-size: 15px;
-  font-weight: 600;
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: 0 2px 12px rgba(139,123,107,0.06), 0 8px 32px rgba(139,123,107,0.04);
   cursor: pointer;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
-  transition: all 0.15s ease;
+  transition: all 0.25s ease;
 }
 
-.settings-reset-btn:active {
-  background: #fef5f5;
+.settings-art-card:active {
   transform: scale(0.98);
 }
 
-/* ============================================
-   应用占位页面 - 极简风格
-   ============================================ */
-.app-placeholder {
-  padding: 60px 20px;
-  text-align: center;
-  min-height: 100%;
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.card-header-text {
+  flex: 1;
+}
+
+.card-title {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 22px;
+  font-weight: 400;
+  color: #3a3028;
+  margin: 0 0 6px;
+}
+
+.card-title-small {
+  font-size: 18px;
+}
+
+.card-subtitle {
+  font-size: 13px;
+  color: #a89888;
+  margin: 0;
+}
+
+.card-header-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.card-icon-svg {
+  width: 22px;
+  height: 22px;
+  color: #fff;
+}
+
+.art-list {
+  border-top: 1px solid #f5f0eb;
+}
+
+.art-list-item {
+  display: flex;
+  align-items: center;
+  padding: 16px 0;
+  border-bottom: 1px solid #f8f5f2;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.art-list-item:last-child {
+  border-bottom: none;
+}
+
+.list-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 14px;
+  flex-shrink: 0;
+}
+
+.list-icon-svg {
+  width: 20px;
+  height: 20px;
+  color: #fff;
+}
+
+.list-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.list-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #3a3028;
+  margin-bottom: 3px;
+}
+
+.list-desc {
+  font-size: 12px;
+  color: #b8a898;
+}
+
+.list-status {
+  font-size: 11px;
+  color: #c4b8ac;
+  margin-right: 10px;
+  font-weight: 500;
+  padding: 4px 10px;
   background: #f8f5f2;
+  border-radius: 8px;
+}
+
+.list-status.status-active {
+  color: #7a9a6a;
+  background: #f0f5eb;
+}
+
+.list-arrow {
+  font-size: 20px;
+  color: #d4c8bc;
+  font-weight: 300;
+}
+
+.item-danger .list-title {
+  color: #c45c5c;
+}
+
+.icon-blue { background: linear-gradient(135deg, #a8c4e0, #8ba8c8); }
+.icon-red { background: linear-gradient(135deg, #e0a8a8, #c88b8b); }
+.icon-orange { background: linear-gradient(135deg, #e0c4a8, #c8a88b); }
+.icon-green { background: linear-gradient(135deg, #a8e0b8, #8bc89a); }
+.icon-purple { background: linear-gradient(135deg, #c4a8e0, #a88bc8); }
+.icon-teal { background: linear-gradient(135deg, #a8e0d4, #8bc8b8); }
+
+.storage-preview {
+  padding-top: 4px;
+}
+
+.storage-preview-bar {
+  height: 6px;
+  background: #f5f0eb;
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.storage-preview-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #c8a88b, #a88b6a);
+  border-radius: 3px;
+  transition: width 0.5s ease;
+  width: 0%;
+}
+
+.storage-preview-text {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.storage-preview-text span:first-child {
+  font-size: 14px;
+  font-weight: 600;
+  color: #5a4a3a;
+}
+
+.storage-preview-label {
+  font-size: 12px;
+  color: #b8a898;
+}
+
+.settings-art-footer {
+  text-align: center;
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid #f0ebe5;
+}
+
+.footer-version {
+  font-size: 13px;
+  font-weight: 600;
+  color: #8b7b6b;
+  margin-bottom: 4px;
+}
+
+.footer-subtitle {
+  font-size: 11px;
+  color: #c4b8ac;
+}
+
+.api-art-page {
+  background: linear-gradient(180deg, #faf8f5, #f5f0eb);
+}
+
+.settings-art-back {
+  margin-bottom: 16px;
+}
+
+.art-back-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: none;
+  background: rgba(255,255,255,0.8);
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #5a4a3a;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.art-back-btn:active {
+  background: #fff;
+  transform: scale(0.96);
+}
+
+.art-back-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.art-api-form {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  gap: 20px;
 }
 
-.app-placeholder-icon {
-  width: 72px;
-  height: 72px;
-  margin-bottom: 20px;
-  border-radius: 20px;
-  background: linear-gradient(135deg, #a89888 0%, #8b7b6b 100%);
+.art-api-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.art-api-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #8b7b6b;
+  padding-left: 4px;
+}
+
+.art-api-input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid #f0ebe5;
+  border-radius: 14px;
+  font-size: 14px;
+  color: #3a3028;
+  background: #faf8f5;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+.art-api-input:focus {
+  outline: none;
+  border-color: #c8a88b;
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(200,168,139,0.1);
+}
+
+.art-api-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.art-btn {
+  flex: 1;
+  padding: 16px;
+  border: none;
+  border-radius: 16px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.art-btn-primary {
+  background: linear-gradient(135deg, #8b7b6b, #6a5a4a);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(107,90,74,0.25);
+}
+
+.art-btn-primary:active {
+  transform: scale(0.97);
+}
+
+.art-btn-secondary {
+  background: #fff;
+  color: #8b7b6b;
+  border: 1px solid #e8e0d8;
+}
+
+.art-btn-secondary:active {
+  background: #faf8f5;
+  transform: scale(0.97);
+}
+
+.art-api-result {
+  margin-top: 16px;
+}
+
+.art-result {
+  padding: 14px 18px;
+  border-radius: 14px;
+  font-size: 13px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.art-result-loading { background: #f5f0eb; color: #8b7b6b; }
+.art-result-success { background: #f0f5eb; color: #5a7a4a; }
+.art-result-error { background: #f5ebeb; color: #a45a5a; }
+
+.storage-art-page {
+  background: linear-gradient(180deg, #faf8f5, #f5f0eb);
+}
+
+.art-storage-overview {
   display: flex;
   justify-content: center;
-  align-items: center;
-  color: #fff;
-  box-shadow: 0 6px 16px rgba(139, 123, 107, 0.25);
+  padding: 20px 0;
 }
 
-.app-placeholder-icon .icon-svg {
-  width: 36px;
-  height: 36px;
+.art-storage-ring {
+  position: relative;
+  width: 160px;
+  height: 160px;
 }
 
-.app-placeholder-title {
-  font-size: 20px;
-  font-weight: 700;
+.art-storage-ring-fill {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: conic-gradient(#c8a88b 0%, #f0ebe5 0%);
+  mask: radial-gradient(transparent 58%, black 59%);
+  -webkit-mask: radial-gradient(transparent 58%, black 59%);
+}
+
+.art-storage-ring-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.art-storage-total {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 26px;
+  font-weight: 400;
   color: #3a3028;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 }
 
-.app-placeholder-desc {
-  font-size: 14px;
+.art-storage-label {
+  font-size: 11px;
   color: #a89888;
-  line-height: 1.6;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.art-storage-list {
+  border-top: 1px solid #f5f0eb;
+}
+
+.art-storage-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 0;
+  border-bottom: 1px solid #f8f5f2;
+}
+
+.art-storage-item:last-child {
+  border-bottom: none;
+}
+
+.art-storage-item-name {
+  font-size: 14px;
+  color: #5a4a3a;
+  font-weight: 500;
+}
+
+.art-storage-item-size {
+  font-size: 13px;
+  color: #8b7b6b;
+  font-weight: 600;
+  font-family: Georgia, serif;
+}
+
+.art-storage-loading {
+  padding: 24px;
+  text-align: center;
+  font-size: 13px;
+  color: #a89888;
+}
+
+.art-toast {
+  position: fixed;
+  bottom: 120px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  padding: 14px 28px;
+  background: rgba(58,48,40,0.92);
+  color: #fff;
+  border-radius: 16px;
+  font-size: 14px;
+  font-weight: 500;
+  z-index: 1000;
+  opacity: 0;
+  transition: all 0.3s ease;
+  pointer-events: none;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+}
+
+.art-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }
