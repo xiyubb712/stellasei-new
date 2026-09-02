@@ -9,8 +9,8 @@
 
 html, body {
   width: 100%;
-  height: 100%;
-  height: 100dvh;
+  height: var(--app-height, 100dvh);
+  min-height: var(--app-height, 100dvh);
   margin: 0;
   padding: 0;
   overflow: hidden;
@@ -34,8 +34,8 @@ html, body {
 #phone-screen {
   position: relative;
   width: 100%;
-  height: 100%;
-  height: 100dvh;
+  height: var(--app-height, 100dvh);
+  min-height: var(--app-height, 100dvh);
   background: #f8f5f2;
   overflow: hidden;
   margin: 0;
@@ -89,29 +89,9 @@ html, body {
   overflow: hidden;
 }
 
-/* 页面指示器 */
+/* 页面指示器（已隐藏） */
 #page-indicators {
-  position: absolute;
-  top: calc(8px + env(safe-area-inset-top));
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 8px;
-  z-index: 10;
-}
-
-.page-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: rgba(90, 74, 58, 0.3);
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.page-dot.active {
-  background: #5a4a3a;
-  transform: scale(1.2);
+  display: none !important;
 }
 
 /* 桌面网格 */

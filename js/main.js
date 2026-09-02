@@ -14,7 +14,11 @@ document.addEventListener('DOMContentLoaded', function() {
   console.log('  星绥小手机 启动中...');
   console.log('========================================');
   
-  // 第零步：初始化所有SVG图标
+  // 第零步：初始化应用高度（解决iOS白边问题）
+  console.log('[启动] 初始化应用高度...');
+  initAppHeight();
+  
+  // 第一步：初始化所有SVG图标
   console.log('[启动] 初始化SVG图标...');
   initIcons();
   
@@ -238,3 +242,93 @@ window.StarSui = {
 };
 
 console.log('[启动] 全局调试对象已创建：window.StarSui');
+
+/**
+ * 初始化应用高度（解决iOS白边问题）
+ * 参考原作者miya的实现，用CSS变量--app-height动态设置高度
+ * iOS情况下高度加1px，避免白边
+ */
+function initAppHeight() {
+  let lastAppHeight = 0;
+  let setHFrame = 0;
+  
+  // 检测是否是iOS
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  
+  // 检测是否是PWA模式（添加到主屏幕）
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
+    window.navigator.standalone === true;
+  
+  console.log('[应用高度] iOS:', isIOS, 'PWA模式:', isStandalone);
+  
+  // 设置高度的核心函数
+  function setAppHeightNow() {
+    const innerH = window.innerHeight || 0;
+    let finalH = innerH;
+    
+    if (isIOS) {
+      // iOS PWA模式下，用屏幕高度来计算
+      if (isStandalone) {
+        const sH = window.screen.height || 0;
+        const sW = window.screen.width || 0;
+        const exp = window.innerWidth > window.innerHeight ? Math.min(sH, sW) : Math.max(sH, sW);
+        if (exp > 0) finalH = Math.max(finalH, exp);
+      }
+      // 关键！iOS情况下高度加1px，避免白边
+      finalH = finalH + 1;
+    } else {
+      // 非iOS，用visualViewport来计算
+      const clientH = document.documentElement.clientHeight || 0;
+      const vv = window.visualViewport;
+      const vvH = vv ? vv.height : 0;
+      const vvTop = vv ? (vv.offsetTop || 0) : 0;
+      finalH = Math.max(innerH, clientH, vvH + vvTop);
+    }
+    
+    // 高度变化小于2px就不更新，避免频繁重绘
+    if (lastAppHeight > 0 && Math.abs(finalH - lastAppHeight) < 2) return;
+    
+    lastAppHeight = finalH;
+    document.documentElement.style.setProperty('--app-height', finalH + 'px');
+    console.log('[应用高度] 设置为:', finalH + 'px');
+  }
+  
+  // 用requestAnimationFrame节流
+  function setAppHeight() {
+    if (setHFrame) return;
+    setHFrame = requestAnimationFrame(function() {
+      setHFrame = 0;
+      setAppHeightNow();
+    });
+  }
+  
+  // 立即设置一次
+  setAppHeightNow();
+  
+  // 监听窗口大小变化
+  window.addEventListener('resize', setAppHeight);
+  
+  // 监听屏幕旋转
+  window.addEventListener('orientationchange', function() {
+    lastAppHeight = 0;
+    setTimeout(setAppHeightNow, 100);
+    setTimeout(setAppHeightNow, 300);
+  });
+  
+  // 监听visualViewport变化（移动端地址栏等）
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', setAppHeight);
+    if (!isIOS) {
+      window.visualViewport.addEventListener('scroll', setAppHeight);
+    }
+  }
+  
+  // 暴露全局函数，方便手动刷新
+  window.refreshAppHeight = function(force) {
+    if (force) lastAppHeight = 0;
+    setAppHeightNow();
+  };
+  
+  console.log('[应用高度] 初始化完成');
+}
