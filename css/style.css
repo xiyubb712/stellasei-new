@@ -990,6 +990,52 @@ html, body {
   margin: 0;
 }
 
+
+/* 刷新应用按钮 */
+.minimal-refresh-section {
+  margin: 32px 0;
+  padding: 24px;
+  background: linear-gradient(135deg, rgba(201, 169, 110, 0.05), rgba(201, 169, 110, 0.02));
+  border: 1px solid rgba(201, 169, 110, 0.15);
+  border-radius: 12px;
+  text-align: center;
+}
+
+.minimal-refresh-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  background: linear-gradient(135deg, #c9a96e, #a8884e);
+  color: #fff;
+  border: none;
+  border-radius: 24px;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(201, 169, 110, 0.25);
+  font-family: inherit;
+}
+
+.minimal-refresh-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(201, 169, 110, 0.35);
+}
+
+.minimal-refresh-btn:active {
+  transform: translateY(0);
+}
+
+.minimal-refresh-hint {
+  font-size: 11px;
+  color: #b8a898;
+  margin: 12px 0 0;
+  letter-spacing: 1px;
+  line-height: 1.6;
+}
+
 /* 接口详情页 */
 .minimal-back {
   display: flex;

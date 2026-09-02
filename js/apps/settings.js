@@ -1806,9 +1806,70 @@ const SettingsApp = {
           </div>
         </div>
         
+        <!-- 刷新应用按钮 -->
+        <div class="minimal-refresh-section">
+          <button class="minimal-refresh-btn" onclick="SettingsApp.refreshApp()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="23 4 23 10 17 10"></polyline>
+              <polyline points="1 20 1 14 7 14"></polyline>
+              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+            </svg>
+            <span>刷新应用</span>
+          </button>
+          <p class="minimal-refresh-hint">清除缓存并重新加载，查看最新代码效果</p>
+        </div>
+        
         <p class="minimal-about-footer">从零搭建 · 持续生长中</p>
       </div>
     `;
+  },
+  
+  // ==================== 刷新应用 ====================
+  async refreshApp() {
+    if (!confirm('确定要刷新应用吗？\n\n这会清除缓存并重新加载页面，确保你看到最新的代码效果。')) {
+      return;
+    }
+    
+    this.showToast('正在刷新应用...');
+    
+    try {
+      // 1. 注销所有 service worker
+      if ('serviceWorker' in navigator) {
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        for (const registration of registrations) {
+          await registration.unregister();
+          console.log('[刷新] Service worker 已注销');
+        }
+      }
+      
+      // 2. 清除所有缓存
+      if ('caches' in window) {
+        const cacheNames = await caches.keys();
+        for (const cacheName of cacheNames) {
+          await caches.delete(cacheName);
+          console.log('[刷新] 缓存已删除:', cacheName);
+        }
+      }
+      
+      // 3. 清除应用缓存（application cache，旧版）
+      if (window.applicationCache) {
+        window.applicationCache.swapCache();
+      }
+      
+      console.log('[刷新] 准备重新加载...');
+      
+      // 4. 重新加载页面（绕过缓存）
+      setTimeout(() => {
+        window.location.reload(true);
+      }, 500);
+      
+    } catch (err) {
+      console.error('[刷新] 刷新失败:', err);
+      // 即使失败也尝试重新加载
+      setTimeout(() => {
+        window.location.reload(true);
+      }, 500);
+    }
   },
   
   // ==================== 数据功能 ====================
