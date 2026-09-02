@@ -1904,9 +1904,9 @@ html, body {
 .archive-app {
   height: 100%;
   overflow-y: auto;
-  background: #f5f1e8;
+  background: #f8f5f0;
   background-image: 
-    repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(180, 160, 130, 0.08) 28px, rgba(180, 160, 130, 0.08) 29px);
+    repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(180, 160, 130, 0.05) 28px, rgba(180, 160, 130, 0.05) 29px);
   padding-bottom: 30px;
   font-family: Georgia, 'Times New Roman', 'Songti SC', serif;
 }
@@ -2678,9 +2678,9 @@ html, body {
   height: 100%;
   display: flex;
   flex-direction: column;
-  background: #f5f1e8;
+  background: #f8f5f0;
   background-image: 
-    repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(180, 160, 130, 0.08) 28px, rgba(180, 160, 130, 0.08) 29px);
+    repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(180, 160, 130, 0.05) 28px, rgba(180, 160, 130, 0.05) 29px);
   font-family: Georgia, 'Times New Roman', 'Songti SC', serif;
 }
 
