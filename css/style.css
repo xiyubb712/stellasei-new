@@ -134,28 +134,9 @@ html, body {
     display: block;
   }
   
-  /* 电脑端显示状态栏 */
+  /* 电脑端也不显示内置状态栏，用灵动岛代替 */
   #status-bar {
-    display: flex !important;
-  }
-  
-  /* 电脑端有状态栏，所以应用容器和导航栏从44px开始 */
-  #app-container {
-    top: 44px;
-  }
-  
-  #nav-bar {
-    top: 44px;
-    padding-top: 0;
-  }
-  
-  /* 电脑端桌面内容多留一点顶部空间 */
-  #desktop-content {
-    padding: 60px 16px 16px;
-  }
-  
-  #page-indicators {
-    top: 50px;
+    display: none !important;
   }
 }
 
