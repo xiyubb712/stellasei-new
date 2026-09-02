@@ -3414,16 +3414,43 @@ html, body {
     inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
-/* 左上角小星星装饰 */
+/* 左上角星球装饰（带光环） */
 .bubble-other::before {
-  content: '✧';
+  content: '';
   position: absolute;
-  top: -5px;
-  left: -4px;
-  font-size: 11px;
-  color: #d8a8c0;
-  text-shadow: 0 0 4px rgba(216, 168, 192, 0.5);
-  animation: starTwinkle 2.5s ease-in-out infinite;
+  top: -7px;
+  left: -6px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #f0d8e8, #d8a8c0, #c898b0);
+  box-shadow: 0 0 6px rgba(216, 168, 192, 0.6);
+  animation: planetFloat 3s ease-in-out infinite;
+}
+
+/* 星球光环 */
+.bubble-other::after {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: -10px;
+  width: 22px;
+  height: 8px;
+  border: 1.5px solid rgba(216, 168, 192, 0.7);
+  border-radius: 50%;
+  transform: rotate(-20deg);
+  pointer-events: none;
+  animation: ringFloat 3s ease-in-out infinite;
+}
+
+@keyframes planetFloat {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-2px) scale(1.05); }
+}
+
+@keyframes ringFloat {
+  0%, 100% { transform: rotate(-20deg) translateY(0); opacity: 0.7; }
+  50% { transform: rotate(-20deg) translateY(-2px); opacity: 1; }
 }
 .bubble-signal {
   position: absolute;
