@@ -95,15 +95,15 @@ const SettingsApp = {
     const imageConfig = Storage.get('api-image') || {};
     
     const items = [
-      { type: 'chat', name: '对话接口', en: 'Chat API', config: chatConfig },
-      { type: 'voice', name: '语音接口', en: 'Voice API', config: voiceConfig },
-      { type: 'image', name: '生图接口', en: 'Image API', config: imageConfig }
+      { type: 'chat', name: '对话接口', en: 'Chat API', config: chatConfig, action: 'showChatApiList' },
+      { type: 'voice', name: '语音接口', en: 'Voice API', config: voiceConfig, action: 'showVoiceApiList' },
+      { type: 'image', name: '生图接口', en: 'Image API', config: imageConfig, action: 'showImageApiList' }
     ];
     
     return `
       <div class="minimal-list">
         ${items.map((item, i) => `
-          <div class="minimal-list-item" onclick="SettingsApp.openApiDetail('${item.type}')">
+          <div class="minimal-list-item" onclick="SettingsApp.${item.action}('${item.type}')">
             <div class="minimal-list-left">
               <span class="minimal-list-index">0${i + 1}</span>
               <div class="minimal-list-text">
@@ -123,7 +123,1353 @@ const SettingsApp = {
     `;
   },
   
-  // ==================== 接口详情 ====================
+  // ==================== 对话API列表 ====================
+  getChatApiList() {
+    const list = Storage.get('chat-api-list');
+    if (!list || list.length === 0) {
+      // 初始化默认API
+      const defaultConfig = Storage.get('api-chat') || {};
+      const defaultApi = {
+        id: 'default',
+        name: '默认接口',
+        provider: 'OpenAI',
+        baseUrl: defaultConfig.baseUrl || '',
+        apiKey: defaultConfig.apiKey || '',
+        model: defaultConfig.model || '',
+        isDefault: true,
+        createdAt: Date.now()
+      };
+      Storage.set('chat-api-list', [defaultApi]);
+      return [defaultApi];
+    }
+    return list;
+  },
+  
+  saveChatApiList(list) {
+    Storage.set('chat-api-list', list);
+    // 同步默认API到旧的存储位置
+    const defaultApi = list.find(api => api.isDefault);
+    if (defaultApi) {
+      Storage.set('api-chat', {
+        baseUrl: defaultApi.baseUrl,
+        apiKey: defaultApi.apiKey,
+        model: defaultApi.model
+      });
+    }
+  },
+  
+  showChatApiList() {
+    const apiList = this.getChatApiList();
+    
+    this.container.innerHTML = `
+      <div class="minimal-page">
+        <!-- 顶部杂志风装饰条 -->
+        <div class="minimal-magazine-bar">
+          <button class="minimal-back-btn" onclick="SettingsApp.renderMain()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+          </button>
+          <span class="minimal-magazine-vol">VOL. 01</span>
+          <span class="minimal-magazine-dot"></span>
+          <span class="minimal-magazine-editorial">CHAT API</span>
+          <span class="minimal-magazine-dot"></span>
+          <span class="minimal-magazine-date">${new Date().toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' })}</span>
+          <button class="minimal-add-api-btn" onclick="SettingsApp.openApiEditor()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 5v14M5 12h14"/>
+            </svg>
+            <span>新增API</span>
+          </button>
+        </div>
+        
+        <!-- Hero区 -->
+        <div class="minimal-hero">
+          <div class="minimal-hero-number">01</div>
+          <div class="minimal-hero-text">
+            <h1 class="minimal-hero-title">对话接口</h1>
+            <p class="minimal-hero-sub">CHAT API SETTINGS</p>
+          </div>
+          <div class="minimal-hero-deco">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+        
+        <!-- 全局接口说明 -->
+        <div class="api-global-note">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 16v-4M12 8h.01"/>
+          </svg>
+          <span>以下为全局对话接口，默认所有需要文本API的功能都使用「默认接口」。你可以新增多个API方案，随时切换使用。</span>
+        </div>
+        
+        <!-- API列表 -->
+        <div class="api-grid">
+          ${apiList.map((api, i) => `
+            <div class="api-card ${api.isDefault ? 'api-card-default' : ''}">
+              <div class="api-card-header">
+                <div class="api-card-name">${api.name}</div>
+                ${api.isDefault ? '<span class="api-card-badge">默认</span>' : ''}
+              </div>
+              <div class="api-card-model">${api.model || '未设置模型'}</div>
+              <div class="api-card-provider">${api.provider}</div>
+              <div class="api-card-actions">
+                <button class="api-card-btn" onclick="SettingsApp.openApiEditor('${api.id}')" title="编辑">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+                  </svg>
+                </button>
+                <button class="api-card-btn" onclick="SettingsApp.duplicateApiConfig('${api.id}')" title="复制">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                    <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                  </svg>
+                </button>
+                ${!api.isDefault ? `
+                  <button class="api-card-btn api-card-btn-danger" onclick="SettingsApp.deleteApiConfig('${api.id}')" title="删除">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                    </svg>
+                  </button>
+                ` : ''}
+                ${!api.isDefault ? `
+                  <button class="api-card-btn api-card-btn-primary" onclick="SettingsApp.setDefaultApi('${api.id}')" title="设为默认">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M20 6 9 17l-5-5"/>
+                    </svg>
+                  </button>
+                ` : ''}
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  },
+  
+  // ==================== API编辑器弹窗 ====================
+  openApiEditor(apiId = null) {
+    const apiList = this.getChatApiList();
+    const api = apiId ? apiList.find(a => a.id === apiId) : null;
+    const isEdit = !!api;
+    
+    const providers = ['OpenAI', 'Anthropic', 'Google', 'DeepSeek', 'Moonshot', 'Zhipu', 'Qwen', 'Other'];
+    
+    // 移除已存在的弹窗
+    const existing = document.getElementById('api-editor-modal');
+    if (existing) existing.remove();
+    
+    const modal = document.createElement('div');
+    modal.id = 'api-editor-modal';
+    modal.className = 'minimal-modal-overlay';
+    modal.innerHTML = `
+      <div class="minimal-modal api-editor-modal">
+        <div class="minimal-modal-header">
+          <h3 class="minimal-modal-title">${isEdit ? '编辑配置' : '新增配置'}</h3>
+          <button class="minimal-modal-close" onclick="SettingsApp.closeApiEditor()">×</button>
+        </div>
+        
+        <div class="api-editor-form">
+          <div class="minimal-form-item">
+            <label class="minimal-form-label">配置名称</label>
+            <input type="text" class="minimal-input" id="api-editor-name" 
+              value="${api?.name || ''}" placeholder="例如：OpenAI 官方">
+          </div>
+          
+          <div class="minimal-form-item">
+            <label class="minimal-form-label">服务商</label>
+            <select class="minimal-input minimal-select" id="api-editor-provider">
+              ${providers.map(p => `<option value="${p}" ${api?.provider === p ? 'selected' : ''}>${p}</option>`).join('')}
+            </select>
+          </div>
+          
+          <div class="minimal-form-item">
+            <label class="minimal-form-label">接口地址 (Base URL)</label>
+            <input type="text" class="minimal-input" id="api-editor-baseUrl" 
+              value="${api?.baseUrl || ''}" placeholder="https://api.openai.com/v1">
+          </div>
+          
+          <div class="minimal-form-item">
+            <label class="minimal-form-label">访问密钥 (API Key)</label>
+            <input type="password" class="minimal-input" id="api-editor-apiKey" 
+              value="${api?.apiKey || ''}" placeholder="sk-...">
+          </div>
+          
+          <div class="minimal-form-item">
+            <label class="minimal-form-label">默认模型</label>
+            <div class="minimal-input-with-btn">
+              <input type="text" class="minimal-input" id="api-editor-model" 
+                value="${api?.model || ''}" placeholder="gpt-4o">
+              <button class="minimal-fetch-btn" onclick="SettingsApp.fetchModelsForEditor()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                  <path d="M3 3v5h5"/>
+                  <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/>
+                  <path d="M16 16h5v5"/>
+                </svg>
+                <span>拉取模型</span>
+              </button>
+            </div>
+          </div>
+          
+          <div class="api-editor-actions">
+            <button class="minimal-btn minimal-btn-ghost" onclick="SettingsApp.testApiConnection()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12.55a11 11 0 0 1 14.08 0"/>
+                <path d="M1.42 9a16 16 0 0 1 21.16 0"/>
+                <path d="M8.53 16.11a6 6 0 0 1 6.95 0"/>
+                <line x1="12" x2="12.01" y1="20" y2="20"/>
+              </svg>
+              测试连接
+            </button>
+            <button class="minimal-btn minimal-btn-primary" onclick="SettingsApp.saveApiConfig('${apiId || ''}')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 6 9 17l-5-5"/>
+              </svg>
+              保存配置
+            </button>
+          </div>
+          
+          <div class="api-editor-test-result" id="api-editor-test-result"></div>
+        </div>
+      </div>
+    `;
+    
+    this.container.appendChild(modal);
+    
+    // 点击遮罩关闭
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) this.closeApiEditor();
+    });
+  },
+  
+  closeApiEditor() {
+    const modal = document.getElementById('api-editor-modal');
+    if (modal) modal.remove();
+  },
+  
+  async fetchModelsForEditor() {
+    const baseUrl = document.getElementById('api-editor-baseUrl').value.trim();
+    const apiKey = document.getElementById('api-editor-apiKey').value.trim();
+    
+    if (!baseUrl || !apiKey) {
+      this.showToast('请先填写接口地址与密钥');
+      return;
+    }
+    
+    const btn = document.querySelector('#api-editor-modal .minimal-fetch-btn');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<span>获取中...</span>';
+    btn.disabled = true;
+    
+    try {
+      const response = await fetch(`${baseUrl}/models`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      
+      const data = await response.json();
+      const models = data.data || data.models || [];
+      
+      if (models.length === 0) {
+        this.showToast('未获取到模型列表');
+        return;
+      }
+      
+      // 显示模型选择弹窗
+      this.showModelSelectorForEditor(models);
+      
+    } catch (error) {
+      console.error('获取模型失败:', error);
+      this.showToast('获取模型失败，请检查接口地址');
+    }
+    
+    btn.innerHTML = originalText;
+    btn.disabled = false;
+  },
+  
+  showModelSelectorForEditor(models) {
+    const existing = document.getElementById('model-selector-modal');
+    if (existing) existing.remove();
+    
+    const modal = document.createElement('div');
+    modal.id = 'model-selector-modal';
+    modal.className = 'minimal-modal-overlay';
+    modal.innerHTML = `
+      <div class="minimal-modal">
+        <div class="minimal-modal-header">
+          <h3 class="minimal-modal-title">选择模型</h3>
+          <span class="minimal-modal-count">共 ${models.length} 个</span>
+          <button class="minimal-modal-close" onclick="SettingsApp.closeModelSelector()">×</button>
+        </div>
+        <div class="minimal-modal-search">
+          <input type="text" class="minimal-modal-input" id="model-search-input" 
+            placeholder="搜索模型..." oninput="SettingsApp.filterModels()">
+        </div>
+        <div class="minimal-modal-list" id="model-list">
+          ${models.map((model, i) => `
+            <div class="minimal-modal-item" onclick="SettingsApp.selectModelForEditor('${model.id || model.name}')">
+              <span class="minimal-modal-item-index">${String(i + 1).padStart(2, '0')}</span>
+              <span class="minimal-modal-item-name">${model.id || model.name}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+    
+    this.container.appendChild(modal);
+    
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) this.closeModelSelector();
+    });
+  },
+  
+  selectModelForEditor(modelId) {
+    const input = document.getElementById('api-editor-model');
+    if (input) input.value = modelId;
+    this.closeModelSelector();
+    this.showToast('已选择模型: ' + modelId);
+  },
+  
+  async testApiConnection() {
+    const resultEl = document.getElementById('api-editor-test-result');
+    const baseUrl = document.getElementById('api-editor-baseUrl').value.trim();
+    const apiKey = document.getElementById('api-editor-apiKey').value.trim();
+    
+    if (!baseUrl || !apiKey) {
+      resultEl.innerHTML = '<div class="minimal-result minimal-result-warn">请先填写接口地址与密钥</div>';
+      return;
+    }
+    
+    resultEl.innerHTML = '<div class="minimal-result minimal-result-loading">正在测试连接...</div>';
+    
+    try {
+      const response = await fetch(`${baseUrl}/models`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (response.ok) {
+        resultEl.innerHTML = '<div class="minimal-result minimal-result-ok">连接成功 · 接口配置正确</div>';
+      } else {
+        resultEl.innerHTML = `<div class="minimal-result minimal-result-error">连接失败 · HTTP ${response.status}</div>`;
+      }
+    } catch (error) {
+      resultEl.innerHTML = `<div class="minimal-result minimal-result-error">连接失败 · ${error.message}</div>`;
+    }
+  },
+  
+  saveApiConfig(apiId = null) {
+    const name = document.getElementById('api-editor-name').value.trim();
+    const provider = document.getElementById('api-editor-provider').value;
+    const baseUrl = document.getElementById('api-editor-baseUrl').value.trim();
+    const apiKey = document.getElementById('api-editor-apiKey').value.trim();
+    const model = document.getElementById('api-editor-model').value.trim();
+    
+    if (!name) {
+      this.showToast('请填写配置名称');
+      return;
+    }
+    
+    const apiList = this.getChatApiList();
+    
+    if (apiId) {
+      // 编辑现有配置
+      const index = apiList.findIndex(a => a.id === apiId);
+      if (index !== -1) {
+        apiList[index] = {
+          ...apiList[index],
+          name,
+          provider,
+          baseUrl,
+          apiKey,
+          model,
+          updatedAt: Date.now()
+        };
+      }
+    } else {
+      // 新增配置
+      const newApi = {
+        id: 'api_' + Date.now(),
+        name,
+        provider,
+        baseUrl,
+        apiKey,
+        model,
+        isDefault: apiList.length === 0,
+        createdAt: Date.now()
+      };
+      apiList.push(newApi);
+    }
+    
+    this.saveChatApiList(apiList);
+    this.closeApiEditor();
+    this.showToast(apiId ? '配置已更新' : '配置已保存');
+    this.showChatApiList();
+  },
+  
+  deleteApiConfig(apiId) {
+    if (!confirm('确定要删除这个API配置吗？')) return;
+    
+    const apiList = this.getChatApiList();
+    const newList = apiList.filter(a => a.id !== apiId);
+    this.saveChatApiList(newList);
+    this.showToast('配置已删除');
+    this.showChatApiList();
+  },
+  
+  duplicateApiConfig(apiId) {
+    const apiList = this.getChatApiList();
+    const api = apiList.find(a => a.id === apiId);
+    if (!api) return;
+    
+    const newApi = {
+      ...api,
+      id: 'api_' + Date.now(),
+      name: api.name + ' (副本)',
+      isDefault: false,
+      createdAt: Date.now()
+    };
+    
+    apiList.push(newApi);
+    this.saveChatApiList(apiList);
+    this.showToast('配置已复制');
+    this.showChatApiList();
+  },
+  
+  setDefaultApi(apiId) {
+    const apiList = this.getChatApiList();
+    apiList.forEach(api => {
+      api.isDefault = api.id === apiId;
+    });
+    this.saveChatApiList(apiList);
+    this.showToast('已设为默认接口');
+    this.showChatApiList();
+  },
+  
+  // ==================== 语音API列表 ====================
+  getVoiceApiList() {
+    let list = Storage.get('voice-api-list');
+    if (!list || list.length === 0) {
+      const defaultConfig = Storage.get('api-voice') || {};
+      const defaultApi = {
+        id: 'default',
+        name: 'Minimax 语音',
+        provider: 'Minimax 国内版',
+        apiKey: defaultConfig.apiKey || '',
+        groupId: defaultConfig.groupId || '',
+        voice: defaultConfig.voice || 'male-qn-qingse',
+        speed: 1.0,
+        pitch: 0,
+        language: '中文',
+        model: 'speech-02-turbo',
+        enabled: true,
+        isDefault: true,
+        createdAt: Date.now()
+      };
+      Storage.set('voice-api-list', [defaultApi]);
+      Storage.set('voice-api-migrated', 'true');
+      return [defaultApi];
+    }
+    
+    // 迁移逻辑：只在第一次迁移时执行，之后不再自动覆盖用户修改
+    const hasMigrated = Storage.get('voice-api-migrated');
+    if (!hasMigrated) {
+      let needUpdate = false;
+      list = list.map(api => {
+        if (api.isDefault) {
+          if (!api.provider || api.provider === 'OpenAI') {
+            api.provider = 'Minimax 国内版';
+            api.name = 'Minimax 语音';
+            needUpdate = true;
+          }
+          if (!api.model) {
+            api.model = 'speech-02-turbo';
+            needUpdate = true;
+          }
+          if (!api.voice || api.voice === 'alloy') {
+            api.voice = 'male-qn-qingse';
+            needUpdate = true;
+          }
+          if (!api.language) {
+            api.language = '中文';
+            needUpdate = true;
+          }
+          if (api.groupId === undefined) {
+            api.groupId = '';
+            needUpdate = true;
+          }
+        }
+        return api;
+      });
+      
+      if (needUpdate) {
+        Storage.set('voice-api-list', list);
+      }
+      Storage.set('voice-api-migrated', 'true');
+    }
+    
+    return list;
+  },
+  
+  saveVoiceApiList(list) {
+    Storage.set('voice-api-list', list);
+    const defaultApi = list.find(api => api.isDefault);
+    if (defaultApi) {
+      Storage.set('api-voice', {
+        apiKey: defaultApi.apiKey,
+        voice: defaultApi.voice,
+        speed: defaultApi.speed,
+        pitch: defaultApi.pitch,
+        model: defaultApi.model,
+        enabled: defaultApi.enabled
+      });
+    }
+  },
+  
+  showVoiceApiList() {
+    const apiList = this.getVoiceApiList();
+    
+    this.container.innerHTML = `
+      <div class="minimal-page">
+        <!-- 顶部杂志风装饰条 -->
+        <div class="minimal-magazine-bar">
+          <button class="minimal-back-btn" onclick="SettingsApp.renderMain()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+          </button>
+          <span class="minimal-magazine-vol">VOL. 02</span>
+          <span class="minimal-magazine-dot"></span>
+          <span class="minimal-magazine-editorial">VOICE API</span>
+          <span class="minimal-magazine-dot"></span>
+          <span class="minimal-magazine-date">${new Date().toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' })}</span>
+          <button class="minimal-add-api-btn" onclick="SettingsApp.openVoiceApiEditor()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 5v14M5 12h14"/>
+            </svg>
+            <span>新增语音</span>
+          </button>
+        </div>
+        
+        <!-- Hero区 -->
+        <div class="minimal-hero">
+          <div class="minimal-hero-number">02</div>
+          <div class="minimal-hero-text">
+            <h1 class="minimal-hero-title">语音接口</h1>
+            <p class="minimal-hero-sub">VOICE API SETTINGS</p>
+          </div>
+          <div class="minimal-hero-deco">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+        
+        <!-- 全局接口说明 -->
+        <div class="api-global-note">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 16v-4M12 8h.01"/>
+          </svg>
+          <span>以下为全局语音接口，默认所有需要语音合成的功能都使用「默认语音」。你可以新增多个语音方案，随时切换使用。</span>
+        </div>
+        
+        <!-- API列表 -->
+        <div class="api-grid">
+          ${apiList.map((api, i) => `
+            <div class="api-card ${api.isDefault ? 'api-card-default' : ''}">
+              <div class="api-card-header">
+                <div class="api-card-name">${api.name}</div>
+                ${api.isDefault ? '<span class="api-card-badge">默认</span>' : ''}
+              </div>
+              <div class="api-card-model">${api.voice || '未设置音色'}</div>
+              <div class="api-card-provider">${api.provider} · 语速 ${api.speed}x</div>
+              <div class="api-card-actions">
+                <button class="api-card-btn" onclick="SettingsApp.openVoiceApiEditor('${api.id}')" title="编辑">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+                  </svg>
+                </button>
+                <button class="api-card-btn" onclick="SettingsApp.duplicateVoiceApiConfig('${api.id}')" title="复制">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                    <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                  </svg>
+                </button>
+                ${!api.isDefault ? `
+                  <button class="api-card-btn api-card-btn-danger" onclick="SettingsApp.deleteVoiceApiConfig('${api.id}')" title="删除">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                    </svg>
+                  </button>
+                ` : ''}
+                ${!api.isDefault ? `
+                  <button class="api-card-btn api-card-btn-primary" onclick="SettingsApp.setDefaultVoiceApi('${api.id}')" title="设为默认">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M20 6 9 17l-5-5"/>
+                    </svg>
+                  </button>
+                ` : ''}
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  },
+  
+  // ==================== 语音API编辑器 ====================
+  openVoiceApiEditor(apiId = null) {
+    const apiList = this.getVoiceApiList();
+    const api = apiId ? apiList.find(a => a.id === apiId) : null;
+    const isEdit = !!api;
+    
+    const providers = ['OpenAI', 'Minimax 国内版', 'Minimax 国际版', 'Azure', 'ElevenLabs', 'Google', 'Other'];
+    const languages = ['不指定（保持默认）', '中文', '英文', '日文', '韩文', '法文', '德文', '西班牙文'];
+    
+    const existing = document.getElementById('voice-api-editor-modal');
+    if (existing) existing.remove();
+    
+    const modal = document.createElement('div');
+    modal.id = 'voice-api-editor-modal';
+    modal.className = 'minimal-modal-overlay';
+    modal.innerHTML = `
+      <div class="minimal-modal api-editor-modal voice-editor-modal">
+        <div class="minimal-modal-header">
+          <h3 class="minimal-modal-title">${isEdit ? '编辑语音配置' : '新增语音配置'}</h3>
+          <button class="minimal-modal-close" onclick="SettingsApp.closeVoiceApiEditor()">×</button>
+        </div>
+        
+        <div class="api-editor-form">
+          <div class="minimal-form-item">
+            <label class="minimal-form-label">配置名称</label>
+            <input type="text" class="minimal-input" id="voice-editor-name" 
+              value="${api?.name || ''}" placeholder="例如：Minimax 语音">
+          </div>
+          
+          <div class="minimal-form-item">
+            <label class="minimal-form-label">服务商</label>
+            <select class="minimal-input minimal-select" id="voice-editor-provider">
+              ${providers.map(p => `<option value="${p}" ${api?.provider === p ? 'selected' : ''}>${p}</option>`).join('')}
+            </select>
+          </div>
+          
+          <div class="minimal-form-item">
+            <label class="minimal-form-label">API Key</label>
+            <input type="password" class="minimal-input" id="voice-editor-apiKey" 
+              value="${api?.apiKey || ''}" placeholder="输入密钥...">
+          </div>
+          
+          <div class="minimal-form-item" id="voice-group-id-item" style="display: ${api?.provider?.includes('Minimax') ? 'block' : 'none'};">
+            <label class="minimal-form-label">Group ID（分组ID）</label>
+            <input type="text" class="minimal-input" id="voice-editor-groupId" 
+              value="${api?.groupId || ''}" placeholder="输入Minimax分组ID...">
+            <div class="form-hint">Minimax特有，与API Key不同，在Minimax控制台获取</div>
+          </div>
+          
+          <div class="minimal-form-item">
+            <label class="minimal-form-label">
+              语速 (Speed)
+              <span class="slider-value" id="voice-speed-value">${api?.speed ?? 1.0}x</span>
+            </label>
+            <input type="range" class="minimal-slider" id="voice-editor-speed" 
+              min="0.5" max="2.0" step="0.1" value="${api?.speed ?? 1.0}"
+              oninput="document.getElementById('voice-speed-value').textContent = this.value + 'x'">
+            <div class="slider-labels">
+              <span>0.5x</span>
+              <span>1.0x 默认</span>
+              <span>2.0x</span>
+            </div>
+          </div>
+          
+          <div class="minimal-form-item">
+            <label class="minimal-form-label">
+              音调 (Pitch)
+              <span class="slider-value" id="voice-pitch-value">${api?.pitch ?? 0}</span>
+            </label>
+            <input type="range" class="minimal-slider" id="voice-editor-pitch" 
+              min="-12" max="12" step="1" value="${api?.pitch ?? 0}"
+              oninput="document.getElementById('voice-pitch-value').textContent = this.value">
+            <div class="slider-labels">
+              <span>-12</span>
+              <span>0 默认</span>
+              <span>+12</span>
+            </div>
+          </div>
+          
+          <div class="minimal-form-item">
+            <label class="minimal-form-label">朗读语言</label>
+            <select class="minimal-input minimal-select" id="voice-editor-language">
+              ${languages.map(l => `<option value="${l}" ${api?.language === l ? 'selected' : ''}>${l}</option>`).join('')}
+            </select>
+          </div>
+          
+          <div class="minimal-form-item">
+            <label class="minimal-form-label">语音模型 (TTS Model)</label>
+            <input type="text" class="minimal-input" id="voice-editor-model" 
+              value="${api?.model || 'tts-1'}" placeholder="tts-1">
+          </div>
+          
+          <div class="minimal-form-item">
+            <label class="minimal-form-label">默认音色 (Voice ID)</label>
+            <input type="text" class="minimal-input" id="voice-editor-voice" 
+              value="${api?.voice || ''}" placeholder="输入音色ID或名称，例如：male-qn-qingse">
+            <div class="form-hint">不同服务商音色不同，请填写对应服务商支持的音色ID</div>
+          </div>
+          
+          <div class="voice-actions-row">
+            <button class="minimal-btn minimal-btn-ghost minimal-btn-sm" onclick="SettingsApp.syncVoiceList()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                <path d="M3 3v5h5"/>
+                <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/>
+                <path d="M16 16h5v5"/>
+              </svg>
+              同步音色列表
+            </button>
+          </div>
+          
+          <div class="voice-toggle-item">
+            <div class="voice-toggle-text">
+              <div class="voice-toggle-title">启用语音合成 (TTS)</div>
+              <div class="voice-toggle-desc">开启后自动朗读AI回复内容</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="voice-editor-enabled" ${api?.enabled !== false ? 'checked' : ''}>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          
+          <div class="api-editor-actions">
+            <button class="minimal-btn minimal-btn-primary" onclick="SettingsApp.saveVoiceApiConfig('${apiId || ''}')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 6 9 17l-5-5"/>
+              </svg>
+              保存配置
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    this.container.appendChild(modal);
+    
+    // 监听服务商变化，显示/隐藏Group ID
+    const providerSelect = document.getElementById('voice-editor-provider');
+    if (providerSelect) {
+      providerSelect.addEventListener('change', function() {
+        const groupIdItem = document.getElementById('voice-group-id-item');
+        if (groupIdItem) {
+          groupIdItem.style.display = this.value.includes('Minimax') ? 'block' : 'none';
+        }
+      });
+    }
+    
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) this.closeVoiceApiEditor();
+    });
+  },
+  
+  closeVoiceApiEditor() {
+    const modal = document.getElementById('voice-api-editor-modal');
+    if (modal) modal.remove();
+  },
+  
+  testVoicePlay() {
+    this.showToast('试听功能开发中...');
+  },
+  
+  syncVoiceList() {
+    this.showToast('同步音色列表功能开发中...');
+  },
+  
+  uploadVoiceClone() {
+    this.showToast('上传音频克隆功能开发中...');
+  },
+  
+  saveVoiceApiConfig(apiId = null) {
+    const name = document.getElementById('voice-editor-name').value.trim();
+    const provider = document.getElementById('voice-editor-provider').value;
+    const apiKey = document.getElementById('voice-editor-apiKey').value.trim();
+    const groupId = document.getElementById('voice-editor-groupId')?.value.trim() || '';
+    const speed = parseFloat(document.getElementById('voice-editor-speed').value);
+    const pitch = parseInt(document.getElementById('voice-editor-pitch').value);
+    const language = document.getElementById('voice-editor-language').value;
+    const model = document.getElementById('voice-editor-model').value.trim();
+    const voice = document.getElementById('voice-editor-voice').value;
+    const enabled = document.getElementById('voice-editor-enabled').checked;
+    
+    if (!name) {
+      this.showToast('请填写配置名称');
+      return;
+    }
+    
+    const apiList = this.getVoiceApiList();
+    
+    if (apiId) {
+      const index = apiList.findIndex(a => a.id === apiId);
+      if (index !== -1) {
+        apiList[index] = {
+          ...apiList[index],
+          name,
+          provider,
+          apiKey,
+          groupId,
+          speed,
+          pitch,
+          language,
+          model,
+          voice,
+          enabled,
+          updatedAt: Date.now()
+        };
+      }
+    } else {
+      const newApi = {
+        id: 'voice_' + Date.now(),
+        name,
+        provider,
+        apiKey,
+        groupId,
+        speed,
+        pitch,
+        language,
+        model,
+        voice,
+        enabled,
+        isDefault: apiList.length === 0,
+        createdAt: Date.now()
+      };
+      apiList.push(newApi);
+    }
+    
+    this.saveVoiceApiList(apiList);
+    this.closeVoiceApiEditor();
+    this.showToast(apiId ? '语音配置已更新' : '语音配置已保存');
+    this.showVoiceApiList();
+  },
+  
+  deleteVoiceApiConfig(apiId) {
+    if (!confirm('确定要删除这个语音配置吗？')) return;
+    
+    const apiList = this.getVoiceApiList();
+    const newList = apiList.filter(a => a.id !== apiId);
+    this.saveVoiceApiList(newList);
+    this.showToast('语音配置已删除');
+    this.showVoiceApiList();
+  },
+  
+  duplicateVoiceApiConfig(apiId) {
+    const apiList = this.getVoiceApiList();
+    const api = apiList.find(a => a.id === apiId);
+    if (!api) return;
+    
+    const newApi = {
+      ...api,
+      id: 'voice_' + Date.now(),
+      name: api.name + ' (副本)',
+      isDefault: false,
+      createdAt: Date.now()
+    };
+    
+    apiList.push(newApi);
+    this.saveVoiceApiList(apiList);
+    this.showToast('语音配置已复制');
+    this.showVoiceApiList();
+  },
+  
+  setDefaultVoiceApi(apiId) {
+    const apiList = this.getVoiceApiList();
+    apiList.forEach(api => {
+      api.isDefault = api.id === apiId;
+    });
+    this.saveVoiceApiList(apiList);
+    this.showToast('已设为默认语音');
+    this.showVoiceApiList();
+  },
+  
+  // ==================== 生图API列表 ====================
+  getImageApiList() {
+    let list = Storage.get('image-api-list');
+    if (!list || list.length === 0) {
+      const defaultConfig = Storage.get('api-image') || {};
+      const defaultApi = {
+        id: 'default',
+        name: '默认生图',
+        provider: 'OpenAI兼容（第三方生图API）',
+        baseUrl: defaultConfig.baseUrl || '',
+        apiKey: defaultConfig.apiKey || '',
+        model: defaultConfig.model || 'gpt-image-1',
+        size: '1024x1024',
+        quality: 'auto',
+        prompt: '构图干净，主体突出，光影柔和自然，色彩协调，画面层次丰富，画面真实自然，细节干净，画面清晰',
+        negativePrompt: '低质量，模糊，变形，扭曲，多余的手指，缺失的手指，丑陋，畸形，多余的肢体，断肢，水印，文字，签名',
+        enabled: true,
+        isDefault: true,
+        createdAt: Date.now()
+      };
+      Storage.set('image-api-list', [defaultApi]);
+      return [defaultApi];
+    }
+    return list;
+  },
+  
+  saveImageApiList(list) {
+    Storage.set('image-api-list', list);
+    const defaultApi = list.find(api => api.isDefault);
+    if (defaultApi) {
+      Storage.set('api-image', {
+        baseUrl: defaultApi.baseUrl,
+        apiKey: defaultApi.apiKey,
+        model: defaultApi.model,
+        size: defaultApi.size,
+        quality: defaultApi.quality,
+        prompt: defaultApi.prompt,
+        negativePrompt: defaultApi.negativePrompt,
+        enabled: defaultApi.enabled
+      });
+    }
+  },
+  
+  showImageApiList() {
+    const apiList = this.getImageApiList();
+    
+    this.container.innerHTML = `
+      <div class="minimal-page">
+        <!-- 顶部杂志风装饰条 -->
+        <div class="minimal-magazine-bar">
+          <button class="minimal-back-btn" onclick="SettingsApp.renderMain()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+          </button>
+          <span class="minimal-magazine-vol">VOL. 03</span>
+          <span class="minimal-magazine-dot"></span>
+          <span class="minimal-magazine-editorial">IMAGE API</span>
+          <span class="minimal-magazine-dot"></span>
+          <span class="minimal-magazine-date">${new Date().toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' })}</span>
+          <button class="minimal-add-api-btn" onclick="SettingsApp.openImageApiEditor()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 5v14M5 12h14"/>
+            </svg>
+            <span>新增生图</span>
+          </button>
+        </div>
+        
+        <!-- Hero区 -->
+        <div class="minimal-hero">
+          <div class="minimal-hero-number">03</div>
+          <div class="minimal-hero-text">
+            <h1 class="minimal-hero-title">生图接口</h1>
+            <p class="minimal-hero-sub">IMAGE API SETTINGS</p>
+          </div>
+          <div class="minimal-hero-deco">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+        
+        <!-- 全局接口说明 -->
+        <div class="api-global-note">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 16v-4M12 8h.01"/>
+          </svg>
+          <span>以下为全局生图接口，默认所有需要图像生成的功能都使用「默认生图」。你可以新增多个生图方案，随时切换使用。</span>
+        </div>
+        
+        <!-- API列表 -->
+        <div class="api-grid">
+          ${apiList.map((api, i) => `
+            <div class="api-card ${api.isDefault ? 'api-card-default' : ''}">
+              <div class="api-card-header">
+                <div class="api-card-name">${api.name}</div>
+                ${api.isDefault ? '<span class="api-card-badge">默认</span>' : ''}
+              </div>
+              <div class="api-card-model">${api.model || '未设置模型'}</div>
+              <div class="api-card-provider">${api.provider} · ${api.size}</div>
+              <div class="api-card-actions">
+                <button class="api-card-btn" onclick="SettingsApp.openImageApiEditor('${api.id}')" title="编辑">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+                  </svg>
+                </button>
+                <button class="api-card-btn" onclick="SettingsApp.duplicateImageApiConfig('${api.id}')" title="复制">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                    <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                  </svg>
+                </button>
+                ${!api.isDefault ? `
+                  <button class="api-card-btn api-card-btn-danger" onclick="SettingsApp.deleteImageApiConfig('${api.id}')" title="删除">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                    </svg>
+                  </button>
+                ` : ''}
+                ${!api.isDefault ? `
+                  <button class="api-card-btn api-card-btn-primary" onclick="SettingsApp.setDefaultImageApi('${api.id}')" title="设为默认">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M20 6 9 17l-5-5"/>
+                    </svg>
+                  </button>
+                ` : ''}
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  },
+  
+  // ==================== 生图API编辑器 ====================
+  openImageApiEditor(apiId = null) {
+    const apiList = this.getImageApiList();
+    const api = apiId ? apiList.find(a => a.id === apiId) : null;
+    const isEdit = !!api;
+    
+    const providers = ['OpenAI兼容（第三方生图API）', 'NovelAI', 'Midjourney', 'Stability AI', 'Other'];
+    const sizes = ['1024x1024', '1024x1536', '1536x1024', '1024x1792', '1792x1024'];
+    const qualities = ['auto', 'low', 'medium', 'high', 'hd'];
+    
+    const existing = document.getElementById('image-api-editor-modal');
+    if (existing) existing.remove();
+    
+    const modal = document.createElement('div');
+    modal.id = 'image-api-editor-modal';
+    modal.className = 'minimal-modal-overlay';
+    modal.innerHTML = `
+      <div class="minimal-modal api-editor-modal image-editor-modal">
+        <div class="minimal-modal-header">
+          <h3 class="minimal-modal-title">${isEdit ? '编辑生图配置' : '新增生图配置'}</h3>
+          <button class="minimal-modal-close" onclick="SettingsApp.closeImageApiEditor()">×</button>
+        </div>
+        
+        <div class="api-editor-form">
+          <div class="voice-toggle-item">
+            <div class="voice-toggle-text">
+              <div class="voice-toggle-title">启用自动生图</div>
+              <div class="voice-toggle-desc">角色输出照片标签时自动调用图像生成API</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="image-editor-enabled" ${api?.enabled !== false ? 'checked' : ''}>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          
+          <div class="minimal-form-item">
+            <label class="minimal-form-label">配置名称</label>
+            <input type="text" class="minimal-input" id="image-editor-name" 
+              value="${api?.name || ''}" placeholder="例如：OpenAI 生图">
+          </div>
+          
+          <div class="minimal-form-item">
+            <label class="minimal-form-label">服务商</label>
+            <select class="minimal-input minimal-select" id="image-editor-provider">
+              ${providers.map(p => `<option value="${p}" ${api?.provider === p ? 'selected' : ''}>${p}</option>`).join('')}
+            </select>
+          </div>
+          
+          <div class="minimal-form-item">
+            <label class="minimal-form-label">接口地址 (Base URL)</label>
+            <input type="text" class="minimal-input" id="image-editor-baseUrl" 
+              value="${api?.baseUrl || ''}" placeholder="https://api.openai.com/v1">
+          </div>
+          
+          <div class="minimal-form-item">
+            <label class="minimal-form-label">API Key</label>
+            <input type="password" class="minimal-input" id="image-editor-apiKey" 
+              value="${api?.apiKey || ''}" placeholder="输入密钥...">
+          </div>
+          
+          <div class="minimal-form-item">
+            <label class="minimal-form-label">模型名称</label>
+            <div class="minimal-input-with-btn">
+              <input type="text" class="minimal-input" id="image-editor-model" 
+                value="${api?.model || ''}" placeholder="gpt-image-1">
+              <button class="minimal-fetch-btn" onclick="SettingsApp.fetchModelsForImageEditor()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                  <path d="M3 3v5h5"/>
+                  <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/>
+                  <path d="M16 16h5v5"/>
+                </svg>
+                <span>拉取模型</span>
+              </button>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="minimal-form-item">
+              <label class="minimal-form-label">尺寸</label>
+              <select class="minimal-input minimal-select" id="image-editor-size">
+                ${sizes.map(s => `<option value="${s}" ${api?.size === s ? 'selected' : ''}>${s}</option>`).join('')}
+              </select>
+            </div>
+            <div class="minimal-form-item">
+              <label class="minimal-form-label">质量</label>
+              <select class="minimal-input minimal-select" id="image-editor-quality">
+                ${qualities.map(q => `<option value="${q}" ${api?.quality === q ? 'selected' : ''}>${q}</option>`).join('')}
+              </select>
+            </div>
+          </div>
+          
+          <div class="minimal-form-item">
+            <label class="minimal-form-label">补充提示词</label>
+            <textarea class="minimal-textarea" id="image-editor-prompt" 
+              placeholder="输入补充提示词..." rows="3">${api?.prompt || ''}</textarea>
+            <div class="form-hint">会自动追加到用户提示词后面，用于提升画面质量</div>
+          </div>
+          
+          <div class="minimal-form-item">
+            <label class="minimal-form-label">负面提示词</label>
+            <textarea class="minimal-textarea" id="image-editor-negativePrompt" 
+              placeholder="输入负面提示词..." rows="3">${api?.negativePrompt || ''}</textarea>
+            <div class="form-hint">指定不希望出现在图片里的内容，例如：低质量、模糊、变形等</div>
+          </div>
+          
+          <div class="api-editor-actions">
+            <button class="minimal-btn minimal-btn-ghost" onclick="SettingsApp.testImageGeneration()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
+                <circle cx="9" cy="9" r="2"/>
+                <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+              </svg>
+              测试生图
+            </button>
+            <button class="minimal-btn minimal-btn-primary" onclick="SettingsApp.saveImageApiConfig('${apiId || ''}')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 6 9 17l-5-5"/>
+              </svg>
+              保存配置
+            </button>
+          </div>
+          
+          <div class="api-editor-test-result" id="image-editor-test-result"></div>
+        </div>
+      </div>
+    `;
+    
+    this.container.appendChild(modal);
+    
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) this.closeImageApiEditor();
+    });
+  },
+  
+  closeImageApiEditor() {
+    const modal = document.getElementById('image-api-editor-modal');
+    if (modal) modal.remove();
+  },
+  
+  async fetchModelsForImageEditor() {
+    const baseUrl = document.getElementById('image-editor-baseUrl').value.trim();
+    const apiKey = document.getElementById('image-editor-apiKey').value.trim();
+    
+    if (!baseUrl || !apiKey) {
+      this.showToast('请先填写接口地址与密钥');
+      return;
+    }
+    
+    const btn = document.querySelector('#image-api-editor-modal .minimal-fetch-btn');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<span>获取中...</span>';
+    btn.disabled = true;
+    
+    try {
+      const response = await fetch(`${baseUrl}/models`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      
+      const data = await response.json();
+      const models = data.data || data.models || [];
+      
+      if (models.length === 0) {
+        this.showToast('未获取到模型列表');
+        return;
+      }
+      
+      // 显示模型选择弹窗
+      this.showModelSelectorForImageEditor(models);
+      
+    } catch (error) {
+      console.error('获取模型失败:', error);
+      this.showToast('获取模型失败，请检查接口地址');
+    }
+    
+    btn.innerHTML = originalText;
+    btn.disabled = false;
+  },
+  
+  showModelSelectorForImageEditor(models) {
+    const existing = document.getElementById('model-selector-modal');
+    if (existing) existing.remove();
+    
+    const modal = document.createElement('div');
+    modal.id = 'model-selector-modal';
+    modal.className = 'minimal-modal-overlay';
+    modal.innerHTML = `
+      <div class="minimal-modal">
+        <div class="minimal-modal-header">
+          <h3 class="minimal-modal-title">选择模型</h3>
+          <span class="minimal-modal-count">共 ${models.length} 个</span>
+          <button class="minimal-modal-close" onclick="SettingsApp.closeModelSelector()">×</button>
+        </div>
+        <div class="minimal-modal-search">
+          <input type="text" class="minimal-modal-input" id="model-search-input" 
+            placeholder="搜索模型..." oninput="SettingsApp.filterModels()">
+        </div>
+        <div class="minimal-modal-list" id="model-list">
+          ${models.map((model, i) => `
+            <div class="minimal-modal-item" onclick="SettingsApp.selectModelForImageEditor('${model.id || model.name}')">
+              <span class="minimal-modal-item-index">${String(i + 1).padStart(2, '0')}</span>
+              <span class="minimal-modal-item-name">${model.id || model.name}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+    
+    this.container.appendChild(modal);
+    
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) this.closeModelSelector();
+    });
+  },
+  
+  selectModelForImageEditor(modelId) {
+    const input = document.getElementById('image-editor-model');
+    if (input) input.value = modelId;
+    this.closeModelSelector();
+    this.showToast('已选择模型: ' + modelId);
+  },
+  
+  testImageGeneration() {
+    const resultEl = document.getElementById('image-editor-test-result');
+    resultEl.innerHTML = '<div class="minimal-result minimal-result-loading">测试生图功能开发中...</div>';
+  },
+  
+  saveImageApiConfig(apiId = null) {
+    const name = document.getElementById('image-editor-name').value.trim();
+    const provider = document.getElementById('image-editor-provider').value;
+    const baseUrl = document.getElementById('image-editor-baseUrl').value.trim();
+    const apiKey = document.getElementById('image-editor-apiKey').value.trim();
+    const model = document.getElementById('image-editor-model').value.trim();
+    const size = document.getElementById('image-editor-size').value;
+    const quality = document.getElementById('image-editor-quality').value;
+    const prompt = document.getElementById('image-editor-prompt').value.trim();
+    const negativePrompt = document.getElementById('image-editor-negativePrompt').value.trim();
+    const enabled = document.getElementById('image-editor-enabled').checked;
+    
+    if (!name) {
+      this.showToast('请填写配置名称');
+      return;
+    }
+    
+    const apiList = this.getImageApiList();
+    
+    if (apiId) {
+      const index = apiList.findIndex(a => a.id === apiId);
+      if (index !== -1) {
+        apiList[index] = {
+          ...apiList[index],
+          name,
+          provider,
+          baseUrl,
+          apiKey,
+          model,
+          size,
+          quality,
+          prompt,
+          negativePrompt,
+          enabled,
+          updatedAt: Date.now()
+        };
+      }
+    } else {
+      const newApi = {
+        id: 'image_' + Date.now(),
+        name,
+        provider,
+        baseUrl,
+        apiKey,
+        model,
+        size,
+        quality,
+        prompt,
+        negativePrompt,
+        enabled,
+        isDefault: apiList.length === 0,
+        createdAt: Date.now()
+      };
+      apiList.push(newApi);
+    }
+    
+    this.saveImageApiList(apiList);
+    this.closeImageApiEditor();
+    this.showToast(apiId ? '生图配置已更新' : '生图配置已保存');
+    this.showImageApiList();
+  },
+  
+  deleteImageApiConfig(apiId) {
+    if (!confirm('确定要删除这个生图配置吗？')) return;
+    
+    const apiList = this.getImageApiList();
+    const newList = apiList.filter(a => a.id !== apiId);
+    this.saveImageApiList(newList);
+    this.showToast('生图配置已删除');
+    this.showImageApiList();
+  },
+  
+  duplicateImageApiConfig(apiId) {
+    const apiList = this.getImageApiList();
+    const api = apiList.find(a => a.id === apiId);
+    if (!api) return;
+    
+    const newApi = {
+      ...api,
+      id: 'image_' + Date.now(),
+      name: api.name + ' (副本)',
+      isDefault: false,
+      createdAt: Date.now()
+    };
+    
+    apiList.push(newApi);
+    this.saveImageApiList(apiList);
+    this.showToast('生图配置已复制');
+    this.showImageApiList();
+  },
+  
+  setDefaultImageApi(apiId) {
+    const apiList = this.getImageApiList();
+    apiList.forEach(api => {
+      api.isDefault = api.id === apiId;
+    });
+    this.saveImageApiList(apiList);
+    this.showToast('已设为默认生图');
+    this.showImageApiList();
+  },
+  
+  // ==================== 接口详情（旧版，保留兼容） ====================
   openApiDetail(type) {
     const config = Storage.get(`api-${type}`) || { baseUrl: '', apiKey: '', model: '' };
     const nameMap = { chat: '对话接口', voice: '语音接口', image: '生图接口' };
@@ -160,9 +1506,20 @@ const SettingsApp = {
           
           <div class="minimal-form-item">
             <label class="minimal-form-label">${type === 'voice' ? '默认音色' : '模型名称'}</label>
-            <input type="text" class="minimal-input" id="api-${type}-${type === 'voice' ? 'voice' : 'model'}" 
-              value="${config[type === 'voice' ? 'voice' : 'model'] || ''}" 
-              placeholder="${type === 'voice' ? 'alloy' : 'gpt-4o'}">
+            <div class="minimal-input-with-btn">
+              <input type="text" class="minimal-input" id="api-${type}-${type === 'voice' ? 'voice' : 'model'}" 
+                value="${config[type === 'voice' ? 'voice' : 'model'] || ''}" 
+                placeholder="${type === 'voice' ? 'alloy' : 'gpt-4o'}">
+              <button class="minimal-fetch-btn" onclick="SettingsApp.fetchModels('${type}')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                  <path d="M3 3v5h5"/>
+                  <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/>
+                  <path d="M16 16h5v5"/>
+                </svg>
+                <span>获取模型</span>
+              </button>
+            </div>
           </div>
         </div>
         
@@ -203,6 +1560,124 @@ const SettingsApp = {
     setTimeout(() => {
       resultEl.innerHTML = '<div class="minimal-result minimal-result-ok">连接成功 · 接口配置正确</div>';
     }, 1000);
+  },
+  
+  // ==================== 自动获取模型 ====================
+  async fetchModels(type) {
+    const baseUrl = document.getElementById(`api-${type}-baseUrl`).value.trim();
+    const apiKey = document.getElementById(`api-${type}-apiKey`).value.trim();
+    
+    if (!baseUrl || !apiKey) {
+      this.showToast('请先填写接口地址与密钥');
+      return;
+    }
+    
+    const btn = document.querySelector(`.minimal-fetch-btn`);
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<span>获取中...</span>';
+    btn.disabled = true;
+    
+    try {
+      // 调用API的models接口
+      const response = await fetch(`${baseUrl}/models`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+      
+      const data = await response.json();
+      const models = data.data || data.models || [];
+      
+      if (models.length === 0) {
+        this.showToast('未获取到模型列表');
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+        return;
+      }
+      
+      // 显示模型选择弹窗
+      this.showModelSelector(type, models);
+      
+    } catch (error) {
+      console.error('获取模型失败:', error);
+      this.showToast('获取模型失败，请检查接口地址');
+    }
+    
+    btn.innerHTML = originalText;
+    btn.disabled = false;
+  },
+  
+  // 显示模型选择弹窗
+  showModelSelector(type, models) {
+    // 移除已存在的弹窗
+    const existing = document.getElementById('model-selector-modal');
+    if (existing) existing.remove();
+    
+    const modal = document.createElement('div');
+    modal.id = 'model-selector-modal';
+    modal.className = 'minimal-modal-overlay';
+    modal.innerHTML = `
+      <div class="minimal-modal">
+        <div class="minimal-modal-header">
+          <h3 class="minimal-modal-title">选择模型</h3>
+          <span class="minimal-modal-count">共 ${models.length} 个</span>
+          <button class="minimal-modal-close" onclick="SettingsApp.closeModelSelector()">×</button>
+        </div>
+        <div class="minimal-modal-search">
+          <input type="text" class="minimal-modal-input" id="model-search-input" 
+            placeholder="搜索模型..." oninput="SettingsApp.filterModels()">
+        </div>
+        <div class="minimal-modal-list" id="model-list">
+          ${models.map((model, i) => `
+            <div class="minimal-modal-item" onclick="SettingsApp.selectModel('${type}', '${model.id || model.name}')">
+              <span class="minimal-modal-item-index">${String(i + 1).padStart(2, '0')}</span>
+              <span class="minimal-modal-item-name">${model.id || model.name}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+    
+    this.container.appendChild(modal);
+    
+    // 点击遮罩关闭
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) this.closeModelSelector();
+    });
+  },
+  
+  // 过滤模型
+  filterModels() {
+    const searchValue = document.getElementById('model-search-input').value.toLowerCase();
+    const items = document.querySelectorAll('.minimal-modal-item');
+    
+    items.forEach(item => {
+      const name = item.querySelector('.minimal-modal-item-name').textContent.toLowerCase();
+      item.style.display = name.includes(searchValue) ? 'flex' : 'none';
+    });
+  },
+  
+  // 选择模型
+  selectModel(type, modelId) {
+    const modelKey = type === 'voice' ? 'voice' : 'model';
+    const input = document.getElementById(`api-${type}-${modelKey}`);
+    if (input) {
+      input.value = modelId;
+    }
+    this.closeModelSelector();
+    this.showToast('已选择模型: ' + modelId);
+  },
+  
+  // 关闭模型选择弹窗
+  closeModelSelector() {
+    const modal = document.getElementById('model-selector-modal');
+    if (modal) modal.remove();
   },
   
   // ==================== 数据管理 ====================

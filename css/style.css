@@ -1328,3 +1328,717 @@ html, body {
 
 
 
+
+/* ============================================
+   API配置 - 自动获取模型功能样式
+   ============================================ */
+
+/* 输入框+按钮容器 */
+.minimal-input-with-btn {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.minimal-input-with-btn .minimal-input {
+  flex: 1;
+}
+
+/* 获取模型按钮 */
+.minimal-fetch-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 16px;
+  border: 1px solid #e8dcc8;
+  background: rgba(201, 169, 110, 0.08);
+  border-radius: 12px;
+  color: #c9a96e;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.minimal-fetch-btn:hover {
+  background: rgba(201, 169, 110, 0.15);
+  border-color: #c9a96e;
+  transform: translateY(-1px);
+}
+
+.minimal-fetch-btn:active {
+  transform: translateY(0);
+}
+
+.minimal-fetch-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* 模型选择弹窗遮罩 */
+.minimal-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* 弹窗容器 */
+.minimal-modal {
+  background: #fdfbf7;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 400px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* 弹窗头部 */
+.minimal-modal-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 24px;
+  border-bottom: 1px solid #f0e8d8;
+  position: relative;
+}
+
+.minimal-modal-title {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 20px;
+  font-weight: 400;
+  color: #5a4a3a;
+  margin: 0;
+}
+
+.minimal-modal-count {
+  font-size: 11px;
+  color: #c9a96e;
+  background: rgba(201, 169, 110, 0.1);
+  padding: 4px 10px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.minimal-modal-close {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 50%;
+  font-size: 18px;
+  color: #8b7b6b;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.2s ease;
+}
+
+.minimal-modal-close:hover {
+  background: rgba(0, 0, 0, 0.1);
+  color: #5a4a3a;
+}
+
+/* 弹窗搜索框 */
+.minimal-modal-search {
+  padding: 16px 24px;
+  border-bottom: 1px solid #f5efe5;
+}
+
+.minimal-modal-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #e8dcc8;
+  border-radius: 12px;
+  font-size: 14px;
+  color: #5a4a3a;
+  background: #fff;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.minimal-modal-input:focus {
+  outline: none;
+  border-color: #c9a96e;
+  box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.1);
+}
+
+.minimal-modal-input::placeholder {
+  color: #c4b8a8;
+}
+
+/* 模型列表 */
+.minimal-modal-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+/* 模型列表项 */
+.minimal-modal-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.minimal-modal-item:hover {
+  background: rgba(201, 169, 110, 0.08);
+}
+
+.minimal-modal-item:active {
+  background: rgba(201, 169, 110, 0.15);
+  transform: scale(0.98);
+}
+
+.minimal-modal-item-index {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 12px;
+  font-style: italic;
+  color: #d4c8b8;
+  width: 28px;
+  flex-shrink: 0;
+}
+
+.minimal-modal-item:hover .minimal-modal-item-index {
+  color: #c9a96e;
+}
+
+.minimal-modal-item-name {
+  font-size: 14px;
+  color: #5a4a3a;
+  font-weight: 500;
+  word-break: break-all;
+}
+
+
+/* ============================================
+   对话API列表样式
+   ============================================ */
+
+/* 全局接口说明 */
+.api-global-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px 20px;
+  background: rgba(201, 169, 110, 0.08);
+  border: 1px solid rgba(201, 169, 110, 0.2);
+  border-radius: 14px;
+  margin-bottom: 28px;
+  color: #8b7b6b;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.api-global-note svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: #c9a96e;
+}
+
+/* 新增API按钮 */
+.minimal-add-api-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: none;
+  background: linear-gradient(135deg, #c9a96e 0%, #b8945f 100%);
+  border-radius: 20px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-left: auto;
+  box-shadow: 0 4px 12px rgba(201, 169, 110, 0.3);
+}
+
+.minimal-add-api-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(201, 169, 110, 0.4);
+}
+
+.minimal-add-api-btn:active {
+  transform: translateY(0);
+}
+
+/* API列表网格 */
+.api-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+/* API卡片 */
+.api-card {
+  background: #fff;
+  border: 1px solid #f0e8d8;
+  border-radius: 18px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.api-card:hover {
+  border-color: #e0d4c0;
+  box-shadow: 0 8px 24px rgba(139, 115, 85, 0.1);
+  transform: translateY(-2px);
+}
+
+/* 默认API卡片 */
+.api-card-default {
+  border-color: #c9a96e;
+  background: linear-gradient(135deg, #fdfbf7 0%, #faf5ec 100%);
+}
+
+.api-card-default::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #c9a96e, #e0c896, #c9a96e);
+}
+
+/* 卡片头部 */
+.api-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.api-card-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #5a4a3a;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.api-card-badge {
+  font-size: 10px;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, #c9a96e 0%, #b8945f 100%);
+  padding: 3px 8px;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.api-card-model {
+  font-size: 13px;
+  color: #8b7b6b;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.api-card-provider {
+  font-size: 11px;
+  color: #c4b8a8;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-style: italic;
+}
+
+/* 卡片操作按钮 */
+.api-card-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #f5efe5;
+}
+
+.api-card-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: rgba(139, 115, 85, 0.08);
+  border-radius: 8px;
+  color: #8b7b6b;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.15s ease;
+}
+
+.api-card-btn:hover {
+  background: rgba(139, 115, 85, 0.15);
+  color: #5a4a3a;
+  transform: scale(1.05);
+}
+
+.api-card-btn:active {
+  transform: scale(0.95);
+}
+
+.api-card-btn-danger:hover {
+  background: rgba(220, 53, 69, 0.1);
+  color: #dc3545;
+}
+
+.api-card-btn-primary:hover {
+  background: rgba(201, 169, 110, 0.15);
+  color: #c9a96e;
+}
+
+/* API编辑器弹窗 */
+.api-editor-modal {
+  max-width: 480px;
+}
+
+.api-editor-form {
+  padding: 24px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.api-editor-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.api-editor-actions .minimal-btn {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.api-editor-test-result {
+  margin-top: 16px;
+}
+
+/* 下拉选择框 */
+.minimal-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238b7b6b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  padding-right: 40px;
+  cursor: pointer;
+}
+
+.minimal-select:focus {
+  outline: none;
+  border-color: #c9a96e;
+  box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.1);
+}
+
+/* 响应式：小屏幕单列 */
+@media (max-width: 480px) {
+  .api-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* ============================================
+   语音API编辑器样式
+   ============================================ */
+
+/* 语音编辑器弹窗 */
+.voice-editor-modal {
+  max-height: 90vh;
+}
+
+/* 滑块值显示 */
+.slider-value {
+  margin-left: auto;
+  font-size: 13px;
+  font-weight: 600;
+  color: #c9a96e;
+  font-family: Georgia, 'Times New Roman', serif;
+}
+
+/* 滑块样式 */
+.minimal-slider {
+  width: 100%;
+  height: 6px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: linear-gradient(90deg, #c9a96e 0%, #e0d4c0 100%);
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
+  margin: 12px 0 8px;
+}
+
+.minimal-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: #fff;
+  border: 3px solid #c9a96e;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(201, 169, 110, 0.3);
+  transition: all 0.15s ease;
+}
+
+.minimal-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+  box-shadow: 0 4px 12px rgba(201, 169, 110, 0.4);
+}
+
+.minimal-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: #fff;
+  border: 3px solid #c9a96e;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(201, 169, 110, 0.3);
+}
+
+/* 滑块标签 */
+.slider-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #c4b8a8;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-style: italic;
+}
+
+/* 语音输入框+按钮 */
+.voice-input-with-btn {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.voice-input-with-btn .minimal-input {
+  flex: 1;
+}
+
+/* 试听按钮 */
+.voice-play-btn {
+  width: 44px;
+  height: 44px;
+  border: 1px solid #e8dcc8;
+  background: rgba(201, 169, 110, 0.08);
+  border-radius: 12px;
+  color: #c9a96e;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.voice-play-btn:hover {
+  background: rgba(201, 169, 110, 0.15);
+  border-color: #c9a96e;
+  transform: scale(1.05);
+}
+
+.voice-play-btn:active {
+  transform: scale(0.95);
+}
+
+/* 语音操作按钮行 */
+.voice-actions-row {
+  display: flex;
+  gap: 12px;
+  margin: 8px 0 20px;
+}
+
+.voice-actions-row .minimal-btn {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+}
+
+/* 小按钮 */
+.minimal-btn-sm {
+  padding: 10px 14px;
+  font-size: 12px;
+}
+
+/* 语音开关项 */
+.voice-toggle-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: rgba(201, 169, 110, 0.05);
+  border: 1px solid rgba(201, 169, 110, 0.15);
+  border-radius: 14px;
+  margin-bottom: 24px;
+}
+
+.voice-toggle-text {
+  flex: 1;
+}
+
+.voice-toggle-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #5a4a3a;
+  margin-bottom: 4px;
+}
+
+.voice-toggle-desc {
+  font-size: 12px;
+  color: #8b7b6b;
+}
+
+/* 开关样式 */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 48px;
+  height: 28px;
+  flex-shrink: 0;
+  margin-left: 16px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #e0d4c0;
+  transition: 0.3s;
+  border-radius: 28px;
+}
+
+.toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 22px;
+  width: 22px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.3s;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-switch input:checked + .toggle-slider {
+  background: linear-gradient(135deg, #c9a96e 0%, #b8945f 100%);
+}
+
+.toggle-switch input:checked + .toggle-slider:before {
+  transform: translateX(20px);
+}
+
+
+/* 表单提示文字 */
+.form-hint {
+  font-size: 11px;
+  color: #c4b8a8;
+  margin-top: 6px;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-style: italic;
+}
+
+
+/* ============================================
+   生图API编辑器样式
+   ============================================ */
+
+/* 生图编辑器弹窗 */
+.image-editor-modal {
+  max-height: 90vh;
+}
+
+/* 表单行（两列并排） */
+.form-row {
+  display: flex;
+  gap: 12px;
+}
+
+.form-row .minimal-form-item {
+  flex: 1;
+}
+
+/* 文本域 */
+.minimal-textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #e8dcc8;
+  border-radius: 12px;
+  font-size: 14px;
+  color: #5a4a3a;
+  background: #fff;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+  resize: vertical;
+  font-family: inherit;
+  line-height: 1.6;
+}
+
+.minimal-textarea:focus {
+  outline: none;
+  border-color: #c9a96e;
+  box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.1);
+}
+
+.minimal-textarea::placeholder {
+  color: #c4b8a8;
+}
+
