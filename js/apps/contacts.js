@@ -500,7 +500,7 @@ const ContactsApp = {
                 </svg>
                 <span>导入</span>
               </button>
-              <input type="file" id="profile-import-input" accept=".txt,.md,.json,.text" style="display:none" onchange="ContactsApp.handleProfileImport(event)">
+              <input type="file" id="profile-import-input" accept=".txt,.md,.json,.text,.docx" style="display:none" onchange="ContactsApp.handleProfileImport(event)">
             </div>
             
             <div class="form-item">
@@ -567,36 +567,104 @@ const ContactsApp = {
   // ==================== 角色文档导入 ====================
   
   // 处理角色文档导入
-  handleProfileImport(event) {
+  async handleProfileImport(event) {
     const file = event.target.files[0];
     if (!file) return;
     
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const text = e.target.result;
-      try {
-        // 智能解析文档
-        const parsedData = this.parseProfileDocument(text, file.name);
-        
-        // 自动填充表单
-        this.fillContactForm(parsedData);
-        
-        // 提示成功
-        this.showImportToast(parsedData);
-        
-        console.log('[导入] 解析成功:', parsedData);
-      } catch (err) {
-        console.error('[导入] 解析失败:', err);
-        alert('文档解析失败，请检查文件格式是否正确。\n\n支持格式：.txt、.md、.json');
+    const fileName = file.name.toLowerCase();
+    
+    try {
+      let text = '';
+      
+      // 检查是否是docx文件
+      if (fileName.endsWith('.docx')) {
+        console.log('[导入] 检测到docx文件，使用JSZip解析');
+        text = await this.parseDocxFile(file);
+      } else {
+        // 普通文本文件，直接读取
+        text = await this.readFileAsText(file);
       }
-    };
-    reader.onerror = () => {
-      alert('文件读取失败，请重试。');
-    };
-    reader.readAsText(file, 'UTF-8');
+      
+      // 智能解析文档
+      const parsedData = this.parseProfileDocument(text, file.name);
+      
+      // 自动填充表单
+      this.fillContactForm(parsedData);
+      
+      // 提示成功
+      this.showImportToast(parsedData);
+      
+      console.log('[导入] 解析成功:', parsedData);
+    } catch (err) {
+      console.error('[导入] 解析失败:', err);
+      alert('文档解析失败，请检查文件格式是否正确。\n\n支持格式：.txt、.md、.json、.docx');
+    }
     
     // 重置input，允许重复导入同一文件
     event.target.value = '';
+  },
+  
+  // 读取文件为文本
+  readFileAsText(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => resolve(e.target.result);
+      reader.onerror = () => reject(new Error('文件读取失败'));
+      reader.readAsText(file, 'UTF-8');
+    });
+  },
+  
+  // 解析docx文件
+  async parseDocxFile(file) {
+    if (typeof JSZip === 'undefined') {
+      throw new Error('JSZip库未加载，请检查网络连接');
+    }
+    
+    // 读取文件为ArrayBuffer
+    const arrayBuffer = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => resolve(e.target.result);
+      reader.onerror = () => reject(new Error('文件读取失败'));
+      reader.readAsArrayBuffer(file);
+    });
+    
+    // 用JSZip加载docx文件
+    const zip = await JSZip.loadAsync(arrayBuffer);
+    
+    // 读取word/document.xml
+    const documentXml = await zip.file('word/document.xml').async('string');
+    
+    // 解析XML，提取文本
+    const text = this.extractTextFromDocxXml(documentXml);
+    
+    console.log('[导入] docx解析完成，文本长度:', text.length);
+    return text;
+  },
+  
+  // 从docx的XML中提取文本
+  extractTextFromDocxXml(xml) {
+    // 创建DOM解析器
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(xml, 'text/xml');
+    
+    // 提取所有段落
+    const paragraphs = xmlDoc.getElementsByTagName('w:p');
+    let result = [];
+    
+    for (let i = 0; i < paragraphs.length; i++) {
+      const paragraph = paragraphs[i];
+      // 提取段落中的所有文本
+      const texts = paragraph.getElementsByTagName('w:t');
+      let paragraphText = '';
+      for (let j = 0; j < texts.length; j++) {
+        paragraphText += texts[j].textContent;
+      }
+      if (paragraphText.trim()) {
+        result.push(paragraphText);
+      }
+    }
+    
+    return result.join('\n\n');
   },
   
   // 智能解析角色文档
