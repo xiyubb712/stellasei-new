@@ -26,15 +26,6 @@ const SettingsApp = {
     
     this.container.innerHTML = `
       <div class="minimal-page">
-        <!-- 顶部杂志风装饰条 -->
-        <div class="minimal-magazine-bar">
-          <span class="minimal-magazine-vol">VOL. 0${currentIndex + 1}</span>
-          <span class="minimal-magazine-dot"></span>
-          <span class="minimal-magazine-editorial">EDITORIAL</span>
-          <span class="minimal-magazine-dot"></span>
-          <span class="minimal-magazine-date">${new Date().toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' })}</span>
-        </div>
-        
         <!-- 顶部Hero：点睛之笔 - 超大编号 + Stellasei英文 + 装饰 -->
         <div class="minimal-hero">
           <div class="minimal-hero-number">0${currentIndex + 1}</div>
@@ -56,7 +47,6 @@ const SettingsApp = {
                  onclick="SettingsApp.switchTab('${tab.id}')">
               <span class="minimal-nav-num">0${i + 1}</span>
               <span class="minimal-nav-name">${tab.name}</span>
-              <span class="minimal-nav-en">${tab.en}</span>
               <div class="minimal-nav-line"></div>
             </div>
           `).join('')}
