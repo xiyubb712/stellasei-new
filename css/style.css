@@ -3843,10 +3843,31 @@ html, body {
 
 /* 我的消息 - 浅马卡龙淡紫色 */
 .bubble-me {
-  background: rgba(222, 214, 240, 0.88);
+  background: rgba(222, 214, 240, 0.82);
   color: #5a4a7a;
-  border-bottom-right-radius: 4px;
-  box-shadow: 0 4px 16px rgba(222, 214, 240, 0.4);
+  padding: 10px 14px;
+  position: relative;
+  border-radius: 16px;
+  box-shadow: 
+    0 3px 10px rgba(147, 130, 220, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+/* 右上角小星星装饰 */
+.bubble-me::after {
+  content: '✦';
+  position: absolute;
+  top: -5px;
+  right: -4px;
+  font-size: 11px;
+  color: #9382dc;
+  text-shadow: 0 0 4px rgba(147, 130, 220, 0.5);
+  animation: starTwinkle 2s ease-in-out infinite;
+}
+
+@keyframes starTwinkle {
+  0%, 100% { opacity: 0.6; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1.1); }
 }
 
 .bubble-shimmer {
