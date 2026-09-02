@@ -6,7 +6,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="星绥小手机">
-  <meta name="theme-color" content="#000000">
+  <meta name="theme-color" content="#c9a96e">
   <title>星绥小手机</title>
   
   <!-- PWA Manifest -->
@@ -16,79 +16,58 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <!-- 手机外壳（用于电脑端预览，手机端会自适应全屏） -->
-  <div id="phone-frame">
-    <!-- 侧边按钮（仅电脑端显示） -->
-    <div class="phone-side-button power-button"></div>
-    <div class="phone-side-button volume-up"></div>
-    <div class="phone-side-button volume-down"></div>
+  <!-- 手机屏幕（直接全屏显示，电脑端和手机端一致） -->
+  <div id="phone-screen">
     
-    <div id="phone-screen">
+    <!-- 主屏幕 -->
+    <div id="desktop">
+      <!-- 壁纸层 -->
+      <div id="wallpaper"></div>
       
-      <!-- 状态栏（电脑端预览显示，手机端隐藏，避免和系统状态栏冲突） -->
-      <div id="status-bar" class="desktop-only">
-        <div id="status-bar-left">
-          <span id="status-bar-time">--:--</span>
-        </div>
-        <div id="status-bar-center">
-          <span id="status-bar-title"></span>
-        </div>
-        <div id="status-bar-right">
-          <span class="status-icon" id="status-bar-signal"></span>
-          <span class="status-icon" id="status-bar-battery"></span>
-        </div>
-      </div>
-      
-      <!-- 主屏幕 -->
-      <div id="desktop">
-        <!-- 壁纸层 -->
-        <div id="wallpaper"></div>
+      <!-- 桌面内容层 -->
+      <div id="desktop-content">
+        <!-- 页面指示器 -->
+        <div id="page-indicators"></div>
         
-        <!-- 桌面内容层 -->
-        <div id="desktop-content">
-          <!-- 页面指示器 -->
-          <div id="page-indicators"></div>
-          
-          <!-- 桌面网格容器 -->
-          <div id="desktop-container"></div>
-        </div>
-        
-        <!-- 底部Dock栏 -->
-        <div id="dock">
-          <div class="dock-item" data-app="chat">
-            <div class="dock-icon" data-icon="chat"></div>
-            <div class="dock-name">聊天</div>
-          </div>
-          <div class="dock-item" data-app="contacts">
-            <div class="dock-icon" data-icon="contacts"></div>
-            <div class="dock-name">联系人</div>
-          </div>
-          <div class="dock-item" data-app="worldbook">
-            <div class="dock-icon" data-icon="worldbook"></div>
-            <div class="dock-name">世界书</div>
-          </div>
-          <div class="dock-item" data-app="settings">
-            <div class="dock-icon" data-icon="settings"></div>
-            <div class="dock-name">设置</div>
-          </div>
-        </div>
+        <!-- 桌面网格容器 -->
+        <div id="desktop-container"></div>
       </div>
       
-      <!-- 应用容器（打开应用时显示） -->
-      <div id="app-container" class="hidden"></div>
-      
-      <!-- 导航栏（应用内显示） -->
-      <div id="nav-bar" class="hidden">
-        <button id="back-button" class="nav-button hidden">
-          <span class="nav-icon" data-icon="back"></span>
-        </button>
-        <div id="nav-title"></div>
-        <button id="home-button" class="nav-button">
-          <span class="nav-icon" data-icon="home"></span>
-        </button>
+      <!-- 底部Dock栏 -->
+      <div id="dock">
+        <div class="dock-item" data-app="chat">
+          <div class="dock-icon" data-icon="chat"></div>
+          <div class="dock-name">聊天</div>
+        </div>
+        <div class="dock-item" data-app="contacts">
+          <div class="dock-icon" data-icon="contacts"></div>
+          <div class="dock-name">联系人</div>
+        </div>
+        <div class="dock-item" data-app="worldbook">
+          <div class="dock-icon" data-icon="worldbook"></div>
+          <div class="dock-name">世界书</div>
+        </div>
+        <div class="dock-item" data-app="settings">
+          <div class="dock-icon" data-icon="settings"></div>
+          <div class="dock-name">设置</div>
+        </div>
       </div>
-      
     </div>
+    
+    <!-- 应用容器（打开应用时显示） -->
+    <div id="app-container" class="hidden"></div>
+    
+    <!-- 导航栏（应用内显示） -->
+    <div id="nav-bar" class="hidden">
+      <button id="back-button" class="nav-button hidden">
+        <span class="nav-icon" data-icon="back"></span>
+      </button>
+      <div id="nav-title"></div>
+      <button id="home-button" class="nav-button">
+        <span class="nav-icon" data-icon="home"></span>
+      </button>
+    </div>
+    
   </div>
   
   <!-- 核心模块 -->
