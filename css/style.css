@@ -14,11 +14,6 @@ html, body {
   margin: 0;
   padding: 0;
   overflow: hidden;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
   background: #f8f5f2;
   color: #333;
@@ -37,7 +32,8 @@ html, body {
    手机屏幕（直接全屏显示）
    ============================================ */
 #phone-screen {
-  position: relative;
+  position: fixed;
+  inset: 0;
   width: 100%;
   height: var(--app-height, 100dvh);
   min-height: var(--app-height, 100dvh);
@@ -71,7 +67,6 @@ html, body {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  touch-action: pan-x;
 }
 
 /* 壁纸 - 极简风格 */
@@ -3243,7 +3238,7 @@ html, body {
   color: #fff;
 }
 
-/* ==================== 聊天详情页 - 星空传讯 ==================== */
+/* ==================== 聊天详情页 - 星空传讯（浅色版） ==================== */
 
 .chat-room {
   position: relative;
@@ -3252,10 +3247,10 @@ html, body {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background: #0a0e1a;
+  background: linear-gradient(160deg, #f5f3ff 0%, #f8f5f2 50%, #f0f4ff 100%);
 }
 
-/* 星空背景 */
+/* 星空背景（浅色版） */
 .starfield {
   position: absolute;
   top: 0;
@@ -3276,31 +3271,31 @@ html, body {
 
 .stars-small {
   background-image: 
-    radial-gradient(1px 1px at 20px 30px, rgba(255,255,255,0.8), transparent),
-    radial-gradient(1px 1px at 40px 70px, rgba(255,255,255,0.6), transparent),
-    radial-gradient(1px 1px at 50px 160px, rgba(255,255,255,0.7), transparent),
-    radial-gradient(1px 1px at 90px 40px, rgba(255,255,255,0.5), transparent),
-    radial-gradient(1px 1px at 130px 80px, rgba(255,255,255,0.6), transparent),
-    radial-gradient(1px 1px at 160px 120px, rgba(255,255,255,0.8), transparent);
+    radial-gradient(1px 1px at 20px 30px, rgba(201, 169, 110, 0.4), transparent),
+    radial-gradient(1px 1px at 40px 70px, rgba(147, 130, 220, 0.35), transparent),
+    radial-gradient(1px 1px at 50px 160px, rgba(201, 169, 110, 0.35), transparent),
+    radial-gradient(1px 1px at 90px 40px, rgba(147, 130, 220, 0.3), transparent),
+    radial-gradient(1px 1px at 130px 80px, rgba(201, 169, 110, 0.3), transparent),
+    radial-gradient(1px 1px at 160px 120px, rgba(147, 130, 220, 0.35), transparent);
   background-size: 200px 200px;
   animation: starsMove 100s linear infinite;
 }
 
 .stars-medium {
   background-image: 
-    radial-gradient(2px 2px at 50px 100px, rgba(255,255,255,0.9), transparent),
-    radial-gradient(2px 2px at 150px 50px, rgba(255,255,255,0.7), transparent),
-    radial-gradient(2px 2px at 250px 150px, rgba(255,255,255,0.8), transparent),
-    radial-gradient(1.5px 1.5px at 350px 80px, rgba(255,255,255,0.6), transparent);
+    radial-gradient(2px 2px at 50px 100px, rgba(201, 169, 110, 0.5), transparent),
+    radial-gradient(2px 2px at 150px 50px, rgba(147, 130, 220, 0.4), transparent),
+    radial-gradient(2px 2px at 250px 150px, rgba(201, 169, 110, 0.45), transparent),
+    radial-gradient(1.5px 1.5px at 350px 80px, rgba(147, 130, 220, 0.35), transparent);
   background-size: 400px 400px;
   animation: starsMove 150s linear infinite;
 }
 
 .stars-large {
   background-image: 
-    radial-gradient(3px 3px at 100px 200px, rgba(201, 169, 110, 0.9), transparent),
-    radial-gradient(2.5px 2.5px at 300px 100px, rgba(255,255,255,0.8), transparent),
-    radial-gradient(3px 3px at 500px 300px, rgba(201, 169, 110, 0.7), transparent);
+    radial-gradient(3px 3px at 100px 200px, rgba(201, 169, 110, 0.6), transparent),
+    radial-gradient(2.5px 2.5px at 300px 100px, rgba(147, 130, 220, 0.5), transparent),
+    radial-gradient(3px 3px at 500px 300px, rgba(201, 169, 110, 0.5), transparent);
   background-size: 600px 600px;
   animation: starsTwinkle 4s ease-in-out infinite;
 }
@@ -3322,9 +3317,9 @@ html, body {
   width: 140%;
   height: 140%;
   background: 
-    radial-gradient(ellipse at 30% 20%, rgba(100, 80, 160, 0.15) 0%, transparent 50%),
-    radial-gradient(ellipse at 70% 80%, rgba(201, 169, 110, 0.1) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 50%, rgba(60, 80, 140, 0.08) 0%, transparent 60%);
+    radial-gradient(ellipse at 30% 20%, rgba(147, 130, 220, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 70% 80%, rgba(201, 169, 110, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(180, 200, 255, 0.05) 0%, transparent 60%);
   animation: nebulaFloat 30s ease-in-out infinite;
 }
 
@@ -3333,7 +3328,7 @@ html, body {
   50% { transform: translate(20px, -20px) scale(1.05); }
 }
 
-/* 聊天头部 */
+/* 聊天头部（浅色版） */
 .chat-room-header {
   position: relative;
   z-index: 10;
@@ -3341,7 +3336,7 @@ html, body {
   align-items: center;
   gap: 12px;
   padding: calc(12px + env(safe-area-inset-top)) 16px 12px;
-  background: rgba(10, 14, 26, 0.85);
+  background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(201, 169, 110, 0.15);
@@ -3353,18 +3348,18 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(201, 169, 110, 0.08);
+  border: 1px solid rgba(201, 169, 110, 0.15);
   border-radius: 50%;
-  color: rgba(255, 255, 255, 0.8);
+  color: #5a4a3a;
   cursor: pointer;
   transition: all 0.25s ease;
   flex-shrink: 0;
 }
 
 .room-back-btn:hover {
-  background: rgba(201, 169, 110, 0.2);
-  border-color: rgba(201, 169, 110, 0.4);
+  background: rgba(201, 169, 110, 0.15);
+  border-color: rgba(201, 169, 110, 0.3);
   color: #c9a96e;
 }
 
@@ -3414,16 +3409,16 @@ html, body {
   right: -3px;
   bottom: -3px;
   border-radius: 50%;
-  background: linear-gradient(135deg, rgba(201, 169, 110, 0.6), rgba(168, 136, 78, 0.3));
+  background: linear-gradient(135deg, rgba(201, 169, 110, 0.5), rgba(147, 130, 220, 0.3));
   filter: blur(6px);
-  opacity: 0.7;
+  opacity: 0.6;
   z-index: 0;
   animation: avatarGlow 3s ease-in-out infinite;
 }
 
 @keyframes avatarGlow {
-  0%, 100% { opacity: 0.5; transform: scale(1); }
-  50% { opacity: 0.9; transform: scale(1.05); }
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.05); }
 }
 
 .room-name-info {
@@ -3436,7 +3431,7 @@ html, body {
 .room-name {
   font-size: 15px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.95);
+  color: #2a2a2a;
   font-family: Georgia, 'Times New Roman', serif;
 }
 
@@ -3445,7 +3440,7 @@ html, body {
   align-items: center;
   gap: 6px;
   font-size: 11px;
-  color: rgba(201, 169, 110, 0.8);
+  color: #8b7355;
 }
 
 .status-dot-online {
@@ -3453,7 +3448,7 @@ html, body {
   height: 6px;
   border-radius: 50%;
   background: #4ade80;
-  box-shadow: 0 0 8px rgba(74, 222, 128, 0.6);
+  box-shadow: 0 0 8px rgba(74, 222, 128, 0.5);
   animation: statusPulse 2s ease-in-out infinite;
 }
 
@@ -3472,21 +3467,21 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(201, 169, 110, 0.08);
+  border: 1px solid rgba(201, 169, 110, 0.15);
   border-radius: 50%;
-  color: rgba(255, 255, 255, 0.7);
+  color: #5a4a3a;
   cursor: pointer;
   transition: all 0.25s ease;
 }
 
 .room-action-btn:hover {
-  background: rgba(201, 169, 110, 0.2);
-  border-color: rgba(201, 169, 110, 0.4);
+  background: rgba(201, 169, 110, 0.15);
+  border-color: rgba(201, 169, 110, 0.3);
   color: #c9a96e;
 }
 
-/* 聊天消息区域 */
+/* 聊天消息区域（浅色版） */
 .chat-messages {
   position: relative;
   z-index: 5;
@@ -3506,11 +3501,11 @@ html, body {
 }
 
 .chat-messages::-webkit-scrollbar-thumb {
-  background: rgba(201, 169, 110, 0.3);
+  background: rgba(201, 169, 110, 0.2);
   border-radius: 2px;
 }
 
-/* 日期分隔线 */
+/* 日期分隔线（浅色版） */
 .chat-date-divider {
   display: flex;
   align-items: center;
@@ -3521,18 +3516,18 @@ html, body {
 .date-line {
   flex: 1;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(201, 169, 110, 0.3), transparent);
+  background: linear-gradient(90deg, transparent, rgba(201, 169, 110, 0.25), transparent);
 }
 
 .date-text {
   font-size: 11px;
-  color: rgba(201, 169, 110, 0.7);
+  color: #a08b6e;
   font-family: 'Courier New', monospace;
   letter-spacing: 1px;
   white-space: nowrap;
 }
 
-/* 空消息状态 */
+/* 空消息状态（浅色版） */
 .chat-empty-messages {
   display: flex;
   flex-direction: column;
@@ -3548,7 +3543,7 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: rgba(201, 169, 110, 0.6);
+  color: rgba(201, 169, 110, 0.5);
   margin-bottom: 20px;
   animation: signalFloat 3s ease-in-out infinite;
 }
@@ -3561,17 +3556,17 @@ html, body {
 .empty-signal-text {
   font-size: 16px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.9);
+  color: #5a4a3a;
   margin-bottom: 8px;
   font-family: Georgia, 'Times New Roman', serif;
 }
 
 .empty-signal-sub {
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.5);
+  color: #a08b6e;
 }
 
-/* 消息气泡 */
+/* 消息气泡（浅色版） */
 .message {
   display: flex;
   margin-bottom: 20px;
@@ -3640,9 +3635,9 @@ html, body {
   right: -2px;
   bottom: -2px;
   border-radius: 50%;
-  background: linear-gradient(135deg, rgba(201, 169, 110, 0.5), rgba(168, 136, 78, 0.2));
+  background: linear-gradient(135deg, rgba(201, 169, 110, 0.4), rgba(147, 130, 220, 0.2));
   filter: blur(4px);
-  opacity: 0.6;
+  opacity: 0.5;
   z-index: 0;
 }
 
@@ -3655,7 +3650,7 @@ html, body {
 
 .message-sender-name {
   font-size: 11px;
-  color: rgba(201, 169, 110, 0.7);
+  color: #8b7355;
   margin-left: 4px;
   font-family: Georgia, 'Times New Roman', serif;
 }
@@ -3668,12 +3663,12 @@ html, body {
   overflow: hidden;
 }
 
-/* 我的消息 - 暖金色调，像发出的信号 */
+/* 我的消息 - 暖金色调（浅色版也保留） */
 .bubble-me {
-  background: linear-gradient(135deg, rgba(201, 169, 110, 0.9), rgba(168, 136, 78, 0.85));
+  background: linear-gradient(135deg, rgba(201, 169, 110, 0.95), rgba(168, 136, 78, 0.9));
   color: #fff;
   border-bottom-right-radius: 4px;
-  box-shadow: 0 4px 20px rgba(201, 169, 110, 0.3);
+  box-shadow: 0 4px 16px rgba(201, 169, 110, 0.25);
 }
 
 .bubble-shimmer {
@@ -3691,14 +3686,15 @@ html, body {
   50%, 100% { left: 100%; }
 }
 
-/* 对方消息 - 冷色调，像收到的信号 */
+/* 对方消息 - 浅色版（白色背景，深色文字） */
 .bubble-other {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(201, 169, 110, 0.12);
+  color: #3a3a3a;
   border-bottom-left-radius: 4px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
 }
 
 .bubble-signal {
@@ -3709,10 +3705,10 @@ html, body {
   bottom: -1px;
   border-radius: 18px;
   border-bottom-left-radius: 4px;
-  background: linear-gradient(135deg, rgba(201, 169, 110, 0.3), transparent, rgba(100, 150, 255, 0.2));
+  background: linear-gradient(135deg, rgba(201, 169, 110, 0.2), transparent, rgba(147, 130, 220, 0.15));
   z-index: -1;
   filter: blur(8px);
-  opacity: 0.5;
+  opacity: 0.4;
 }
 
 .message-text {
@@ -3724,7 +3720,7 @@ html, body {
 
 .message-time {
   font-size: 10px;
-  color: rgba(255, 255, 255, 0.4);
+  color: #b0a090;
   font-family: 'Courier New', monospace;
   margin: 0 4px;
 }
@@ -3733,15 +3729,15 @@ html, body {
   text-align: right;
 }
 
-/* 输入区域 */
+/* 输入区域（浅色版） */
 .chat-input-area {
   position: relative;
   z-index: 10;
   padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
-  background: rgba(10, 14, 26, 0.9);
+  background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-top: 1px solid rgba(201, 169, 110, 0.15);
+  border-top: 1px solid rgba(201, 169, 110, 0.12);
 }
 
 .input-wrapper {
@@ -3758,24 +3754,24 @@ html, body {
   right: -2px;
   bottom: -2px;
   border-radius: 24px;
-  background: linear-gradient(135deg, rgba(201, 169, 110, 0.3), rgba(100, 150, 255, 0.2));
+  background: linear-gradient(135deg, rgba(201, 169, 110, 0.2), rgba(147, 130, 220, 0.15));
   filter: blur(10px);
-  opacity: 0.4;
+  opacity: 0.3;
   z-index: 0;
   transition: opacity 0.3s ease;
 }
 
 .input-wrapper:focus-within .input-glow {
-  opacity: 0.7;
+  opacity: 0.5;
 }
 
 .chat-input {
   flex: 1;
   padding: 12px 16px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(201, 169, 110, 0.15);
   border-radius: 22px;
-  color: rgba(255, 255, 255, 0.95);
+  color: #3a3a3a;
   font-size: 14px;
   font-family: inherit;
   resize: none;
@@ -3787,12 +3783,13 @@ html, body {
 }
 
 .chat-input:focus {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(201, 169, 110, 0.4);
+  background: rgba(255, 255, 255, 1);
+  border-color: rgba(201, 169, 110, 0.35);
+  box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.08);
 }
 
 .chat-input::placeholder {
-  color: rgba(255, 255, 255, 0.35);
+  color: #b0a090;
 }
 
 .send-signal-btn {
@@ -3810,12 +3807,12 @@ html, body {
   z-index: 1;
   transition: all 0.3s ease;
   flex-shrink: 0;
-  box-shadow: 0 4px 16px rgba(201, 169, 110, 0.4);
+  box-shadow: 0 4px 16px rgba(201, 169, 110, 0.3);
 }
 
 .send-signal-btn:hover {
   transform: scale(1.08);
-  box-shadow: 0 6px 24px rgba(201, 169, 110, 0.5);
+  box-shadow: 0 6px 20px rgba(201, 169, 110, 0.4);
 }
 
 .send-signal-btn:active {
@@ -3829,7 +3826,7 @@ html, body {
   gap: 8px;
   margin-top: 8px;
   font-size: 10px;
-  color: rgba(255, 255, 255, 0.3);
+  color: #b0a090;
   letter-spacing: 1px;
 }
 
