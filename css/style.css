@@ -199,15 +199,18 @@ html, body {
    ============================================ */
 #dock {
   position: relative;
-  height: 85px;
-  margin: 0 16px calc(8px + env(safe-area-inset-bottom));
-  padding: 10px 16px;
+  height: 80px;
+  width: fit-content;
+  max-width: calc(100% - 32px);
+  margin: 0 auto calc(8px + env(safe-area-inset-bottom));
+  padding: 8px 24px;
   border-radius: 22px;
   background: rgba(255, 255, 255, 0.65);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
+  gap: 28px;
   align-items: center;
   z-index: 1;
   box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
