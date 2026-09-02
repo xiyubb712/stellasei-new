@@ -9,7 +9,8 @@
 
 html, body {
   width: 100%;
-  min-height: var(--app-height, 100dvh);`n  height: var(--app-height, 100dvh);
+  min-height: var(--app-height, 100dvh);
+  height: var(--app-height, 100dvh);
   margin: 0;
   padding: 0;
   overflow: hidden;
@@ -1961,7 +1962,9 @@ html, body {
   background: #f8f5f0;
   background-image: 
     repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(180, 160, 130, 0.05) 28px, rgba(180, 160, 130, 0.05) 29px);
-  padding-top: max(env(safe-area-inset-top), 50px);`n  padding-bottom: 30px;`n  box-sizing: border-box;
+  padding-top: max(env(safe-area-inset-top), 20px);
+  padding-bottom: 30px;
+  box-sizing: border-box;
   font-family: Georgia, 'Times New Roman', 'Songti SC', serif;
   -webkit-overflow-scrolling: touch;
 }
