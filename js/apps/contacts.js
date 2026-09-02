@@ -573,6 +573,27 @@ const ContactsApp = {
     
     const fileName = file.name.toLowerCase();
     
+    // 找到导入按钮，添加加载状态
+    const importBtn = document.querySelector('.import-btn');
+    const originalBtnHTML = importBtn ? importBtn.innerHTML : '';
+    if (importBtn) {
+      importBtn.disabled = true;
+      importBtn.classList.add('loading');
+      importBtn.innerHTML = `
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="2" x2="12" y2="6"></line>
+          <line x1="12" y1="18" x2="12" y2="22"></line>
+          <line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line>
+          <line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line>
+          <line x1="2" y1="12" x2="6" y2="12"></line>
+          <line x1="18" y1="12" x2="22" y2="12"></line>
+          <line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line>
+          <line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line>
+        </svg>
+        <span>导入中...</span>
+      `;
+    }
+    
     try {
       let text = '';
       
@@ -598,6 +619,13 @@ const ContactsApp = {
     } catch (err) {
       console.error('[导入] 解析失败:', err);
       alert('文档解析失败，请检查文件格式是否正确。\n\n支持格式：.txt、.md、.json、.docx');
+    } finally {
+      // 恢复按钮状态
+      if (importBtn) {
+        importBtn.disabled = false;
+        importBtn.classList.remove('loading');
+        importBtn.innerHTML = originalBtnHTML;
+      }
     }
     
     // 重置input，允许重复导入同一文件

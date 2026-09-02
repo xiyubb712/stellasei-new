@@ -2655,16 +2655,32 @@ html, body {
 /* 导入按钮 */
 .import-btn {
   display: flex; align-items: center; gap: 6px;
-  padding: 6px 12px; border: 1px solid #c4b8a8; background: white;
-  font-size: 11px; font-weight: 600; color: #666; cursor: pointer;
+  padding: 6px 12px; border: 1px solid #c9a96e; background: white;
+  font-size: 11px; font-weight: 600; color: #c9a96e; cursor: pointer;
   transition: all 0.2s; font-family: 'Courier New', monospace; letter-spacing: 1px;
-  margin-left: 10px;
+  margin-left: 10px; border-radius: 4px;
 }
 .import-btn:hover {
-  background: #2a2a2a; color: white; border-color: #2a2a2a;
+  background: #faf6ef; color: #a8884e; border-color: #a8884e;
 }
 .import-btn:active {
   transform: scale(0.98);
+  background: #f5efe3;
+}
+.import-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+.import-btn.loading {
+  pointer-events: none;
+}
+.import-btn.loading svg {
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 .form-hint {
   font-size: 10px; color: #999; font-weight: 400; letter-spacing: 0;
