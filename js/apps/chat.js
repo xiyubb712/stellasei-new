@@ -486,13 +486,8 @@ const ChatApp = {
       </div>
     `;
     
-    // 滚动到底部
-    setTimeout(() => {
-      const messagesEl = document.getElementById('chat-messages');
-      if (messagesEl) {
-        messagesEl.scrollTop = messagesEl.scrollHeight;
-      }
-    }, 100);
+    // 滚动到底部（确保最新消息贴齐右下角）
+    this.scrollToBottom();
     
     console.log('[聊天应用] 进入聊天详情页:', displayName);
   },
@@ -1770,10 +1765,24 @@ const ChatApp = {
       });
     }
     
-    // 滚动到底部
+    // 滚动到底部（确保最新消息贴齐右下角）
+    this.scrollToBottom();
+  },
+  
+  // 统一滚动到底部函数
+  scrollToBottom() {
+    const messagesEl = document.getElementById('chat-messages');
+    if (!messagesEl) return;
+    
+    // 用requestAnimationFrame确保在DOM渲染完成后滚动
+    requestAnimationFrame(() => {
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    });
+    
+    // 再延迟一下，确保图片等资源加载完后再次滚动
     setTimeout(() => {
       messagesEl.scrollTop = messagesEl.scrollHeight;
-    }, 50);
+    }, 100);
   },
   
   // ==================== 更新会话列表 ====================
