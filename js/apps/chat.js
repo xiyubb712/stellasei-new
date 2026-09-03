@@ -435,7 +435,7 @@ const ChatApp = {
         </div>
         
         <!-- 聊天消息区域 -->
-        <div class="chat-messages" id="chat-messages">
+        <div class="chat-messages bubble-style-${session?.bubbleStyle || '简约'}" id="chat-messages">
           <div class="chat-date-divider">
             <span class="date-line"></span>
             <span class="date-text">星历 ${new Date().toLocaleDateString('zh-CN')}</span>
@@ -1346,11 +1346,18 @@ const ChatApp = {
           '</svg>' +
         '</button>' +
       '</div>' +
-      '<div class="bubble-style-preview">' +
-        '<div class="preview-bubble-wrap">' +
-          '<div class="preview-bubble" id="bubble-preview-bubble">' +
-            '<div class="preview-text">这是预览气泡，选择不同样式查看效果</div>' +
+      '<div class="bubble-style-preview bubble-style-' + currentStyle + '" id="bubble-style-preview">' +
+        '<div class="preview-row preview-row-other">' +
+          '<div class="preview-avatar-other">他</div>' +
+          '<div class="preview-bubble bubble-other">' +
+            '<div class="preview-text">你好呀，今天过得怎么样？</div>' +
           '</div>' +
+        '</div>' +
+        '<div class="preview-row preview-row-me">' +
+          '<div class="preview-bubble bubble-me">' +
+            '<div class="preview-text">还不错呀，你呢？</div>' +
+          '</div>' +
+          '<div class="preview-avatar-me">我</div>' +
         '</div>' +
       '</div>' +
       '<div class="bubble-style-options">' + optionsHtml + '</div>';
@@ -1374,12 +1381,30 @@ const ChatApp = {
     }
     element.classList.add('active');
     
+    // 实时更新预览区域的气泡样式
+    const previewContainer = document.getElementById('bubble-style-preview');
+    if (previewContainer) {
+      const classes = previewContainer.className.split(' ');
+      const newClasses = classes.filter(c => c.indexOf('bubble-style-') < 0);
+      newClasses.push('bubble-style-' + style);
+      previewContainer.className = newClasses.join(' ');
+    }
+    
     // 保存设置
     const sessions = this.getChatSessions();
     const session = sessions.find(s => s.contactId === this.currentChatId);
     if (session) {
       session.bubbleStyle = style;
       this.saveChatSessions(sessions);
+      
+      // 实时更新聊天消息的气泡样式
+      const chatMessages = document.getElementById('chat-messages');
+      if (chatMessages) {
+        const msgClasses = chatMessages.className.split(' ');
+        const newMsgClasses = msgClasses.filter(c => c.indexOf('bubble-style-') < 0);
+        newMsgClasses.push('bubble-style-' + style);
+        chatMessages.className = newMsgClasses.join(' ');
+      }
       
       // 更新设置页显示（不重新渲染整个页面，避免跳到顶部）
       const descEls = document.querySelectorAll('.settings-card-desc');
