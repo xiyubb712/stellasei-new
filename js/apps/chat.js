@@ -519,7 +519,7 @@ const ChatApp = {
             </div>
             <span class="message-time">${time}</span>
           </div>
-          <div class="message-avatar message-avatar-me" ondblclick="ChatApp.pokeSelf()" title="双击戳一戳自己">
+          <div class="message-avatar message-avatar-me" onclick="ChatApp.handleAvatarClick('self')" title="双击戳一戳自己">
             ${myAvatar 
               ? `<img src="${myAvatar}" alt="我">`
               : `<div class="message-avatar-placeholder">我</div>`
@@ -535,7 +535,7 @@ const ChatApp = {
       const displayName = session?.remark || name;
       return `
         <div class="message message-other">
-          <div class="message-avatar" ondblclick="ChatApp.pokeContact()" title="双击戳一戳">
+          <div class="message-avatar" onclick="ChatApp.handleAvatarClick('contact')" title="双击戳一戳">
             ${avatar 
               ? `<img src="${avatar}" alt="${displayName}">`
               : `<div class="message-avatar-placeholder">${displayName.charAt(0)}</div>`
@@ -1529,9 +1529,38 @@ const ChatApp = {
     this.renderSettingsPage();
   },
   
+  // 头像点击处理（实现快速双击，比浏览器默认的ondblclick快）
+  lastAvatarClickTime: 0,
+  lastAvatarClickType: '',
+  handleAvatarClick(type) {
+    const now = Date.now();
+    const timeDiff = now - this.lastAvatarClickTime;
+    
+    // 300ms内两次点击，并且类型相同，触发戳一戳
+    if (timeDiff < 300 && this.lastAvatarClickType === type) {
+      if (type === 'contact') {
+        this.pokeContact();
+      } else {
+        this.pokeSelf();
+      }
+      // 重置，避免连续触发
+      this.lastAvatarClickTime = 0;
+      this.lastAvatarClickType = '';
+    } else {
+      // 记录第一次点击
+      this.lastAvatarClickTime = now;
+      this.lastAvatarClickType = type;
+    }
+  },
+  
   pokeContact() {
     const contactId = this.currentChatId;
     if (!contactId) return;
+    
+    // 震动反馈
+    if (navigator.vibrate) {
+      navigator.vibrate(30);
+    }
     
     const contact = this.getContact(contactId);
     const session = this.getCurrentSession();
@@ -1588,6 +1617,11 @@ const ChatApp = {
   pokeSelf() {
     const contactId = this.currentChatId;
     if (!contactId) return;
+    
+    // 震动反馈
+    if (navigator.vibrate) {
+      navigator.vibrate(30);
+    }
     
     const contact = this.getContact(contactId);
     const session = this.getCurrentSession();

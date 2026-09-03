@@ -4112,6 +4112,9 @@ html, body {
 .message-system {
   display: flex;
   justify-content: center;
+  align-items: center;
+  max-width: 100%;
+  width: 100%;
   padding: 8px 0;
 }
 .system-message-text {
