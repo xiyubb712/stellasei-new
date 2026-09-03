@@ -4154,13 +4154,14 @@ html, body {
 .poke-input-row {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 .poke-label {
   font-size: 14px;
   color: #6a6080;
   font-weight: 500;
-  min-width: 20px;
+  min-width: 16px;
   text-align: center;
 }
 .poke-fixed {
@@ -4168,13 +4169,15 @@ html, body {
   color: #9382dc;
   font-weight: 600;
   background: rgba(147, 130, 220, 0.1);
-  padding: 6px 12px;
+  padding: 6px 10px;
   border-radius: 8px;
   white-space: nowrap;
 }
 .poke-input {
   flex: 1;
-  padding: 8px 14px;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 8px 12px;
   border: 1px solid rgba(147, 130, 220, 0.2);
   border-radius: 10px;
   font-size: 14px;
@@ -4184,7 +4187,8 @@ html, body {
   outline: none;
 }
 .poke-action-input {
-  flex: 0 0 80px;
+  flex: 0 0 60px;
+  min-width: 60px;
   text-align: center;
   font-weight: 600;
   color: #9382dc;
