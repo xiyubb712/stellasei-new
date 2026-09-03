@@ -3226,6 +3226,7 @@ html, body {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
+  overflow-x: hidden;
   padding: 20px 16px;
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
