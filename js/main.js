@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 星绥小手机 - 入口文件
  * 
  * 功能：
@@ -48,6 +48,9 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // 第七步：绑定全局事件
   bindGlobalEvents();
+  
+  // 第八步：初始化橡皮筋效果阻止（防止iOS过度滚动露出白边）
+  initOverscrollPrevention();
   
   console.log('========================================');
   console.log('  星绥小手机 启动完成！');
@@ -510,3 +513,79 @@ window.closeConfirmDialog = function(overlay) {
     }
   }, 200);
 };
+
+/**
+ * 初始化橡皮筋效果阻止
+ * 防止iOS过度滚动（overscroll bounce）露出白边
+ * 原理：监听touchmove事件，当滚动到顶部或底部时阻止默认行为
+ */
+function initOverscrollPrevention() {
+  let startY = 0;
+  let startX = 0;
+  let targetScrollable = null;
+  
+  // 找到最近的可滚动祖先元素
+  function findScrollableParent(element) {
+    let current = element;
+    while (current && current !== document.body) {
+      const style = window.getComputedStyle(current);
+      const overflowY = style.overflowY;
+      const canScroll = (overflowY === 'auto' || overflowY === 'scroll') && 
+                        current.scrollHeight > current.clientHeight;
+      if (canScroll) {
+        return current;
+      }
+      current = current.parentElement;
+    }
+    return null;
+  }
+  
+  // 监听touchstart，记录初始位置和目标元素
+  document.addEventListener('touchstart', function(e) {
+    if (e.touches.length !== 1) return;
+    startY = e.touches[0].clientY;
+    startX = e.touches[0].clientX;
+    targetScrollable = findScrollableParent(e.target);
+  }, { passive: true });
+  
+  // 监听touchmove，阻止过度滚动
+  document.addEventListener('touchmove', function(e) {
+    if (e.touches.length !== 1) return;
+    
+    const currentY = e.touches[0].clientY;
+    const currentX = e.touches[0].clientX;
+    const diffY = currentY - startY;
+    const diffX = currentX - startX;
+    
+    // 如果是水平滑动，不处理（交给横向滚动处理）
+    if (Math.abs(diffX) > Math.abs(diffY)) {
+      return;
+    }
+    
+    // 如果没有找到可滚动元素，阻止默认行为（整个页面不应该滚动）
+    if (!targetScrollable) {
+      e.preventDefault();
+      return;
+    }
+    
+    const scrollTop = targetScrollable.scrollTop;
+    const scrollHeight = targetScrollable.scrollHeight;
+    const clientHeight = targetScrollable.clientHeight;
+    
+    // 已经滚动到顶部，并且继续向下拉（diffY > 0），阻止默认行为
+    if (scrollTop <= 0 && diffY > 0) {
+      e.preventDefault();
+      return;
+    }
+    
+    // 已经滚动到底部，并且继续向上拉（diffY < 0），阻止默认行为
+    if (scrollTop + clientHeight >= scrollHeight - 1 && diffY < 0) {
+      e.preventDefault();
+      return;
+    }
+    
+    // 正常滚动，不阻止
+  }, { passive: false });
+  
+  console.log('[橡皮筋阻止] 初始化完成');
+}
