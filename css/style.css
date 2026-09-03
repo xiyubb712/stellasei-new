@@ -3838,6 +3838,11 @@ html, body {
   overflow-x: hidden;
 }
 
+/* 设置内容区域 */
+.chat-settings-content {
+  flex-shrink: 0;
+}
+
 /* 顶部导航栏 */
 .settings-header {
   display: flex;
