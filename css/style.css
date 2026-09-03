@@ -4198,3 +4198,26 @@ html, body {
 .poke-input::placeholder {
   color: #c0b8d0;
 }
+/* ==================== 自己的头像（消息右侧） ==================== */
+.message-me {
+  flex-direction: row;
+  justify-content: flex-end;
+}
+.message-me .message-content-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-right: 10px;
+}
+.message-me .message-bubble {
+  margin-left: auto;
+}
+.message-me .message-time {
+  text-align: right;
+}
+.message-avatar-me {
+  order: 2;
+}
+.message-avatar-me:active {
+  transform: scale(0.9);
+}

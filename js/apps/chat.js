@@ -490,13 +490,23 @@ const ChatApp = {
     }
     
     if (isMe) {
+      const myAvatar = this.getMyAvatar();
       return `
         <div class="message message-me">
-          <div class="message-bubble bubble-me">
-            <div class="bubble-shimmer"></div>
-            <p class="message-text">${this.escapeHtml(msg.content)}</p>
+          <div class="message-content-wrap">
+            <div class="message-bubble bubble-me">
+              <div class="bubble-shimmer"></div>
+              <p class="message-text">${this.escapeHtml(msg.content)}</p>
+            </div>
+            <span class="message-time">${time}</span>
           </div>
-          <span class="message-time">${time}</span>
+          <div class="message-avatar message-avatar-me" ondblclick="ChatApp.pokeSelf()" title="双击戳一戳自己">
+            ${myAvatar 
+              ? `<img src="${myAvatar}" alt="我">`
+              : `<div class="message-avatar-placeholder">我</div>`
+            }
+            <div class="message-avatar-glow"></div>
+          </div>
         </div>
       `;
     } else {
@@ -911,6 +921,64 @@ const ChatApp = {
         const myPokeAction = session?.myPokeAction || '戳了戳';
         const myPokeSuffix = session?.myPokeSuffix || '';
         const replyPokeContent = myPokeSuffix ? `${displayName}${myPokeAction}我${myPokeSuffix}` : `${displayName}${myPokeAction}我`;
+        const replyPokeMessage = {
+          id: 'msg_' + Date.now(),
+          sender: 'system',
+          type: 'poke',
+          content: replyPokeContent,
+          time: Date.now()
+        };
+        const currentMessages = this.getChatMessages(contactId);
+        currentMessages.push(replyPokeMessage);
+        this.saveChatMessages(contactId, currentMessages);
+        
+        if (this.isInChatRoom && this.currentChatId === contactId) {
+          this.refreshMessages();
+        }
+      }, 800 + Math.random() * 1000);
+    }
+  },
+  
+  getMyAvatar() {
+    // 从用户设置中获取自己的头像，暂时返回空（之后接入用户头像功能）
+    const userAvatar = Storage.get('user-avatar');
+    return userAvatar || '';
+  },
+  
+  pokeSelf() {
+    const contactId = this.currentChatId;
+    if (!contactId) return;
+    
+    const contact = this.getContact(contactId);
+    const session = this.getCurrentSession();
+    const displayName = session?.remark || contact?.name || '对方';
+    
+    // 戳自己的时候，用"我的戳一戳后缀"
+    const myPokeAction = session?.myPokeAction || '戳了戳';
+    const myPokeSuffix = session?.myPokeSuffix || '';
+    
+    // 添加戳一戳系统消息
+    const messages = this.getChatMessages(contactId);
+    const pokeContent = myPokeSuffix ? `我${myPokeAction}自己${myPokeSuffix}` : `我${myPokeAction}自己`;
+    const pokeMessage = {
+      id: 'msg_' + Date.now(),
+      sender: 'system',
+      type: 'poke',
+      content: pokeContent,
+      time: Date.now()
+    };
+    messages.push(pokeMessage);
+    this.saveChatMessages(contactId, messages);
+    
+    // 刷新消息显示
+    this.refreshMessages();
+    
+    // 有50%概率对方也会戳一戳你
+    if (Math.random() < 0.5) {
+      setTimeout(() => {
+        const pokeAction = session?.pokeAction || '戳了戳';
+        const pokeSuffix = session?.pokeSuffix || '';
+        const replyPokeContent = pokeSuffix ? `${displayName}${pokeAction}我${pokeSuffix}` : `${displayName}${pokeAction}我`;
         const replyPokeMessage = {
           id: 'msg_' + Date.now(),
           sender: 'system',
