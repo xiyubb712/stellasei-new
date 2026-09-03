@@ -622,6 +622,9 @@ const ChatApp = {
             }
           </div>
           <div class="settings-contact-name">${name}</div>
+          <div class="settings-contact-remark" onclick="ChatApp.editRemark()">
+            ${session?.remark ? session.remark : '点击设置备注'}
+          </div>
           <div class="settings-contact-meta">${messageCount} 条传讯</div>
         </div>
         
@@ -734,24 +737,6 @@ const ChatApp = {
                 }
               </div>
               <input type="file" id="chat-bg-input" accept="image/*" style="display:none" onchange="ChatApp.setChatBackground(event)">
-            </div>
-            
-            <div class="settings-card" onclick="ChatApp.setRemark()">
-              <div class="settings-card-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                </svg>
-              </div>
-              <div class="settings-card-content">
-                <div class="settings-card-title">设置备注</div>
-                <div class="settings-card-desc">${session?.remark ? `当前备注：${session.remark}` : '点击设置备注名'}</div>
-              </div>
-              <div class="settings-card-arrow">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M9 18l6-6-6-6"/>
-                </svg>
-              </div>
             </div>
           </div>
           
@@ -1013,6 +998,51 @@ const ChatApp = {
       this.saveChatSessions(sessions);
       this.renderSettingsPage();
     }
+  },
+  
+  editRemark() {
+    const remarkEl = document.querySelector('.settings-contact-remark');
+    if (!remarkEl) return;
+    
+    const sessions = this.getChatSessions();
+    const session = sessions.find(s => s.contactId === this.currentChatId);
+    const currentRemark = session?.remark || '';
+    
+    // 变成输入框
+    remarkEl.innerHTML = `
+      <input 
+        type="text" 
+        class="remark-edit-input" 
+        value="${this.escapeHtml(currentRemark)}" 
+        placeholder="设置备注名"
+        onblur="ChatApp.saveRemark(this.value)"
+        onkeydown="if(event.key==='Enter'){this.blur();}"
+      >
+    `;
+    
+    // 自动聚焦并选中文字
+    const input = remarkEl.querySelector('input');
+    if (input) {
+      input.focus();
+      input.select();
+    }
+  },
+  
+  saveRemark(value) {
+    const sessions = this.getChatSessions();
+    const session = sessions.find(s => s.contactId === this.currentChatId);
+    if (!session) return;
+    
+    if (value.trim() === '') {
+      delete session.remark;
+      this.showToast('已清除备注');
+    } else {
+      session.remark = value.trim();
+      this.showToast('备注已更新');
+    }
+    
+    this.saveChatSessions(sessions);
+    this.renderSettingsPage();
   },
   
   pokeContact() {
