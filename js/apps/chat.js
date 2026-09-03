@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 星绥小手机 - 聊天应用（星空传讯风格）
  * 四个标签页：聊天、联系人、动态、我的
  * 聊天详情页：星空传讯风格，跨越时空的感觉
@@ -680,6 +680,11 @@ const ChatApp = {
               </div>
               <div class="settings-card-switch ${session?.muted ? 'active' : ''}" id="mute-switch"></div>
             </div>
+          </div>
+          
+          <!-- 消息提醒 -->
+          <div class="settings-section">
+            <div class="settings-section-title">消息提醒</div>
             
             <div class="settings-card" onclick="ChatApp.toggleSound()">
               <div class="settings-card-icon">
@@ -712,11 +717,89 @@ const ChatApp = {
               </div>
               <div class="settings-card-switch ${session?.vibrateEnabled !== false ? 'active' : ''}" id="vibrate-switch"></div>
             </div>
+            
+            <div class="settings-card" onclick="ChatApp.toggleMessagePreview()">
+              <div class="settings-card-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+              </div>
+              <div class="settings-card-content">
+                <div class="settings-card-title">消息预览</div>
+                <div class="settings-card-desc">通知中显示消息内容</div>
+              </div>
+              <div class="settings-card-switch ${session?.messagePreview !== false ? 'active' : ''}" id="preview-switch"></div>
+            </div>
+            
+            <div class="settings-card" onclick="ChatApp.toggleReadReceipt()">
+              <div class="settings-card-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </div>
+              <div class="settings-card-content">
+                <div class="settings-card-title">显示已读</div>
+                <div class="settings-card-desc">显示消息已读状态</div>
+              </div>
+              <div class="settings-card-switch ${session?.readReceipt !== false ? 'active' : ''}" id="read-switch"></div>
+            </div>
           </div>
           
-          <!-- 外观与背景 -->
+          <!-- 消息设置 -->
           <div class="settings-section">
-            <div class="settings-section-title">外观与背景</div>
+            <div class="settings-section-title">消息设置</div>
+            
+            <div class="settings-card" onclick="ChatApp.toggleEnterToSend()">
+              <div class="settings-card-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="9 10 4 15 9 20"/>
+                  <path d="M20 4v7a4 4 0 0 1-4 4H4"/>
+                </svg>
+              </div>
+              <div class="settings-card-content">
+                <div class="settings-card-title">回车发送</div>
+                <div class="settings-card-desc">开启后按回车直接发送消息</div>
+              </div>
+              <div class="settings-card-switch ${session?.enterToSend ? 'active' : ''}" id="enter-switch"></div>
+            </div>
+            
+            <div class="settings-card" onclick="ChatApp.toggleTypingIndicator()">
+              <div class="settings-card-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/>
+                  <polyline points="12 6 12 12 16 14"/>
+                </svg>
+              </div>
+              <div class="settings-card-content">
+                <div class="settings-card-title">输入状态</div>
+                <div class="settings-card-desc">显示"对方正在输入..."</div>
+              </div>
+              <div class="settings-card-switch ${session?.typingIndicator !== false ? 'active' : ''}" id="typing-switch"></div>
+            </div>
+            
+            <div class="settings-card" onclick="ChatApp.setRecallTime()">
+              <div class="settings-card-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="1 4 1 10 7 10"/>
+                  <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
+                </svg>
+              </div>
+              <div class="settings-card-content">
+                <div class="settings-card-title">消息撤回</div>
+                <div class="settings-card-desc">发送后${session?.recallTime || 2}分钟内可撤回</div>
+              </div>
+              <div class="settings-card-arrow">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9 18l6-6-6-6"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 外观设置 -->
+          <div class="settings-section">
+            <div class="settings-section-title">外观设置</div>
             
             <div class="settings-card" onclick="document.getElementById('chat-bg-input').click()">
               <div class="settings-card-icon">
@@ -737,6 +820,56 @@ const ChatApp = {
                 }
               </div>
               <input type="file" id="chat-bg-input" accept="image/*" style="display:none" onchange="ChatApp.setChatBackground(event)">
+            </div>
+            
+            <div class="settings-card" onclick="ChatApp.setFontSize()">
+              <div class="settings-card-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="4 7 4 4 20 4 20 7"/>
+                  <line x1="9" y1="20" x2="15" y2="20"/>
+                  <line x1="12" y1="4" x2="12" y2="20"/>
+                </svg>
+              </div>
+              <div class="settings-card-content">
+                <div class="settings-card-title">字体大小</div>
+                <div class="settings-card-desc">当前：${session?.fontSize || '标准'}</div>
+              </div>
+              <div class="settings-card-arrow">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9 18l6-6-6-6"/>
+                </svg>
+              </div>
+            </div>
+            
+            <div class="settings-card" onclick="ChatApp.setBubbleStyle()">
+              <div class="settings-card-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                </svg>
+              </div>
+              <div class="settings-card-content">
+                <div class="settings-card-title">气泡样式</div>
+                <div class="settings-card-desc">当前：${session?.bubbleStyle || '简约'}</div>
+              </div>
+              <div class="settings-card-arrow">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9 18l6-6-6-6"/>
+                </svg>
+              </div>
+            </div>
+            
+            <div class="settings-card" onclick="ChatApp.toggleTimeDisplay()">
+              <div class="settings-card-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/>
+                  <polyline points="12 6 12 12 16 14"/>
+                </svg>
+              </div>
+              <div class="settings-card-content">
+                <div class="settings-card-title">时间显示</div>
+                <div class="settings-card-desc">显示每条消息的时间</div>
+              </div>
+              <div class="settings-card-switch ${session?.timeDisplay !== false ? 'active' : ''}" id="time-switch"></div>
             </div>
           </div>
           
@@ -787,7 +920,7 @@ const ChatApp = {
                   type="text" 
                   class="poke-input" 
                   id="my-poke-suffix-input"
-                  placeholder="的肩膀" 
+                  placeholder="的小脑袋" 
                   value="${session?.myPokeSuffix || ''}"
                   onblur="ChatApp.savePokeField('my', 'suffix')"
                   onkeydown="if(event.key==='Enter'){event.target.blur();}"
@@ -836,7 +969,6 @@ const ChatApp = {
             </div>
           </div>
         </div>
-        
         <!-- 底部装饰 -->
         <div class="settings-footer">
           <div class="settings-footer-en">Signal Preferences</div>
@@ -893,6 +1025,56 @@ const ChatApp = {
         vibrateSwitch.classList.add('active');
       } else {
         vibrateSwitch.classList.remove('active');
+      }
+    }
+    
+    // 更新消息预览状态
+    const previewSwitch = document.getElementById('preview-switch');
+    if (previewSwitch) {
+      if (session.messagePreview !== false) {
+        previewSwitch.classList.add('active');
+      } else {
+        previewSwitch.classList.remove('active');
+      }
+    }
+    
+    // 更新显示已读状态
+    const readSwitch = document.getElementById('read-switch');
+    if (readSwitch) {
+      if (session.readReceipt !== false) {
+        readSwitch.classList.add('active');
+      } else {
+        readSwitch.classList.remove('active');
+      }
+    }
+    
+    // 更新回车发送状态
+    const enterSwitch = document.getElementById('enter-switch');
+    if (enterSwitch) {
+      if (session.enterToSend) {
+        enterSwitch.classList.add('active');
+      } else {
+        enterSwitch.classList.remove('active');
+      }
+    }
+    
+    // 更新输入状态显示
+    const typingSwitch = document.getElementById('typing-switch');
+    if (typingSwitch) {
+      if (session.typingIndicator !== false) {
+        typingSwitch.classList.add('active');
+      } else {
+        typingSwitch.classList.remove('active');
+      }
+    }
+    
+    // 更新时间显示状态
+    const timeSwitch = document.getElementById('time-switch');
+    if (timeSwitch) {
+      if (session.timeDisplay !== false) {
+        timeSwitch.classList.add('active');
+      } else {
+        timeSwitch.classList.remove('active');
       }
     }
   },
@@ -954,6 +1136,122 @@ const ChatApp = {
     
     // 显示提示
     this.showToast(session.vibrateEnabled ? '已开启消息震动' : '已关闭消息震动');
+  },
+  
+  // ==================== 消息提醒设置 ====================
+  
+  toggleMessagePreview() {
+    const sessions = this.getChatSessions();
+    const session = sessions.find(s => s.contactId === this.currentChatId);
+    if (!session) return;
+    
+    session.messagePreview = session.messagePreview === false ? true : false;
+    this.saveChatSessions(sessions);
+    this.updateSettingsPageState();
+    this.showToast(session.messagePreview ? '已开启消息预览' : '已关闭消息预览');
+  },
+  
+  toggleReadReceipt() {
+    const sessions = this.getChatSessions();
+    const session = sessions.find(s => s.contactId === this.currentChatId);
+    if (!session) return;
+    
+    session.readReceipt = session.readReceipt === false ? true : false;
+    this.saveChatSessions(sessions);
+    this.updateSettingsPageState();
+    this.showToast(session.readReceipt ? '已显示已读状态' : '已隐藏已读状态');
+  },
+  
+  // ==================== 消息设置 ====================
+  
+  toggleEnterToSend() {
+    const sessions = this.getChatSessions();
+    const session = sessions.find(s => s.contactId === this.currentChatId);
+    if (!session) return;
+    
+    session.enterToSend = !session.enterToSend;
+    this.saveChatSessions(sessions);
+    this.updateSettingsPageState();
+    this.showToast(session.enterToSend ? '已开启回车发送' : '已关闭回车发送');
+  },
+  
+  toggleTypingIndicator() {
+    const sessions = this.getChatSessions();
+    const session = sessions.find(s => s.contactId === this.currentChatId);
+    if (!session) return;
+    
+    session.typingIndicator = session.typingIndicator === false ? true : false;
+    this.saveChatSessions(sessions);
+    this.updateSettingsPageState();
+    this.showToast(session.typingIndicator ? '已显示输入状态' : '已隐藏输入状态');
+  },
+  
+  setRecallTime() {
+    const sessions = this.getChatSessions();
+    const session = sessions.find(s => s.contactId === this.currentChatId);
+    if (!session) return;
+    
+    const currentTime = session.recallTime || 2;
+    const options = [1, 2, 5, 10, 30, -1]; // -1表示不允许撤回
+    const currentIndex = options.indexOf(currentTime);
+    
+    // 简单实现：循环切换
+    const nextIndex = (currentIndex + 1) % options.length;
+    const nextTime = options[nextIndex];
+    
+    session.recallTime = nextTime;
+    this.saveChatSessions(sessions);
+    this.renderSettingsPage();
+    
+    const timeText = nextTime === -1 ? '不允许撤回' : `${nextTime}分钟内可撤回`;
+    this.showToast(`消息撤回：${timeText}`);
+  },
+  
+  // ==================== 外观设置 ====================
+  
+  setFontSize() {
+    const sessions = this.getChatSessions();
+    const session = sessions.find(s => s.contactId === this.currentChatId);
+    if (!session) return;
+    
+    const sizes = ['小', '标准', '大', '特大'];
+    const currentSize = session.fontSize || '标准';
+    const currentIndex = sizes.indexOf(currentSize);
+    const nextIndex = (currentIndex + 1) % sizes.length;
+    const nextSize = sizes[nextIndex];
+    
+    session.fontSize = nextSize;
+    this.saveChatSessions(sessions);
+    this.renderSettingsPage();
+    this.showToast(`字体大小：${nextSize}`);
+  },
+  
+  setBubbleStyle() {
+    const sessions = this.getChatSessions();
+    const session = sessions.find(s => s.contactId === this.currentChatId);
+    if (!session) return;
+    
+    const styles = ['简约', '可爱', '复古', '气泡'];
+    const currentStyle = session.bubbleStyle || '简约';
+    const currentIndex = styles.indexOf(currentStyle);
+    const nextIndex = (currentIndex + 1) % styles.length;
+    const nextStyle = styles[nextIndex];
+    
+    session.bubbleStyle = nextStyle;
+    this.saveChatSessions(sessions);
+    this.renderSettingsPage();
+    this.showToast(`气泡样式：${nextStyle}`);
+  },
+  
+  toggleTimeDisplay() {
+    const sessions = this.getChatSessions();
+    const session = sessions.find(s => s.contactId === this.currentChatId);
+    if (!session) return;
+    
+    session.timeDisplay = session.timeDisplay === false ? true : false;
+    this.saveChatSessions(sessions);
+    this.updateSettingsPageState();
+    this.showToast(session.timeDisplay ? '已显示消息时间' : '已隐藏消息时间');
   },
   
   setChatBackground(event) {
