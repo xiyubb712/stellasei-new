@@ -4722,20 +4722,19 @@ html, body {
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
 }
 
-/* ==================== 气泡样式 - 可爱 ==================== */
+/* ==================== 气泡样式 - 极简（黑白灰） ==================== */
 .bubble-style-可爱 .bubble-me {
-  background: linear-gradient(135deg, #ffd6e8 0%, #ffc0d9 100%);
-  color: #a04060;
-  border-radius: 20px 20px 4px 20px;
-  box-shadow: 0 4px 12px rgba(255, 150, 180, 0.3);
-  border: 1px solid rgba(255, 180, 200, 0.5);
+  background: #333;
+  color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
 .bubble-style-可爱 .bubble-other {
-  background: linear-gradient(135deg, #fff5f8 0%, #ffe8f0 100%);
-  color: #604050;
-  border-radius: 20px 20px 20px 4px;
-  box-shadow: 0 4px 12px rgba(255, 180, 200, 0.2);
-  border: 1px solid rgba(255, 200, 220, 0.5);
+  background: #f5f5f5;
+  color: #333;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e0e0e0;
 }
 
 /* ==================== 气泡样式 - 复古 ==================== */

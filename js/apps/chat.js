@@ -1303,7 +1303,7 @@ const ChatApp = {
   getBubbleStyleLabel(key) {
     const labels = {
       '简约': '星空气泡',
-      '可爱': '可爱',
+      '可爱': '极简气泡',
       '复古': '复古',
       '气泡': '气泡'
     };
@@ -1319,7 +1319,7 @@ const ChatApp = {
     const currentStyle = session.bubbleStyle || '简约';
     const styles = [
       { key: '简约', label: '星空气泡', desc: '经典默认样式', color: 'rgba(222, 214, 240, 0.82)' },
-      { key: '可爱', label: '可爱', desc: '圆润可爱', color: 'rgba(255, 200, 220, 0.9)' },
+      { key: '可爱', label: '极简气泡', desc: '黑白极简', color: 'rgba(200, 200, 200, 0.9)' },
       { key: '复古', label: '复古', desc: '怀旧质感', color: 'rgba(230, 220, 200, 0.9)' },
       { key: '气泡', label: '气泡', desc: '经典气泡', color: 'rgba(180, 220, 255, 0.9)' }
     ];
