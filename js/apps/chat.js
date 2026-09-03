@@ -1465,7 +1465,7 @@ const ChatApp = {
   },
   
   /**
-   * 鎭㈠榛樿鑱婂ぉ鑳屾櫙
+   * 恢复默认聊天背景
    */
   resetChatBackground() {
     const sessions = this.getChatSessions();
@@ -1474,7 +1474,7 @@ const ChatApp = {
       delete session.background;
       this.saveChatSessions(sessions);
       this.renderSettingsPage();
-      this.showToast('宸叉仮澶嶉粯璁よ儗鏅?);
+      this.showToast('已恢复默认背景');
     }
   },
   
