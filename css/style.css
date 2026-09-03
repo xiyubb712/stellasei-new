@@ -4911,3 +4911,8 @@ html, body {
 .reset-bg-btn:active {
   transform: translateY(0);
 }
+/* 键盘高度适配：用padding-bottom推高内容，不修改容器高度，避免输入框被推出屏幕 */
+#phone-screen {
+  padding-bottom: var(--keyboard-height, 0px) !important;
+  box-sizing: border-box !important;
+}

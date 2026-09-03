@@ -296,62 +296,30 @@ function initAppHeight() {
     const innerH = window.innerHeight || 0;
     const kbOpen = keyboardInsetPx() > 40;
     const editableFocused = hasEditableFocus();
-    let finalH = innerH;
     
-    // 确定性兜底：如果没有可编辑元素聚焦，键盘肯定是收起的，直接用屏幕高度
-    // 不依赖visualViewport的事件，避免iOS某些路径不触发事件导致高度卡住
-    if (!editableFocused) {
-      if (isIOS) {
-        const sH = window.screen.height || 0;
-        const sW = window.screen.width || 0;
-        const exp = window.innerWidth > window.innerHeight ? Math.min(sH, sW) : Math.max(sH, sW);
-        if (exp > 0) finalH = Math.max(finalH, exp);
-      }
-      const rH = isIOS ? finalH + 1 : finalH;
-      if (isMobile && lastAppHeight > 0 && Math.abs(rH - lastAppHeight) < 0.5) return;
-      lastAppHeight = rH;
-      document.documentElement.style.setProperty('--app-height', rH + 'px');
-      console.log('[应用高度] 无输入框聚焦，确定性恢复为:', rH + 'px');
-      return;
+    // 应用高度始终保持屏幕高度，不随键盘变化（避免输入框被推出屏幕）
+    let appH = innerH;
+    if (isIOS && isStandalone) {
+      const sH = window.screen.height || 0;
+      const sW = window.screen.width || 0;
+      const exp = window.innerWidth > window.innerHeight ? Math.min(sH, sW) : Math.max(sH, sW);
+      if (exp > 0) appH = Math.max(appH, exp);
+    }
+    const finalAppH = isIOS ? appH + 1 : appH;
+    if (!(isMobile && lastAppHeight > 0 && Math.abs(finalAppH - lastAppHeight) < 0.5)) {
+      lastAppHeight = finalAppH;
+      document.documentElement.style.setProperty('--app-height', finalAppH + 'px');
     }
     
-    if (isIOS) {
-      if (kbOpen) {
-        // 键盘打开时，用visualViewport计算可视区域高度
-        // iOS PWA模式下键盘是浮在应用上面的，window.innerHeight不会变，必须用visualViewport
-        const vv = window.visualViewport;
-        if (vv) {
-          finalH = vv.height + (vv.offsetTop || 0);
-        }
-      } else if (isStandalone) {
-        // 键盘没打开时，PWA模式用屏幕高度
-        const sH = window.screen.height || 0;
-        const sW = window.screen.width || 0;
-        const exp = window.innerWidth > window.innerHeight ? Math.min(sH, sW) : Math.max(sH, sW);
-        if (exp > 0) finalH = Math.max(finalH, exp);
-      }
-      // 关键！iOS情况下高度加1px，避免白边
-      const rH = finalH + 1;
-      // 只有移动端才做"高度变化小于0.5px就不更新"的判断
-      if (isMobile && lastAppHeight > 0 && Math.abs(rH - lastAppHeight) < 0.5) return;
-      lastAppHeight = rH;
-      document.documentElement.style.setProperty('--app-height', rH + 'px');
-      console.log('[应用高度] iOS设置为:', rH + 'px', kbOpen ? '(键盘打开)' : '(键盘关闭)');
-      return;
+    // 键盘高度：只有当有输入框聚焦且键盘打开时才设置，用padding-bottom推高内容
+    let keyboardH = 0;
+    if (editableFocused && kbOpen) {
+      keyboardH = keyboardInsetPx();
     }
-    
-    // 非iOS，用visualViewport来计算
-    const clientH = document.documentElement.clientHeight || 0;
-    const vv = window.visualViewport;
-    const vvH = vv ? vv.height : 0;
-    const vvTop = vv ? (vv.offsetTop || 0) : 0;
-    finalH = Math.max(innerH, clientH, vvH + vvTop);
-    const rH = finalH;
-    // 只有移动端才做"高度变化小于0.5px就不更新"的判断
-    if (isMobile && lastAppHeight > 0 && Math.abs(rH - lastAppHeight) < 0.5) return;
-    lastAppHeight = rH;
-    document.documentElement.style.setProperty('--app-height', rH + 'px');
-    console.log('[应用高度] 设置为:', rH + 'px');
+    document.documentElement.style.setProperty('--keyboard-height', keyboardH + 'px');
+    console.log('[应用高度] app:', finalAppH + 'px', 'keyboard:', keyboardH + 'px', 
+      editableFocused ? '(有输入框聚焦)' : '(无输入框聚焦)', 
+      kbOpen ? '(键盘打开)' : '(键盘关闭)');
   }
   
   // 用requestAnimationFrame节流
@@ -408,27 +376,19 @@ function initAppHeight() {
     setAppHeightNow();
   };
   
-  // 持续重新计算高度的函数（用于输入法弹出收起动画期间）
-  function keepRecalculatingHeight(duration) {
-    let count = 0;
-    const interval = setInterval(function() {
-      lastAppHeight = 0;
-      setAppHeightNow();
-      count++;
-      if (count >= duration / 100) {
-        clearInterval(interval);
-      }
-    }, 100);
-  }
-  
   // 监听输入框获得/失去焦点（第三方输入法弹出收起），重新计算高度避免白边
   document.addEventListener('focusin', function(e) {
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
-      // 输入法弹出，立即重新计算
-      lastAppHeight = 0;
-      setAppHeight();
-      // 持续计算2秒，确保输入法动画完成
-      keepRecalculatingHeight(2000);
+      // 输入法弹出：立即更新 + 分批更新（50ms、250ms、600ms），覆盖键盘弹出动画期
+      // 不使用keepRecalculatingHeight，避免每100ms重排导致输入框无法稳定聚焦
+      const scheduleUpdate = function() {
+        lastAppHeight = 0;
+        setAppHeightNow();
+      };
+      scheduleUpdate();
+      setTimeout(scheduleUpdate, 50);
+      setTimeout(scheduleUpdate, 250);
+      setTimeout(scheduleUpdate, 600);
     }
   });
   
@@ -450,9 +410,13 @@ function initAppHeight() {
   });
   
   // 监听用户触摸屏幕，第三方输入法收起时用户可能会触摸屏幕，此时重新计算高度
-  document.addEventListener('touchstart', function() {
-    lastAppHeight = 0;
-    setAppHeight();
+  document.addEventListener('touchstart', function(e) {
+    // 只在触摸的不是输入框时才更新高度，避免干扰输入框聚焦（导致需要按两次才能打开）
+    const tag = e.target.tagName;
+    if (tag !== 'INPUT' && tag !== 'TEXTAREA' && !(e.target instanceof HTMLElement && e.target.isContentEditable)) {
+      lastAppHeight = 0;
+      setAppHeight();
+    }
   }, { passive: true });
   
   // 监听页面滚动（输入法收起后可能会有滚动），重新计算高度
