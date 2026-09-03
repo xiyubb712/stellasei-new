@@ -4496,3 +4496,123 @@ html, body {
 .settings-card.disabled .settings-card-switch.active {
   background: #c0c0c0;
 }
+/* ==================== 字体大小选择面板 ==================== */
+.font-size-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.font-size-overlay.show {
+  opacity: 1;
+}
+.font-size-panel {
+  width: 100%;
+  max-width: 500px;
+  background: #fff;
+  border-radius: 20px 20px 0 0;
+  padding: 20px;
+  padding-bottom: calc(20px + env(safe-area-inset-bottom));
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+}
+.font-size-panel.show {
+  transform: translateY(0);
+}
+.font-size-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.font-size-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+.font-size-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: #f5f5f5;
+  color: #666;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+.font-size-close:hover {
+  background: #e8e8e8;
+}
+.font-size-preview {
+  background: #f8f8fa;
+  border-radius: 12px;
+  padding: 20px 16px;
+  margin-bottom: 20px;
+}
+.preview-bubble-wrap {
+  display: flex;
+  justify-content: flex-end;
+}
+.preview-bubble {
+  max-width: 75%;
+  background: rgba(222, 214, 240, 0.82);
+  color: #5a4a7a;
+  padding: 10px 14px;
+  border-radius: 16px;
+  box-shadow: 0 3px 10px rgba(147, 130, 220, 0.25);
+}
+.preview-text {
+  font-size: 15px;
+  color: #5a4a7a;
+  line-height: 1.5;
+  transition: font-size 0.2s ease;
+  word-wrap: break-word;
+}
+.font-size-options {
+  display: flex;
+  gap: 12px;
+}
+.font-size-option {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 8px;
+  border-radius: 12px;
+  border: 2px solid #e8e8e8;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.font-size-option:hover {
+  border-color: #c4b5e0;
+  background: #faf8ff;
+}
+.font-size-option.active {
+  border-color: #9382dc;
+  background: #f5f2ff;
+}
+.option-size {
+  color: #333;
+  font-weight: 500;
+}
+.option-label {
+  font-size: 13px;
+  color: #666;
+}
+.font-size-option.active .option-label {
+  color: #9382dc;
+  font-weight: 500;
+}

@@ -800,7 +800,7 @@ const ChatApp = {
               <input type="file" id="chat-bg-input" accept="image/*" style="display:none" onchange="ChatApp.setChatBackground(event)">
             </div>
             
-            <div class="settings-card" onclick="ChatApp.setFontSize()">
+            <div class="settings-card" onclick="ChatApp.openFontSizePicker()">
               <div class="settings-card-icon">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <polyline points="4 7 4 4 20 4 20 7"/>
@@ -810,7 +810,7 @@ const ChatApp = {
               </div>
               <div class="settings-card-content">
                 <div class="settings-card-title">字体大小</div>
-                <div class="settings-card-desc">当前：${session?.fontSize || '标准'}</div>
+                <div class="settings-card-desc">当前：${session?.fontSize || '中'}</div>
               </div>
               <div class="settings-card-arrow">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1196,21 +1196,107 @@ const ChatApp = {
   
   // ==================== 外观设置 ====================
   
-  setFontSize() {
+  // 打开字体大小选择面板
+  openFontSizePicker() {
     const sessions = this.getChatSessions();
     const session = sessions.find(s => s.contactId === this.currentChatId);
     if (!session) return;
     
-    const sizes = ['小', '标准', '大', '特大'];
-    const currentSize = session.fontSize || '标准';
-    const currentIndex = sizes.indexOf(currentSize);
-    const nextIndex = (currentIndex + 1) % sizes.length;
-    const nextSize = sizes[nextIndex];
+    const currentSize = session.fontSize || '中';
+    const sizes = [
+      { key: '小', px: 13, label: '小' },
+      { key: '中', px: 15, label: '中' },
+      { key: '大', px: 17, label: '大' }
+    ];
     
-    session.fontSize = nextSize;
-    this.saveChatSessions(sessions);
-    this.renderSettingsPage();
-    this.showToast(`字体大小：${nextSize}`);
+    // 创建遮罩层
+    const overlay = document.createElement('div');
+    overlay.className = 'font-size-overlay';
+    overlay.onclick = function() { overlay.remove(); };
+    
+    // 创建面板
+    const panel = document.createElement('div');
+    panel.className = 'font-size-panel';
+    panel.onclick = function(e) { e.stopPropagation(); };
+    
+    let optionsHtml = '';
+    for (let i = 0; i < sizes.length; i++) {
+      const s = sizes[i];
+      const isActive = currentSize === s.key ? 'active' : '';
+      optionsHtml += '<div class="font-size-option ' + isActive + '" onclick="ChatApp.selectFontSize(\'' + s.key + '\', ' + s.px + ', this)">' +
+        '<div class="option-size" style="font-size: ' + s.px + 'px">A</div>' +
+        '<div class="option-label">' + s.label + '</div>' +
+        '</div>';
+    }
+    
+    panel.innerHTML = 
+      '<div class="font-size-header">' +
+        '<div class="font-size-title">字体大小</div>' +
+        '<button class="font-size-close" onclick="this.closest(\'.font-size-overlay\').remove()">' +
+          '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+            '<line x1="18" y1="6" x2="6" y2="18"/>' +
+            '<line x1="6" y1="6" x2="18" y2="18"/>' +
+          '</svg>' +
+        '</button>' +
+      '</div>' +
+      '<div class="font-size-preview">' +
+        '<div class="preview-bubble-wrap">' +
+          '<div class="preview-bubble">' +
+            '<div class="preview-text" id="font-preview-text">这是预览文字，跨越时空的信号已建立，你好呀</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="font-size-options">' + optionsHtml + '</div>';
+    
+    overlay.appendChild(panel);
+    document.body.appendChild(overlay);
+    
+    // 动画显示
+    requestAnimationFrame(function() {
+      overlay.classList.add('show');
+      panel.classList.add('show');
+    });
+  },
+  
+  // 选择字体大小
+  selectFontSize(size, px, element) {
+    // 更新预览
+    const previewText = document.getElementById('font-preview-text');
+    if (previewText) {
+      previewText.style.fontSize = px + 'px';
+    }
+    
+    // 更新选项状态
+    const options = document.querySelectorAll('.font-size-option');
+    for (let i = 0; i < options.length; i++) {
+      options[i].classList.remove('active');
+    }
+    element.classList.add('active');
+    
+    // 保存设置
+    const sessions = this.getChatSessions();
+    const session = sessions.find(s => s.contactId === this.currentChatId);
+    if (session) {
+      session.fontSize = size;
+      this.saveChatSessions(sessions);
+      
+      // 实时更新聊天消息的字体大小
+      const messages = document.querySelectorAll('.message-text');
+      for (let i = 0; i < messages.length; i++) {
+        messages[i].style.fontSize = px + 'px';
+      }
+      
+      // 更新设置页显示（不重新渲染整个页面，避免跳到顶部）
+      const descEls = document.querySelectorAll('.settings-card-desc');
+      for (let i = 0; i < descEls.length; i++) {
+        if (descEls[i].textContent.indexOf('当前：') >= 0) {
+          descEls[i].textContent = '当前：' + size;
+          break;
+        }
+      }
+      
+      this.showToast('字体大小：' + size);
+    }
   },
   
   setBubbleStyle() {
