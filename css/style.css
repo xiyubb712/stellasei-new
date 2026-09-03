@@ -4714,12 +4714,22 @@ html, body {
   color: #5a4a7a;
   border-radius: 16px;
   box-shadow: 0 3px 10px rgba(147, 130, 220, 0.25);
+  padding: 6px 10px;
+}
+.bubble-style-简约 .bubble-me .message-text {
+  margin: 0;
+  line-height: 1.4;
 }
 .bubble-style-简约 .bubble-other {
   background: rgba(255, 255, 255, 0.9);
   color: #333;
   border-radius: 16px;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  padding: 6px 10px;
+}
+.bubble-style-简约 .bubble-other .message-text {
+  margin: 0;
+  line-height: 1.4;
 }
 
 /* ==================== 气泡样式 - 极简（黑白灰） ==================== */
@@ -4729,6 +4739,11 @@ html, body {
   border-radius: 6px;
   box-shadow: none;
   border: none;
+  padding: 6px 10px;
+}
+.bubble-style-可爱 .bubble-me .message-text {
+  margin: 0;
+  line-height: 1.4;
 }
 .bubble-style-可爱 .bubble-other {
   background: #ffffff;
@@ -4736,6 +4751,11 @@ html, body {
   border-radius: 6px;
   box-shadow: none;
   border: 1px solid #d8d8d8;
+  padding: 6px 10px;
+}
+.bubble-style-可爱 .bubble-other .message-text {
+  margin: 0;
+  line-height: 1.4;
 }
 
 /* ==================== 气泡样式 - 复古 ==================== */
@@ -4746,6 +4766,11 @@ html, body {
   box-shadow: 0 2px 8px rgba(139, 115, 70, 0.2);
   border: 1px solid rgba(180, 150, 100, 0.4);
   font-family: Georgia, 'Times New Roman', serif;
+  padding: 6px 10px;
+}
+.bubble-style-复古 .bubble-me .message-text {
+  margin: 0;
+  line-height: 1.4;
 }
 .bubble-style-复古 .bubble-other {
   background: linear-gradient(135deg, #faf5e8 0%, #f0e8d5 100%);
@@ -4754,6 +4779,11 @@ html, body {
   box-shadow: 0 2px 8px rgba(139, 115, 70, 0.15);
   border: 1px solid rgba(180, 150, 100, 0.3);
   font-family: Georgia, 'Times New Roman', serif;
+  padding: 6px 10px;
+}
+.bubble-style-复古 .bubble-other .message-text {
+  margin: 0;
+  line-height: 1.4;
 }
 
 /* ==================== 气泡样式 - 气泡 ==================== */
@@ -4763,6 +4793,11 @@ html, body {
   border-radius: 18px 18px 0 18px;
   box-shadow: 0 3px 10px rgba(100, 160, 220, 0.3);
   position: relative;
+  padding: 6px 10px;
+}
+.bubble-style-气泡 .bubble-me .message-text {
+  margin: 0;
+  line-height: 1.4;
 }
 .bubble-style-气泡 .bubble-me::after {
   content: '';
@@ -4781,6 +4816,11 @@ html, body {
   border-radius: 18px 18px 18px 0;
   box-shadow: 0 3px 10px rgba(100, 160, 220, 0.15);
   position: relative;
+  padding: 6px 10px;
+}
+.bubble-style-气泡 .bubble-other .message-text {
+  margin: 0;
+  line-height: 1.4;
 }
 .bubble-style-气泡 .bubble-other::after {
   content: '';

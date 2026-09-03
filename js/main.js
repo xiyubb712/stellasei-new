@@ -373,16 +373,27 @@ function initAppHeight() {
     setAppHeightNow();
   };
   
+  // 持续重新计算高度的函数（用于输入法弹出收起动画期间）
+  function keepRecalculatingHeight(duration) {
+    let count = 0;
+    const interval = setInterval(function() {
+      lastAppHeight = 0;
+      setAppHeightNow();
+      count++;
+      if (count >= duration / 100) {
+        clearInterval(interval);
+      }
+    }, 100);
+  }
+  
   // 监听输入框获得/失去焦点（第三方输入法弹出收起），重新计算高度避免白边
   document.addEventListener('focusin', function(e) {
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
       // 输入法弹出，立即重新计算
       lastAppHeight = 0;
       setAppHeight();
-      // 延迟多次计算，确保输入法动画完成
-      setTimeout(function() { lastAppHeight = 0; setAppHeightNow(); }, 100);
-      setTimeout(function() { lastAppHeight = 0; setAppHeightNow(); }, 300);
-      setTimeout(function() { lastAppHeight = 0; setAppHeightNow(); }, 500);
+      // 持续计算2秒，确保输入法动画完成
+      keepRecalculatingHeight(2000);
     }
   });
   
@@ -391,13 +402,16 @@ function initAppHeight() {
       // 输入法收起，立即重新计算
       lastAppHeight = 0;
       setAppHeight();
-      // 延迟多次计算，确保输入法动画完成，避免底部白边
-      setTimeout(function() { lastAppHeight = 0; setAppHeightNow(); }, 100);
-      setTimeout(function() { lastAppHeight = 0; setAppHeightNow(); }, 300);
-      setTimeout(function() { lastAppHeight = 0; setAppHeightNow(); }, 500);
-      setTimeout(function() { lastAppHeight = 0; setAppHeightNow(); }, 800);
+      // 持续计算3秒，确保输入法完全收起，避免底部白边
+      keepRecalculatingHeight(3000);
     }
   });
+  
+  // 监听页面滚动（输入法收起后可能会有滚动），重新计算高度
+  window.addEventListener('scroll', function() {
+    lastAppHeight = 0;
+    setAppHeight();
+  }, { passive: true });
   
   console.log('[应用高度] 初始化完成');
 }

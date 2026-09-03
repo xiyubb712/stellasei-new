@@ -1396,7 +1396,7 @@ const ChatApp = {
     const previewContainer = document.getElementById('bubble-style-preview');
     if (previewContainer) {
       const classes = previewContainer.className.split(' ');
-      const newClasses = classes.filter(c => c.indexOf('bubble-style-') < 0);
+      const newClasses = classes.filter(c => !/^bubble-style-(简约|可爱|复古|气泡)$/.test(c));
       newClasses.push('bubble-style-' + style);
       previewContainer.className = newClasses.join(' ');
     }
@@ -1412,7 +1412,7 @@ const ChatApp = {
       const chatMessages = document.getElementById('chat-messages');
       if (chatMessages) {
         const msgClasses = chatMessages.className.split(' ');
-        const newMsgClasses = msgClasses.filter(c => c.indexOf('bubble-style-') < 0);
+        const newMsgClasses = msgClasses.filter(c => !/^bubble-style-(简约|可爱|复古|气泡)$/.test(c));
         newMsgClasses.push('bubble-style-' + style);
         chatMessages.className = newMsgClasses.join(' ');
       }
