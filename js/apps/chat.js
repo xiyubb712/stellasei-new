@@ -778,24 +778,6 @@ const ChatApp = {
               </div>
               <div class="settings-card-switch ${session?.typingIndicator !== false ? 'active' : ''}" id="typing-switch"></div>
             </div>
-            
-            <div class="settings-card" onclick="ChatApp.setRecallTime()">
-              <div class="settings-card-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <polyline points="1 4 1 10 7 10"/>
-                  <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
-                </svg>
-              </div>
-              <div class="settings-card-content">
-                <div class="settings-card-title">消息撤回</div>
-                <div class="settings-card-desc">发送后${session?.recallTime || 2}分钟内可撤回</div>
-              </div>
-              <div class="settings-card-arrow">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M9 18l6-6-6-6"/>
-                </svg>
-              </div>
-            </div>
           </div>
           
           <!-- 外观设置 -->
@@ -1215,27 +1197,6 @@ const ChatApp = {
     this.saveChatSessions(sessions);
     this.updateSettingsPageState();
     this.showToast(session.typingIndicator ? '已显示输入状态' : '已隐藏输入状态');
-  },
-  
-  setRecallTime() {
-    const sessions = this.getChatSessions();
-    const session = sessions.find(s => s.contactId === this.currentChatId);
-    if (!session) return;
-    
-    const currentTime = session.recallTime || 2;
-    const options = [1, 2, 5, 10, 30, -1]; // -1表示不允许撤回
-    const currentIndex = options.indexOf(currentTime);
-    
-    // 简单实现：循环切换
-    const nextIndex = (currentIndex + 1) % options.length;
-    const nextTime = options[nextIndex];
-    
-    session.recallTime = nextTime;
-    this.saveChatSessions(sessions);
-    this.renderSettingsPage();
-    
-    const timeText = nextTime === -1 ? '不允许撤回' : `${nextTime}分钟内可撤回`;
-    this.showToast(`消息撤回：${timeText}`);
   },
   
   // ==================== 外观设置 ====================
