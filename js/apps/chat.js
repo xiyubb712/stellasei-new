@@ -819,7 +819,7 @@ const ChatApp = {
               </div>
             </div>
             
-            <div class="settings-card" onclick="ChatApp.setBubbleStyle()">
+            <div class="settings-card" onclick="ChatApp.openBubbleStylePicker()">
               <div class="settings-card-icon">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
@@ -1299,23 +1299,100 @@ const ChatApp = {
     }
   },
   
-  setBubbleStyle() {
+  // 打开气泡样式选择面板
+  openBubbleStylePicker() {
     const sessions = this.getChatSessions();
     const session = sessions.find(s => s.contactId === this.currentChatId);
     if (!session) return;
     
-    const styles = ['简约', '可爱', '复古', '气泡'];
     const currentStyle = session.bubbleStyle || '简约';
-    const currentIndex = styles.indexOf(currentStyle);
-    const nextIndex = (currentIndex + 1) % styles.length;
-    const nextStyle = styles[nextIndex];
+    const styles = [
+      { key: '简约', desc: '简洁清爽', color: 'rgba(222, 214, 240, 0.82)' },
+      { key: '可爱', desc: '圆润可爱', color: 'rgba(255, 200, 220, 0.9)' },
+      { key: '复古', desc: '怀旧质感', color: 'rgba(230, 220, 200, 0.9)' },
+      { key: '气泡', desc: '经典气泡', color: 'rgba(180, 220, 255, 0.9)' }
+    ];
     
-    session.bubbleStyle = nextStyle;
-    this.saveChatSessions(sessions);
-    this.renderSettingsPage();
-    this.showToast(`气泡样式：${nextStyle}`);
+    // 创建遮罩层
+    const overlay = document.createElement('div');
+    overlay.className = 'font-size-overlay';
+    overlay.onclick = function() { overlay.remove(); };
+    
+    // 创建面板
+    const panel = document.createElement('div');
+    panel.className = 'font-size-panel';
+    panel.onclick = function(e) { e.stopPropagation(); };
+    
+    let optionsHtml = '';
+    for (let i = 0; i < styles.length; i++) {
+      const s = styles[i];
+      const isActive = currentStyle === s.key ? 'active' : '';
+      optionsHtml += '<div class="bubble-style-option ' + isActive + '" onclick="ChatApp.selectBubbleStyle(\'' + s.key + '\', this)">' +
+        '<div class="bubble-preview-mini" style="background: ' + s.color + '"></div>' +
+        '<div class="bubble-option-info">' +
+          '<div class="bubble-option-name">' + s.key + '</div>' +
+          '<div class="bubble-option-desc">' + s.desc + '</div>' +
+        '</div>' +
+        '</div>';
+    }
+    
+    panel.innerHTML = 
+      '<div class="font-size-header">' +
+        '<div class="font-size-title">气泡样式</div>' +
+        '<button class="font-size-close" onclick="this.closest(\'.font-size-overlay\').remove()">' +
+          '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+            '<line x1="18" y1="6" x2="6" y2="18"/>' +
+            '<line x1="6" y1="6" x2="18" y2="18"/>' +
+          '</svg>' +
+        '</button>' +
+      '</div>' +
+      '<div class="bubble-style-preview">' +
+        '<div class="preview-bubble-wrap">' +
+          '<div class="preview-bubble" id="bubble-preview-bubble">' +
+            '<div class="preview-text">这是预览气泡，选择不同样式查看效果</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="bubble-style-options">' + optionsHtml + '</div>';
+    
+    overlay.appendChild(panel);
+    document.body.appendChild(overlay);
+    
+    // 动画显示
+    requestAnimationFrame(function() {
+      overlay.classList.add('show');
+      panel.classList.add('show');
+    });
   },
   
+  // 选择气泡样式
+  selectBubbleStyle(style, element) {
+    // 更新选项状态
+    const options = document.querySelectorAll('.bubble-style-option');
+    for (let i = 0; i < options.length; i++) {
+      options[i].classList.remove('active');
+    }
+    element.classList.add('active');
+    
+    // 保存设置
+    const sessions = this.getChatSessions();
+    const session = sessions.find(s => s.contactId === this.currentChatId);
+    if (session) {
+      session.bubbleStyle = style;
+      this.saveChatSessions(sessions);
+      
+      // 更新设置页显示（不重新渲染整个页面，避免跳到顶部）
+      const descEls = document.querySelectorAll('.settings-card-desc');
+      for (let i = 0; i < descEls.length; i++) {
+        if (descEls[i].textContent.indexOf('当前：') >= 0 && descEls[i].textContent.indexOf('字体') < 0) {
+          descEls[i].textContent = '当前：' + style;
+          break;
+        }
+      }
+      
+      this.showToast('气泡样式：' + style);
+    }
+  },
   toggleTimeDisplay() {
     const sessions = this.getChatSessions();
     const session = sessions.find(s => s.contactId === this.currentChatId);
