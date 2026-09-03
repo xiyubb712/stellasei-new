@@ -1696,6 +1696,7 @@ html, body {
 .archive-app {
   height: 100%;
   overflow-y: auto;
+  overscroll-behavior: none;
   background: #f8f5f0;
   background-image: 
     repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(180, 160, 130, 0.05) 28px, rgba(180, 160, 130, 0.05) 29px);
@@ -3232,6 +3233,7 @@ html, body {
   min-height: 0;
   overflow-y: auto;
   overflow-x: hidden;
+  overscroll-behavior: none;
   padding: 20px 16px 8px;
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
@@ -3841,6 +3843,7 @@ html, body {
   flex-direction: column;
   overflow-y: auto;
   overflow-x: hidden;
+  overscroll-behavior: none;
 }
 
 /* 顶部导航栏 */
@@ -4874,4 +4877,12 @@ html, body {
   padding-top: max(env(safe-area-inset-top), 12px);
   padding-bottom: 8px;
   border-bottom: 1px solid rgba(139, 115, 70, 0.1);
+}
+
+/* ==================== 全局禁止橡皮筋效果 ==================== */
+/* 所有元素都禁止过度滚动（overscroll bounce），跟Xiyu-phone作者方案一致 */
+* {
+  overscroll-behavior: none;
+  overscroll-behavior-y: none;
+  overscroll-behavior-x: none;
 }
