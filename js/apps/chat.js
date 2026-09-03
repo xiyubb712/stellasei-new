@@ -827,7 +827,7 @@ const ChatApp = {
               </div>
               <div class="settings-card-content">
                 <div class="settings-card-title">气泡样式</div>
-                <div class="settings-card-desc">当前：${session?.bubbleStyle || '简约'}</div>
+                <div class="settings-card-desc">当前：${ChatApp.getBubbleStyleLabel(session?.bubbleStyle || '简约')}</div>
               </div>
               <div class="settings-card-arrow">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1299,6 +1299,17 @@ const ChatApp = {
     }
   },
   
+  // 获取气泡样式的显示名称
+  getBubbleStyleLabel(key) {
+    const labels = {
+      '简约': '星空气泡',
+      '可爱': '可爱',
+      '复古': '复古',
+      '气泡': '气泡'
+    };
+    return labels[key] || key;
+  },
+  
   // 打开气泡样式选择面板
   openBubbleStylePicker() {
     const sessions = this.getChatSessions();
@@ -1307,10 +1318,10 @@ const ChatApp = {
     
     const currentStyle = session.bubbleStyle || '简约';
     const styles = [
-      { key: '简约', desc: '简洁清爽', color: 'rgba(222, 214, 240, 0.82)' },
-      { key: '可爱', desc: '圆润可爱', color: 'rgba(255, 200, 220, 0.9)' },
-      { key: '复古', desc: '怀旧质感', color: 'rgba(230, 220, 200, 0.9)' },
-      { key: '气泡', desc: '经典气泡', color: 'rgba(180, 220, 255, 0.9)' }
+      { key: '简约', label: '星空气泡', desc: '经典默认样式', color: 'rgba(222, 214, 240, 0.82)' },
+      { key: '可爱', label: '可爱', desc: '圆润可爱', color: 'rgba(255, 200, 220, 0.9)' },
+      { key: '复古', label: '复古', desc: '怀旧质感', color: 'rgba(230, 220, 200, 0.9)' },
+      { key: '气泡', label: '气泡', desc: '经典气泡', color: 'rgba(180, 220, 255, 0.9)' }
     ];
     
     // 创建遮罩层
@@ -1330,7 +1341,7 @@ const ChatApp = {
       optionsHtml += '<div class="bubble-style-option ' + isActive + '" onclick="ChatApp.selectBubbleStyle(\'' + s.key + '\', this)">' +
         '<div class="bubble-preview-mini" style="background: ' + s.color + '"></div>' +
         '<div class="bubble-option-info">' +
-          '<div class="bubble-option-name">' + s.key + '</div>' +
+          '<div class="bubble-option-name">' + s.label + '</div>' +
           '<div class="bubble-option-desc">' + s.desc + '</div>' +
         '</div>' +
         '</div>';
@@ -1410,12 +1421,12 @@ const ChatApp = {
       const descEls = document.querySelectorAll('.settings-card-desc');
       for (let i = 0; i < descEls.length; i++) {
         if (descEls[i].textContent.indexOf('当前：') >= 0 && descEls[i].textContent.indexOf('字体') < 0) {
-          descEls[i].textContent = '当前：' + style;
+          descEls[i].textContent = '当前：' + this.getBubbleStyleLabel(style);
           break;
         }
       }
       
-      this.showToast('气泡样式：' + style);
+      this.showToast('气泡样式：' + this.getBubbleStyleLabel(style));
     }
   },
   toggleTimeDisplay() {
