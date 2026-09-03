@@ -4621,7 +4621,7 @@ html, body {
   background: #f8f8fa;
   border-radius: 12px;
   padding: 16px;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 .preview-row {
   display: flex;
@@ -4663,6 +4663,7 @@ html, body {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  margin-top: 4px;
 }
 .bubble-style-option {
   display: flex;
