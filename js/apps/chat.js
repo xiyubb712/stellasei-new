@@ -9,6 +9,7 @@ const ChatApp = {
   currentTab: 'chat', // chat / contacts / moments / me
   currentChatId: null, // 当前打开的聊天ID
   isInChatRoom: false, // 是否在聊天详情页
+  isInSettingsPage: false, // 是否在设置页面
   
   // ==================== 数据存储 ====================
   
@@ -40,6 +41,12 @@ const ChatApp = {
       return ContactsApp.getContactById(contactId);
     }
     return null;
+  },
+  
+  // 获取当前会话
+  getCurrentSession() {
+    const sessions = this.getChatSessions();
+    return sessions.find(s => s.contactId === this.currentChatId);
   },
   
   // ==================== 渲染入口 ====================
@@ -174,7 +181,14 @@ const ChatApp = {
   // ==================== 聊天标签页（会话列表） ====================
   
   renderChatTab() {
-    const sessions = this.getChatSessions();
+    let sessions = this.getChatSessions();
+    
+    // 排序：置顶的会话显示在顶部
+    sessions.sort((a, b) => {
+      if (a.pinned && !b.pinned) return -1;
+      if (!a.pinned && b.pinned) return 1;
+      return 0;
+    });
     
     return `
       <div class="tab-page">
@@ -203,23 +217,27 @@ const ChatApp = {
             <div class="chat-session-list">
               ${sessions.map(session => {
                 const contact = this.getContact(session.contactId);
-                const name = contact?.name || '未知角色';
+                const displayName = session.remark || contact?.name || '未知角色';
                 const avatar = contact?.avatar || '';
                 const lastMessage = session.lastMessage || '暂无消息';
                 const lastTime = session.lastTime ? this.formatTime(session.lastTime) : '';
                 
                 return `
-                  <div class="chat-session-item" onclick="ChatApp.openChatRoom('${session.contactId}')">
+                  <div class="chat-session-item ${session.pinned ? 'pinned' : ''}" onclick="ChatApp.openChatRoom('${session.contactId}')">
                     <div class="session-avatar">
                       ${avatar 
-                        ? `<img src="${avatar}" alt="${name}">`
-                        : `<div class="avatar-placeholder">${name.charAt(0)}</div>`
+                        ? `<img src="${avatar}" alt="${displayName}">`
+                        : `<div class="avatar-placeholder">${displayName.charAt(0)}</div>`
                       }
                       <div class="avatar-glow"></div>
                     </div>
                     <div class="session-info">
                       <div class="session-name-row">
-                        <span class="session-name">${name}</span>
+                        <span class="session-name">${displayName}</span>
+                        <div class="session-badges">
+                          ${session.pinned ? '<span class="session-badge pinned">置顶</span>' : ''}
+                          ${session.muted ? '<span class="session-badge muted">免打扰</span>' : ''}
+                        </div>
                         <span class="session-time">${lastTime}</span>
                       </div>
                       <div class="session-last-message">${lastMessage}</div>
@@ -342,18 +360,22 @@ const ChatApp = {
     }
     
     const messages = this.getChatMessages(contactId);
-    const name = contact.name;
+    const session = this.getCurrentSession();
+    const displayName = session?.remark || contact.name;
     const avatar = contact.avatar || '';
+    const hasCustomBg = session?.background ? true : false;
     
     this.container.innerHTML = `
-      <div class="chat-room">
-        <!-- 星空背景 -->
+      <div class="chat-room ${hasCustomBg ? 'has-custom-bg' : ''}" ${hasCustomBg ? `style="background-image: url('${session.background}');"` : ''}>
+        <!-- 星空背景（自定义背景时隐藏） -->
+        ${hasCustomBg ? '' : `
         <div class="starfield">
           <div class="stars stars-small"></div>
           <div class="stars stars-medium"></div>
           <div class="stars stars-large"></div>
           <div class="nebula"></div>
         </div>
+        `}
         
         <!-- 聊天头部 -->
         <div class="chat-room-header">
@@ -371,7 +393,7 @@ const ChatApp = {
               <div class="room-avatar-glow"></div>
             </div>
             <div class="room-name-info">
-              <span class="room-name">${name}</span>
+              <span class="room-name">${displayName}</span>
               <span class="room-status">
                 <span class="status-dot-online"></span>
                 信号已连接
@@ -379,7 +401,7 @@ const ChatApp = {
             </div>
           </div>
           <div class="room-header-actions">
-            <button class="room-action-btn" title="更多">
+            <button class="room-action-btn" title="更多" onclick="ChatApp.openSettingsPage()">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="1"/>
                 <circle cx="12" cy="5" r="1"/>
@@ -407,7 +429,7 @@ const ChatApp = {
                 </svg>
               </div>
               <div class="empty-signal-text">跨越时空的信号已建立</div>
-              <div class="empty-signal-sub">写下你想传给${name}的话吧</div>
+              <div class="empty-signal-sub">写下你想传给${displayName}的话吧</div>
             </div>
           ` : messages.map(msg => this.renderMessage(msg, contact)).join('')}
         </div>
@@ -433,7 +455,7 @@ const ChatApp = {
           </div>
           <div class="input-hint">
             <span class="hint-star">✦</span>
-            <span>信号将跨越时空传送给${name}</span>
+            <span>信号将跨越时空传送给${displayName}</span>
             <span class="hint-star">✦</span>
           </div>
         </div>
@@ -448,14 +470,24 @@ const ChatApp = {
       }
     }, 100);
     
-    console.log('[聊天应用] 进入聊天详情页:', name);
+    console.log('[聊天应用] 进入聊天详情页:', displayName);
   },
   
   // ==================== 渲染单条消息 ====================
   
   renderMessage(msg, contact) {
     const isMe = msg.sender === 'me';
+    const isSystem = msg.sender === 'system';
     const time = msg.time ? this.formatTime(msg.time) : '';
+    
+    // 系统消息（戳一戳等）
+    if (isSystem) {
+      return `
+        <div class="message message-system">
+          <span class="system-message-text">${this.escapeHtml(msg.content)}</span>
+        </div>
+      `;
+    }
     
     if (isMe) {
       return `
@@ -470,17 +502,19 @@ const ChatApp = {
     } else {
       const avatar = contact?.avatar || '';
       const name = contact?.name || '';
+      const session = this.getCurrentSession();
+      const displayName = session?.remark || name;
       return `
         <div class="message message-other">
-          <div class="message-avatar">
+          <div class="message-avatar" ondblclick="ChatApp.pokeContact()" title="双击戳一戳">
             ${avatar 
-              ? `<img src="${avatar}" alt="${name}">`
-              : `<div class="message-avatar-placeholder">${name.charAt(0)}</div>`
+              ? `<img src="${avatar}" alt="${displayName}">`
+              : `<div class="message-avatar-placeholder">${displayName.charAt(0)}</div>`
             }
             <div class="message-avatar-glow"></div>
           </div>
           <div class="message-content-wrap">
-            <span class="message-sender-name">${name}</span>
+            <span class="message-sender-name">${displayName}</span>
             <div class="message-bubble bubble-other">
               <div class="bubble-signal"></div>
               <p class="message-text">${this.escapeHtml(msg.content)}</p>
@@ -507,6 +541,483 @@ const ChatApp = {
     this.currentChatId = null;
     this.currentTab = 'chat';
     this.renderMain();
+  },
+  
+  // ==================== 传讯设置页面 ====================
+  
+  openSettingsPage() {
+    this.isInSettingsPage = true;
+    this.renderSettingsPage();
+  },
+  
+  backToChatRoom() {
+    this.isInSettingsPage = false;
+    this.renderChatRoom(this.currentChatId);
+  },
+  
+  renderSettingsPage() {
+    const contactId = this.currentChatId;
+    const contact = this.getContact(contactId);
+    const name = contact?.name || '未知角色';
+    const avatar = contact?.avatar || '';
+    const session = this.getCurrentSession();
+    
+    // 获取消息数量
+    const messages = this.getChatMessages(contactId);
+    const messageCount = messages.length;
+    
+    this.container.innerHTML = `
+      <div class="chat-settings-page">
+        <!-- 顶部导航栏 -->
+        <div class="settings-header">
+          <button class="settings-back-btn" onclick="ChatApp.backToChatRoom()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            <span>返回</span>
+          </button>
+          <h1 class="settings-title">传讯设置</h1>
+          <div class="settings-header-placeholder"></div>
+        </div>
+        
+        <!-- 角色信息 -->
+        <div class="settings-contact-info">
+          <div class="settings-contact-avatar">
+            ${avatar 
+              ? `<img src="${avatar}" alt="${name}">`
+              : `<div class="avatar-placeholder">${name.charAt(0)}</div>`
+            }
+          </div>
+          <div class="settings-contact-name">${name}</div>
+          <div class="settings-contact-meta">${messageCount} 条传讯</div>
+        </div>
+        
+        <!-- 设置项列表 -->
+        <div class="settings-list">
+          <!-- 基础设置 -->
+          <div class="settings-section">
+            <div class="settings-section-title">基础设置</div>
+            
+            <div class="settings-card" onclick="ChatApp.togglePin()">
+              <div class="settings-card-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 17v5"/>
+                  <path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/>
+                </svg>
+              </div>
+              <div class="settings-card-content">
+                <div class="settings-card-title" id="pin-title">置顶传讯</div>
+                <div class="settings-card-desc">将此传讯置顶在列表顶部</div>
+              </div>
+              <div class="settings-card-switch ${session?.pinned ? 'active' : ''}" id="pin-switch"></div>
+            </div>
+            
+            <div class="settings-card" onclick="ChatApp.toggleMute()">
+              <div class="settings-card-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M11 5L6 9H2v6h4l5 4V5z"/>
+                  <line x1="23" y1="9" x2="17" y2="15"/>
+                  <line x1="17" y1="9" x2="23" y2="15"/>
+                </svg>
+              </div>
+              <div class="settings-card-content">
+                <div class="settings-card-title" id="mute-title">消息免打扰</div>
+                <div class="settings-card-desc">接收消息但不提醒</div>
+              </div>
+              <div class="settings-card-switch ${session?.muted ? 'active' : ''}" id="mute-switch"></div>
+            </div>
+          </div>
+          
+          <!-- 外观与背景 -->
+          <div class="settings-section">
+            <div class="settings-section-title">外观与背景</div>
+            
+            <div class="settings-card" onclick="document.getElementById('chat-bg-input').click()">
+              <div class="settings-card-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                  <circle cx="8.5" cy="8.5" r="1.5"/>
+                  <polyline points="21 15 16 10 5 21"/>
+                </svg>
+              </div>
+              <div class="settings-card-content">
+                <div class="settings-card-title">聊天背景</div>
+                <div class="settings-card-desc">${session?.background ? '已自定义背景' : '使用默认星空背景'}</div>
+              </div>
+              <div class="settings-card-preview">
+                ${session?.background 
+                  ? `<img src="${session.background}" alt="背景">`
+                  : `<div class="preview-placeholder">✦</div>`
+                }
+              </div>
+              <input type="file" id="chat-bg-input" accept="image/*" style="display:none" onchange="ChatApp.setChatBackground(event)">
+            </div>
+            
+            <div class="settings-card" onclick="ChatApp.setRemark()">
+              <div class="settings-card-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                </svg>
+              </div>
+              <div class="settings-card-content">
+                <div class="settings-card-title">设置备注</div>
+                <div class="settings-card-desc">${session?.remark ? `当前备注：${session.remark}` : '点击设置备注名'}</div>
+              </div>
+              <div class="settings-card-arrow">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9 18l6-6-6-6"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 互动设置 -->
+          <div class="settings-section">
+            <div class="settings-section-title">互动设置</div>
+            
+            <div class="settings-card poke-card">
+              <div class="poke-card-header">
+                <div class="poke-card-title">设置戳一戳</div>
+                <div class="poke-card-subtitle">双击头像触发</div>
+              </div>
+              <div class="poke-input-row">
+                <span class="poke-label">我</span>
+                <input 
+                  type="text" 
+                  class="poke-input poke-action-input" 
+                  id="poke-action-input"
+                  placeholder="戳了戳" 
+                  value="${session?.pokeAction || '戳了戳'}"
+                  onblur="ChatApp.savePokeField('contact', 'action')"
+                  onkeydown="if(event.key==='Enter'){event.target.blur();}"
+                >
+                <span class="poke-label">TA</span>
+                <input 
+                  type="text" 
+                  class="poke-input" 
+                  id="poke-suffix-input"
+                  placeholder="的小脑袋" 
+                  value="${session?.pokeSuffix || ''}"
+                  onblur="ChatApp.savePokeField('contact', 'suffix')"
+                  onkeydown="if(event.key==='Enter'){event.target.blur();}"
+                >
+              </div>
+              <div class="poke-input-row">
+                <span class="poke-label">TA</span>
+                <input 
+                  type="text" 
+                  class="poke-input poke-action-input" 
+                  id="my-poke-action-input"
+                  placeholder="戳了戳" 
+                  value="${session?.myPokeAction || '戳了戳'}"
+                  onblur="ChatApp.savePokeField('my', 'action')"
+                  onkeydown="if(event.key==='Enter'){event.target.blur();}"
+                >
+                <span class="poke-label">我</span>
+                <input 
+                  type="text" 
+                  class="poke-input" 
+                  id="my-poke-suffix-input"
+                  placeholder="的肩膀" 
+                  value="${session?.myPokeSuffix || ''}"
+                  onblur="ChatApp.savePokeField('my', 'suffix')"
+                  onkeydown="if(event.key==='Enter'){event.target.blur();}"
+                >
+              </div>
+            </div>
+          </div>
+          
+          <!-- 数据管理 -->
+          <div class="settings-section">
+            <div class="settings-section-title">数据管理</div>
+            
+            <div class="settings-card danger" onclick="ChatApp.clearMessages()">
+              <div class="settings-card-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="3 6 5 6 21 6"/>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                </svg>
+              </div>
+              <div class="settings-card-content">
+                <div class="settings-card-title">清空传讯记录</div>
+                <div class="settings-card-desc">删除此会话的所有消息</div>
+              </div>
+              <div class="settings-card-arrow">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9 18l6-6-6-6"/>
+                </svg>
+              </div>
+            </div>
+            
+            <div class="settings-card danger" onclick="ChatApp.deleteChat()">
+              <div class="settings-card-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"/>
+                </svg>
+              </div>
+              <div class="settings-card-content">
+                <div class="settings-card-title">删除传讯</div>
+                <div class="settings-card-desc">删除此会话及所有消息</div>
+              </div>
+              <div class="settings-card-arrow">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9 18l6-6-6-6"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 底部装饰 -->
+        <div class="settings-footer">
+          <div class="settings-footer-en">Signal Preferences</div>
+          <div class="settings-footer-cn">星绥小手机 · 2026</div>
+        </div>
+      </div>
+    `;
+  },
+  
+  updateSettingsPageState() {
+    const session = this.getCurrentSession();
+    if (!session) return;
+    
+    // 更新置顶状态
+    const pinTitle = document.getElementById('pin-title');
+    const pinSwitch = document.getElementById('pin-switch');
+    if (pinTitle && pinSwitch) {
+      if (session.pinned) {
+        pinTitle.textContent = '取消置顶';
+        pinSwitch.classList.add('active');
+      } else {
+        pinTitle.textContent = '置顶传讯';
+        pinSwitch.classList.remove('active');
+      }
+    }
+    
+    // 更新免打扰状态
+    const muteTitle = document.getElementById('mute-title');
+    const muteSwitch = document.getElementById('mute-switch');
+    if (muteTitle && muteSwitch) {
+      if (session.muted) {
+        muteTitle.textContent = '取消免打扰';
+        muteSwitch.classList.add('active');
+      } else {
+        muteTitle.textContent = '消息免打扰';
+        muteSwitch.classList.remove('active');
+      }
+    }
+  },
+  
+  togglePin() {
+    const sessions = this.getChatSessions();
+    const session = sessions.find(s => s.contactId === this.currentChatId);
+    if (!session) return;
+    
+    session.pinned = !session.pinned;
+    this.saveChatSessions(sessions);
+    this.updateSettingsPageState();
+    
+    // 显示提示
+    this.showToast(session.pinned ? '已置顶传讯' : '已取消置顶');
+  },
+  
+  toggleMute() {
+    const sessions = this.getChatSessions();
+    const session = sessions.find(s => s.contactId === this.currentChatId);
+    if (!session) return;
+    
+    session.muted = !session.muted;
+    this.saveChatSessions(sessions);
+    this.updateSettingsPageState();
+    
+    // 显示提示
+    this.showToast(session.muted ? '已开启消息免打扰' : '已关闭消息免打扰');
+  },
+  
+  setChatBackground(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const backgroundUrl = e.target.result;
+      
+      const sessions = this.getChatSessions();
+      const session = sessions.find(s => s.contactId === this.currentChatId);
+      if (session) {
+        session.background = backgroundUrl;
+        this.saveChatSessions(sessions);
+        this.renderSettingsPage();
+        this.showToast('聊天背景已更新');
+      }
+    };
+    reader.readAsDataURL(file);
+    
+    // 重置input，这样可以重复选择同一个文件
+    event.target.value = '';
+  },
+  
+  setRemark() {
+    const sessions = this.getChatSessions();
+    const session = sessions.find(s => s.contactId === this.currentChatId);
+    const currentRemark = session?.remark || '';
+    
+    const newRemark = prompt('请输入备注名：', currentRemark);
+    if (newRemark === null) return; // 用户取消了
+    
+    if (session) {
+      if (newRemark.trim() === '') {
+        delete session.remark;
+        this.showToast('已清除备注');
+      } else {
+        session.remark = newRemark.trim();
+        this.showToast('备注已更新');
+      }
+      this.saveChatSessions(sessions);
+      this.renderSettingsPage();
+    }
+  },
+  
+  pokeContact() {
+    const contactId = this.currentChatId;
+    if (!contactId) return;
+    
+    const contact = this.getContact(contactId);
+    const session = this.getCurrentSession();
+    const displayName = session?.remark || contact?.name || '对方';
+    const pokeAction = session?.pokeAction || '戳了戳';
+    const pokeSuffix = session?.pokeSuffix || '';
+    
+    // 添加戳一戳系统消息
+    const messages = this.getChatMessages(contactId);
+    const pokeContent = pokeSuffix ? `我${pokeAction}${displayName}${pokeSuffix}` : `我${pokeAction}${displayName}`;
+    const pokeMessage = {
+      id: 'msg_' + Date.now(),
+      sender: 'system',
+      type: 'poke',
+      content: pokeContent,
+      time: Date.now()
+    };
+    messages.push(pokeMessage);
+    this.saveChatMessages(contactId, messages);
+    
+    // 刷新消息显示
+    this.refreshMessages();
+    
+    // 有50%概率对方也会戳一戳你
+    if (Math.random() < 0.5) {
+      setTimeout(() => {
+        const myPokeAction = session?.myPokeAction || '戳了戳';
+        const myPokeSuffix = session?.myPokeSuffix || '';
+        const replyPokeContent = myPokeSuffix ? `${displayName}${myPokeAction}我${myPokeSuffix}` : `${displayName}${myPokeAction}我`;
+        const replyPokeMessage = {
+          id: 'msg_' + Date.now(),
+          sender: 'system',
+          type: 'poke',
+          content: replyPokeContent,
+          time: Date.now()
+        };
+        const currentMessages = this.getChatMessages(contactId);
+        currentMessages.push(replyPokeMessage);
+        this.saveChatMessages(contactId, currentMessages);
+        
+        if (this.isInChatRoom && this.currentChatId === contactId) {
+          this.refreshMessages();
+        }
+      }, 800 + Math.random() * 1000);
+    }
+  },
+  
+  savePokeField(type, field) {
+    const inputId = type === 'contact' 
+      ? (field === 'action' ? 'poke-action-input' : 'poke-suffix-input')
+      : (field === 'action' ? 'my-poke-action-input' : 'my-poke-suffix-input');
+    const input = document.getElementById(inputId);
+    if (!input) return;
+    
+    const value = input.value.trim();
+    const storageField = type === 'contact'
+      ? (field === 'action' ? 'pokeAction' : 'pokeSuffix')
+      : (field === 'action' ? 'myPokeAction' : 'myPokeSuffix');
+    
+    const sessions = this.getChatSessions();
+    const session = sessions.find(s => s.contactId === this.currentChatId);
+    if (!session) return;
+    
+    if (value === '') {
+      delete session[storageField];
+    } else {
+      session[storageField] = value;
+    }
+    
+    this.saveChatSessions(sessions);
+    this.showToast(field === 'action' ? '戳一戳动作已保存' : '戳一戳后缀已保存');
+  },
+  
+  clearMessages() {
+    if (!confirm('确定要清空此传讯的所有消息吗？此操作不可恢复。')) return;
+    
+    const contactId = this.currentChatId;
+    if (!contactId) return;
+    
+    // 清空消息
+    this.saveChatMessages(contactId, []);
+    
+    // 更新会话的最后消息
+    const sessions = this.getChatSessions();
+    const session = sessions.find(s => s.contactId === contactId);
+    if (session) {
+      session.lastMessage = '暂无消息';
+      session.lastTime = null;
+      this.saveChatSessions(sessions);
+    }
+    
+    this.renderSettingsPage();
+    this.showToast('已清空传讯记录');
+  },
+  
+  deleteChat() {
+    if (!confirm('确定要删除此传讯吗？所有消息将被删除，此操作不可恢复。')) return;
+    
+    const contactId = this.currentChatId;
+    if (!contactId) return;
+    
+    // 删除会话
+    let sessions = this.getChatSessions();
+    sessions = sessions.filter(s => s.contactId !== contactId);
+    this.saveChatSessions(sessions);
+    
+    // 删除消息
+    if (typeof Storage !== 'undefined' && Storage.remove) {
+      Storage.remove('chat-messages-' + contactId);
+    }
+    
+    this.isInSettingsPage = false;
+    this.backToChatList();
+    this.showToast('已删除传讯');
+  },
+  
+  showToast(message) {
+    // 移除已有的toast
+    const existing = document.querySelector('.chat-toast');
+    if (existing) existing.remove();
+    
+    const toast = document.createElement('div');
+    toast.className = 'chat-toast';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+      toast.classList.add('show');
+    }, 10);
+    
+    setTimeout(() => {
+      toast.classList.remove('show');
+      setTimeout(() => {
+        if (toast.parentNode) toast.parentNode.removeChild(toast);
+      }, 300);
+    }, 2000);
   },
   
   // ==================== 发送消息 ====================
