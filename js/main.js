@@ -394,18 +394,21 @@ function initAppHeight() {
   
   document.addEventListener('focusout', function(e) {
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
-      // 输入法收起：立即更新 + 分批更新（50ms、250ms、600ms），覆盖键盘收起动画期
-      // 配合hasEditableFocus()确定性判断，不需要长时间持续计算
+      // 输入法收起：先强制把keyboard-height设为0，确保内容立即弹回去
+      // 不依赖hasEditableFocus()判断，因为focusout事件触发时activeElement可能还没完全转移
+      document.documentElement.style.setProperty('--keyboard-height', '0px');
+      
+      // 然后分批更新，覆盖键盘收起动画期，确保高度最终正确
       const scheduleUpdate = function() {
         lastAppHeight = 0;
         setAppHeightNow();
       };
-      scheduleUpdate();
       setTimeout(scheduleUpdate, 50);
       setTimeout(scheduleUpdate, 250);
       setTimeout(scheduleUpdate, 600);
-      // 第三方输入法可能收起较慢，再加一个1秒的兜底
       setTimeout(scheduleUpdate, 1000);
+      // 第三方输入法可能收起较慢，再加一个1.5秒的兜底
+      setTimeout(scheduleUpdate, 1500);
     }
   });
   
