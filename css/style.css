@@ -1,4 +1,4 @@
-﻿/* ============================================
+/* ============================================
    全局样式
    ============================================ */
 * {
@@ -66,7 +66,7 @@ html, body {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  padding-top: max(env(safe-area-inset-top), 8px);
+  padding-top: max(env(safe-area-inset-top), 4px);
   padding-bottom: env(safe-area-inset-bottom);
   padding-left: env(safe-area-inset-left);
   padding-right: env(safe-area-inset-right);
@@ -1700,7 +1700,7 @@ html, body {
   background: #f8f5f0;
   background-image: 
     repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(180, 160, 130, 0.05) 28px, rgba(180, 160, 130, 0.05) 29px);
-  padding-top: max(env(safe-area-inset-top), 8px);
+  padding-top: max(env(safe-area-inset-top), 4px);
   padding-bottom: 30px;
   box-sizing: border-box;
   font-family: Georgia, 'Times New Roman', 'Songti SC', serif;
@@ -1708,7 +1708,7 @@ html, body {
 }
 /* ==================== 档案头部 ==================== */
 .archive-header {
-  padding: 12px 20px 16px;
+  padding: 8px 20px 12px;
   border-bottom: 2px solid #2a2a2a;
   position: relative;
 }

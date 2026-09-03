@@ -296,8 +296,8 @@ function initAppHeight() {
       }
       // 关键！iOS情况下高度加1px，避免白边
       const rH = finalH + 1;
-      // 只有移动端才做"高度变化小于2px就不更新"的判断
-      if (isMobile && lastAppHeight > 0 && Math.abs(rH - lastAppHeight) < 2) return;
+      // 只有移动端才做"高度变化小于0.5px就不更新"的判断
+      if (isMobile && lastAppHeight > 0 && Math.abs(rH - lastAppHeight) < 0.5) return;
       lastAppHeight = rH;
       document.documentElement.style.setProperty('--app-height', rH + 'px');
       console.log('[应用高度] iOS设置为:', rH + 'px');
@@ -311,8 +311,8 @@ function initAppHeight() {
     const vvTop = vv ? (vv.offsetTop || 0) : 0;
     finalH = Math.max(innerH, clientH, vvH + vvTop);
     const rH = finalH;
-    // 只有移动端才做"高度变化小于2px就不更新"的判断
-    if (isMobile && lastAppHeight > 0 && Math.abs(rH - lastAppHeight) < 2) return;
+    // 只有移动端才做"高度变化小于0.5px就不更新"的判断
+    if (isMobile && lastAppHeight > 0 && Math.abs(rH - lastAppHeight) < 0.5) return;
     lastAppHeight = rH;
     document.documentElement.style.setProperty('--app-height', rH + 'px');
     console.log('[应用高度] 设置为:', rH + 'px');
@@ -402,8 +402,18 @@ function initAppHeight() {
       // 输入法收起，立即重新计算
       lastAppHeight = 0;
       setAppHeight();
-      // 持续计算3秒，确保输入法完全收起，避免底部白边
-      keepRecalculatingHeight(3000);
+      // 延迟500ms后开始持续计算，确保第三方输入法已经开始收起动画
+      setTimeout(function() {
+        lastAppHeight = 0;
+        setAppHeight();
+        // 持续计算5秒，确保第三方输入法完全收起，避免底部白边
+        keepRecalculatingHeight(5000);
+        // 最终强制刷新一次，确保高度完全恢复
+        setTimeout(function() {
+          lastAppHeight = 0;
+          setAppHeightNow();
+        }, 5500);
+      }, 500);
     }
   });
   
