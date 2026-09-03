@@ -4469,3 +4469,24 @@ html, body {
   border-color: #9382dc;
   box-shadow: 0 0 0 3px rgba(147, 130, 220, 0.1);
 }
+/* ==================== 设置项禁用状态 ==================== */
+.settings-card.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.settings-card.disabled .settings-card-icon {
+  color: #b0b0b0;
+}
+.settings-card.disabled .settings-card-title {
+  color: #b0b0b0;
+}
+.settings-card.disabled .settings-card-desc {
+  color: #c0c0c0;
+}
+.settings-card.disabled .settings-card-switch {
+  background: #e0e0e0;
+}
+.settings-card.disabled .settings-card-switch.active {
+  background: #c0c0c0;
+}

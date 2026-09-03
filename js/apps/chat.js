@@ -466,6 +466,7 @@ const ChatApp = {
               class="chat-input" 
               placeholder="写下你想传讯的内容..."
               rows="1"
+              enterkeyhint="${session?.enterToSend ? 'send' : 'enter'}"
               onkeydown="ChatApp.handleInputKeydown(event)"
               oninput="ChatApp.autoResizeInput(this)"
             ></textarea>
@@ -686,7 +687,7 @@ const ChatApp = {
           <div class="settings-section">
             <div class="settings-section-title">消息提醒</div>
             
-            <div class="settings-card" onclick="ChatApp.toggleSound()">
+            <div class="settings-card" id="sound-card" onclick="ChatApp.toggleSound()">
               <div class="settings-card-icon">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M9 18V5l12-2v13"/>
@@ -701,7 +702,7 @@ const ChatApp = {
               <div class="settings-card-switch ${session?.soundEnabled !== false ? 'active' : ''}" id="sound-switch"></div>
             </div>
             
-            <div class="settings-card" onclick="ChatApp.toggleVibrate()">
+            <div class="settings-card" id="vibrate-card" onclick="ChatApp.toggleVibrate()">
               <div class="settings-card-icon">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <rect x="2" y="6" width="20" height="12" rx="2"/>
@@ -1077,6 +1078,17 @@ const ChatApp = {
         timeSwitch.classList.remove('active');
       }
     }
+    
+    // 免打扰联动：开启免打扰后，提示音和震动变灰不可点击
+    const soundCard = document.getElementById('sound-card');
+    const vibrateCard = document.getElementById('vibrate-card');
+    if (session.muted) {
+      if (soundCard) soundCard.classList.add('disabled');
+      if (vibrateCard) vibrateCard.classList.add('disabled');
+    } else {
+      if (soundCard) soundCard.classList.remove('disabled');
+      if (vibrateCard) vibrateCard.classList.remove('disabled');
+    }
   },
   
   togglePin() {
@@ -1110,6 +1122,12 @@ const ChatApp = {
     const session = sessions.find(s => s.contactId === this.currentChatId);
     if (!session) return;
     
+    // 免打扰开启时，不允许修改提示音
+    if (session.muted) {
+      this.showToast('免打扰已开启，无法修改提示音');
+      return;
+    }
+    
     // 默认开启提示音，所以用 !== false 来判断
     session.soundEnabled = session.soundEnabled === false ? true : false;
     this.saveChatSessions(sessions);
@@ -1123,6 +1141,12 @@ const ChatApp = {
     const sessions = this.getChatSessions();
     const session = sessions.find(s => s.contactId === this.currentChatId);
     if (!session) return;
+    
+    // 免打扰开启时，不允许修改震动
+    if (session.muted) {
+      this.showToast('免打扰已开启，无法修改震动');
+      return;
+    }
     
     // 默认开启震动，所以用 !== false 来判断
     session.vibrateEnabled = session.vibrateEnabled === false ? true : false;
@@ -1172,6 +1196,13 @@ const ChatApp = {
     session.enterToSend = !session.enterToSend;
     this.saveChatSessions(sessions);
     this.updateSettingsPageState();
+    
+    // 动态改变输入框的enterkeyhint，手机端软键盘立即生效
+    const chatInput = document.getElementById('chat-input');
+    if (chatInput) {
+      chatInput.setAttribute('enterkeyhint', session.enterToSend ? 'send' : 'enter');
+    }
+    
     this.showToast(session.enterToSend ? '已开启回车发送' : '已关闭回车发送');
   },
   
@@ -1810,10 +1841,16 @@ const ChatApp = {
   // ==================== 输入框处理 ====================
   
   handleInputKeydown(event) {
-    if (event.key === 'Enter' && !event.shiftKey) {
+    // 获取当前会话的设置
+    const session = this.getCurrentSession();
+    const enterToSend = session?.enterToSend || false;
+    
+    // 如果开启了回车发送，按回车就发送（Shift+回车是换行）
+    if (enterToSend && event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       this.sendMessage();
     }
+    // 如果没开启回车发送，按回车就是默认的换行行为
   },
   
   autoResizeInput(textarea) {
