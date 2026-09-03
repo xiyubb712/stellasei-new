@@ -790,6 +790,7 @@ const ChatApp = {
               <div class="settings-card-content">
                 <div class="settings-card-title">聊天背景</div>
                 <div class="settings-card-desc">${session?.background ? '已自定义背景' : '使用默认星空背景'}</div>
+                ${session?.background ? `<button class="reset-bg-btn" onclick="event.stopPropagation(); ChatApp.resetChatBackground()">恢复默认</button>` : ''}
               </div>
               <div class="settings-card-preview">
                 ${session?.background 
@@ -1461,6 +1462,20 @@ const ChatApp = {
     
     // 重置input，这样可以重复选择同一个文件
     event.target.value = '';
+  },
+  
+  /**
+   * 鎭㈠榛樿鑱婂ぉ鑳屾櫙
+   */
+  resetChatBackground() {
+    const sessions = this.getChatSessions();
+    const session = sessions.find(s => s.contactId === this.currentChatId);
+    if (session) {
+      delete session.background;
+      this.saveChatSessions(sessions);
+      this.renderSettingsPage();
+      this.showToast('宸叉仮澶嶉粯璁よ儗鏅?);
+    }
   },
   
   setRemark() {

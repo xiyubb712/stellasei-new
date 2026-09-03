@@ -4889,3 +4889,25 @@ html, body {
   overscroll-behavior-y: none;
   overscroll-behavior-x: none;
 }
+
+/* ==================== 聊天背景恢复默认按钮 ==================== */
+.reset-bg-btn {
+  margin-top: 8px;
+  padding: 4px 12px;
+  background: linear-gradient(135deg, #9382dc 0%, #b8a9e8 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 11px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+.reset-bg-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(147, 130, 220, 0.3);
+}
+.reset-bg-btn:active {
+  transform: translateY(0);
+}
