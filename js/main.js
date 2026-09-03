@@ -316,8 +316,15 @@ function initAppHeight() {
     }
     
     if (isIOS) {
-      // iOS PWA模式下，键盘没打开时用屏幕高度来计算
-      if (isStandalone && !kbOpen) {
+      if (kbOpen) {
+        // 键盘打开时，用visualViewport计算可视区域高度
+        // iOS PWA模式下键盘是浮在应用上面的，window.innerHeight不会变，必须用visualViewport
+        const vv = window.visualViewport;
+        if (vv) {
+          finalH = vv.height + (vv.offsetTop || 0);
+        }
+      } else if (isStandalone) {
+        // 键盘没打开时，PWA模式用屏幕高度
         const sH = window.screen.height || 0;
         const sW = window.screen.width || 0;
         const exp = window.innerWidth > window.innerHeight ? Math.min(sH, sW) : Math.max(sH, sW);
@@ -329,7 +336,7 @@ function initAppHeight() {
       if (isMobile && lastAppHeight > 0 && Math.abs(rH - lastAppHeight) < 0.5) return;
       lastAppHeight = rH;
       document.documentElement.style.setProperty('--app-height', rH + 'px');
-      console.log('[应用高度] iOS设置为:', rH + 'px');
+      console.log('[应用高度] iOS设置为:', rH + 'px', kbOpen ? '(键盘打开)' : '(键盘关闭)');
       return;
     }
     
