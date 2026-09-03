@@ -524,23 +524,24 @@ function initOverscrollPrevention() {
   let startX = 0;
   let targetScrollable = null;
   
-  // 找到最近的可滚动祖先元素
+  // 找到最近的可滚动祖先元素（只在touchstart时调用一次，缓存结果）
   function findScrollableParent(element) {
     let current = element;
     while (current && current !== document.body) {
-      const style = window.getComputedStyle(current);
-      const overflowY = style.overflowY;
-      const canScroll = (overflowY === 'auto' || overflowY === 'scroll') && 
-                        current.scrollHeight > current.clientHeight;
-      if (canScroll) {
-        return current;
+      // 先用属性快速判断，避免频繁调用getComputedStyle
+      if (current.scrollHeight > current.clientHeight) {
+        const style = window.getComputedStyle(current);
+        const overflowY = style.overflowY;
+        if (overflowY === 'auto' || overflowY === 'scroll') {
+          return current;
+        }
       }
       current = current.parentElement;
     }
     return null;
   }
   
-  // 监听touchstart，记录初始位置和目标元素
+  // 监听touchstart，记录初始位置和目标元素（只在这里调用findScrollableParent）
   document.addEventListener('touchstart', function(e) {
     if (e.touches.length !== 1) return;
     startY = e.touches[0].clientY;
@@ -548,7 +549,7 @@ function initOverscrollPrevention() {
     targetScrollable = findScrollableParent(e.target);
   }, { passive: true });
   
-  // 监听touchmove，阻止过度滚动
+  // 监听touchmove，阻止过度滚动（这里不再调用getComputedStyle，直接用缓存的targetScrollable）
   document.addEventListener('touchmove', function(e) {
     if (e.touches.length !== 1) return;
     
@@ -587,5 +588,5 @@ function initOverscrollPrevention() {
     // 正常滚动，不阻止
   }, { passive: false });
   
-  console.log('[橡皮筋阻止] 初始化完成');
+  console.log('[橡皮筋阻止] 初始化完成（已优化：touchmove不再调用getComputedStyle）');
 }
