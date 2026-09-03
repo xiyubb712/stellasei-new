@@ -4622,6 +4622,8 @@ html, body {
   border-radius: 12px;
   padding: 16px;
   margin-bottom: 20px;
+  min-height: 110px;
+  box-sizing: border-box;
 }
 .preview-row {
   display: flex;
