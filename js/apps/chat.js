@@ -411,6 +411,29 @@ const ChatApp = {
           </div>
         </div>
         
+        <!-- 搜索框 -->
+        <div class="chat-search-bar">
+          <button class="chat-search-close" onclick="ChatApp.closeSearch()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"/>
+              <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+          <div class="chat-search-input-wrap">
+            <svg class="chat-search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"/>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <input 
+              type="text" 
+              class="chat-search-input" 
+              placeholder="搜索聊天记录" 
+              oninput="ChatApp.performSearch(this.value)"
+            >
+            <span class="chat-search-count"></span>
+          </div>
+        </div>
+        
         <!-- 聊天消息区域 -->
         <div class="chat-messages" id="chat-messages">
           <div class="chat-date-divider">
@@ -636,6 +659,56 @@ const ChatApp = {
               </div>
               <div class="settings-card-switch ${session?.muted ? 'active' : ''}" id="mute-switch"></div>
             </div>
+            
+            <div class="settings-card" onclick="ChatApp.toggleSound()">
+              <div class="settings-card-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9 18V5l12-2v13"/>
+                  <circle cx="6" cy="18" r="3"/>
+                  <circle cx="18" cy="16" r="3"/>
+                </svg>
+              </div>
+              <div class="settings-card-content">
+                <div class="settings-card-title">消息提示音</div>
+                <div class="settings-card-desc">收到消息时播放提示音</div>
+              </div>
+              <div class="settings-card-switch ${session?.soundEnabled !== false ? 'active' : ''}" id="sound-switch"></div>
+            </div>
+            
+            <div class="settings-card" onclick="ChatApp.toggleVibrate()">
+              <div class="settings-card-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="6" width="20" height="12" rx="2"/>
+                  <line x1="6" y1="10" x2="6" y2="14"/>
+                  <line x1="10" y1="10" x2="10" y2="14"/>
+                  <line x1="14" y1="10" x2="14" y2="14"/>
+                  <line x1="18" y1="10" x2="18" y2="14"/>
+                </svg>
+              </div>
+              <div class="settings-card-content">
+                <div class="settings-card-title">消息震动</div>
+                <div class="settings-card-desc">收到消息时震动提醒</div>
+              </div>
+              <div class="settings-card-switch ${session?.vibrateEnabled !== false ? 'active' : ''}" id="vibrate-switch"></div>
+            </div>
+            
+            <div class="settings-card" onclick="ChatApp.openSearch()">
+              <div class="settings-card-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="11" cy="11" r="8"/>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+              </div>
+              <div class="settings-card-content">
+                <div class="settings-card-title">聊天记录搜索</div>
+                <div class="settings-card-desc">搜索当前聊天的消息记录</div>
+              </div>
+              <div class="settings-card-arrow">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9 18l6-6-6-6"/>
+                </svg>
+              </div>
+            </div>
           </div>
           
           <!-- 外观与背景 -->
@@ -817,6 +890,26 @@ const ChatApp = {
         muteSwitch.classList.remove('active');
       }
     }
+    
+    // 更新消息提示音状态
+    const soundSwitch = document.getElementById('sound-switch');
+    if (soundSwitch) {
+      if (session.soundEnabled !== false) {
+        soundSwitch.classList.add('active');
+      } else {
+        soundSwitch.classList.remove('active');
+      }
+    }
+    
+    // 更新消息震动状态
+    const vibrateSwitch = document.getElementById('vibrate-switch');
+    if (vibrateSwitch) {
+      if (session.vibrateEnabled !== false) {
+        vibrateSwitch.classList.add('active');
+      } else {
+        vibrateSwitch.classList.remove('active');
+      }
+    }
   },
   
   togglePin() {
@@ -843,6 +936,39 @@ const ChatApp = {
     
     // 显示提示
     this.showToast(session.muted ? '已开启消息免打扰' : '已关闭消息免打扰');
+  },
+  
+  toggleSound() {
+    const sessions = this.getChatSessions();
+    const session = sessions.find(s => s.contactId === this.currentChatId);
+    if (!session) return;
+    
+    // 默认开启提示音，所以用 !== false 来判断
+    session.soundEnabled = session.soundEnabled === false ? true : false;
+    this.saveChatSessions(sessions);
+    this.updateSettingsPageState();
+    
+    // 显示提示
+    this.showToast(session.soundEnabled ? '已开启消息提示音' : '已关闭消息提示音');
+  },
+  
+  toggleVibrate() {
+    const sessions = this.getChatSessions();
+    const session = sessions.find(s => s.contactId === this.currentChatId);
+    if (!session) return;
+    
+    // 默认开启震动，所以用 !== false 来判断
+    session.vibrateEnabled = session.vibrateEnabled === false ? true : false;
+    this.saveChatSessions(sessions);
+    this.updateSettingsPageState();
+    
+    // 如果开启震动，测试一下震动
+    if (session.vibrateEnabled && navigator.vibrate) {
+      navigator.vibrate(50);
+    }
+    
+    // 显示提示
+    this.showToast(session.vibrateEnabled ? '已开启消息震动' : '已关闭消息震动');
   },
   
   setChatBackground(event) {
@@ -1090,6 +1216,107 @@ const ChatApp = {
         this.showToast('已删除传讯及相关数据');
       }
     });
+  },
+  
+  // ==================== 聊天记录搜索 ====================
+  
+  openSearch() {
+    // 关闭设置页面，回到聊天详情页
+    this.isInSettingsPage = false;
+    this.renderChatRoom(this.currentChatId);
+    
+    // 显示搜索框
+    setTimeout(() => {
+      const searchBar = document.querySelector('.chat-search-bar');
+      if (searchBar) {
+        searchBar.classList.add('show');
+        const input = searchBar.querySelector('input');
+        if (input) input.focus();
+      }
+    }, 100);
+  },
+  
+  closeSearch() {
+    const searchBar = document.querySelector('.chat-search-bar');
+    if (searchBar) {
+      searchBar.classList.remove('show');
+      const input = searchBar.querySelector('input');
+      if (input) input.value = '';
+    }
+    // 恢复正常消息显示
+    this.refreshMessages();
+  },
+  
+  performSearch(keyword) {
+    if (!keyword || keyword.trim() === '') {
+      this.refreshMessages();
+      this.updateSearchResultCount(0);
+      return;
+    }
+    
+    const contactId = this.currentChatId;
+    if (!contactId) return;
+    
+    const messages = this.getChatMessages(contactId);
+    const lowerKeyword = keyword.toLowerCase();
+    
+    // 搜索匹配的消息
+    const matchedMessages = messages.filter(msg => {
+      if (msg.type === 'system') return false;
+      return msg.content && msg.content.toLowerCase().includes(lowerKeyword);
+    });
+    
+    // 渲染搜索结果（只显示匹配的消息，关键词高亮）
+    const messagesContainer = document.querySelector('.chat-messages');
+    if (!messagesContainer) return;
+    
+    if (matchedMessages.length === 0) {
+      messagesContainer.innerHTML = `
+        <div class="search-no-result">
+          <div class="search-no-result-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"/>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+          </div>
+          <div class="search-no-result-text">未找到相关消息</div>
+          <div class="search-no-result-hint">换个关键词试试吧</div>
+        </div>
+      `;
+    } else {
+      messagesContainer.innerHTML = matchedMessages.map(msg => {
+        const isMe = msg.sender === 'me';
+        const time = this.formatTime(msg.time);
+        const highlightedContent = this.highlightKeyword(msg.content, keyword);
+        return `
+          <div class="message ${isMe ? 'message-me' : 'message-other'}">
+            <div class="message-content-wrap">
+              <div class="message-bubble ${isMe ? 'bubble-me' : 'bubble-other'}">
+                <p class="message-text">${highlightedContent}</p>
+              </div>
+              <span class="message-time">${time}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+    
+    this.updateSearchResultCount(matchedMessages.length);
+  },
+  
+  highlightKeyword(text, keyword) {
+    if (!keyword || keyword.trim() === '') return this.escapeHtml(text);
+    const escapedText = this.escapeHtml(text);
+    const escapedKeyword = this.escapeHtml(keyword);
+    const regex = new RegExp(`(${escapedKeyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+    return escapedText.replace(regex, '<span class="search-highlight">$1</span>');
+  },
+  
+  updateSearchResultCount(count) {
+    const countEl = document.querySelector('.chat-search-count');
+    if (countEl) {
+      countEl.textContent = count > 0 ? `${count} 条结果` : '';
+    }
   },
   
   showToast(message) {
