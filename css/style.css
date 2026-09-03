@@ -3237,7 +3237,7 @@ html, body {
   overflow-y: auto;
   overflow-x: hidden;
   overscroll-behavior: none;
-  padding: 20px 16px 8px;
+  padding: 20px 16px 80px;
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
@@ -3517,8 +3517,10 @@ html, body {
 }
 /* 输入区域（浅色版） */
 .chat-input-area {
-  position: relative;
-  flex-shrink: 0;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
   z-index: 10;
   padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
   background: rgba(255, 255, 255, 0.8);
@@ -4089,9 +4091,12 @@ html, body {
   z-index: 1;
 }
 .chat-room.has-custom-bg .chat-room-header,
-.chat-room.has-custom-bg .chat-messages,
-.chat-room.has-custom-bg .chat-input-area {
+.chat-room.has-custom-bg .chat-messages {
   position: relative;
+  z-index: 2;
+}
+.chat-room.has-custom-bg .chat-input-area {
+  position: absolute;
   z-index: 2;
 }
 
