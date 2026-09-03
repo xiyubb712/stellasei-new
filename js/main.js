@@ -227,10 +227,17 @@ window.StarSui = {
   
   // 调试函数：重置所有数据
   resetAll: function() {
-    if (confirm('确定要重置所有数据吗？此操作不可恢复！')) {
-      Storage.remove('stellasei-layout');
-      location.reload();
-    }
+    window.showConfirmDialog({
+      title: '重置所有数据',
+      message: '确定要重置所有数据吗？此操作不可恢复！',
+      confirmText: '重置',
+      cancelText: '取消',
+      danger: true,
+      onConfirm: function() {
+        Storage.remove('stellasei-layout');
+        location.reload();
+      }
+    });
   },
   
   // 调试函数：导出所有数据
@@ -368,3 +375,98 @@ function initAppHeight() {
   
   console.log('[应用高度] 初始化完成');
 }
+
+/**
+ * 全局自定义确认弹窗
+ * 所有应用都可以调用 window.showConfirmDialog()
+ */
+window.showConfirmDialog = function(options) {
+  const {
+    title = '确认操作',
+    message = '确定要执行此操作吗？',
+    confirmText = '确认',
+    cancelText = '取消',
+    onConfirm = null,
+    danger = false
+  } = options;
+  
+  // 移除已有的弹窗
+  const existing = document.querySelector('.global-confirm-overlay');
+  if (existing) existing.remove();
+  
+  // 创建遮罩层
+  const overlay = document.createElement('div');
+  overlay.className = 'global-confirm-overlay';
+  
+  // 创建弹窗
+  const dialog = document.createElement('div');
+  dialog.className = 'global-confirm-dialog' + (danger ? ' danger' : '');
+  
+  dialog.innerHTML = `
+    <div class="global-confirm-icon">
+      ${danger ? `
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+          <line x1="12" y1="9" x2="12" y2="13"/>
+          <line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+      ` : `
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="16" x2="12" y2="12"/>
+          <line x1="12" y1="8" x2="12.01" y2="8"/>
+        </svg>
+      `}
+    </div>
+    <div class="global-confirm-title">${title}</div>
+    <div class="global-confirm-message">${message}</div>
+    <div class="global-confirm-buttons">
+      <button class="global-confirm-btn global-confirm-cancel">${cancelText}</button>
+      <button class="global-confirm-btn global-confirm-ok ${danger ? 'danger' : ''}">${confirmText}</button>
+    </div>
+  `;
+  
+  overlay.appendChild(dialog);
+  document.body.appendChild(overlay);
+  
+  // 显示动画
+  setTimeout(() => {
+    overlay.classList.add('show');
+    dialog.classList.add('show');
+  }, 10);
+  
+  // 取消按钮
+  const cancelBtn = dialog.querySelector('.global-confirm-cancel');
+  cancelBtn.addEventListener('click', () => {
+    window.closeConfirmDialog(overlay);
+  });
+  
+  // 确认按钮
+  const okBtn = dialog.querySelector('.global-confirm-ok');
+  okBtn.addEventListener('click', () => {
+    window.closeConfirmDialog(overlay);
+    if (onConfirm) onConfirm();
+  });
+  
+  // 点击遮罩层取消
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) {
+      window.closeConfirmDialog(overlay);
+    }
+  });
+};
+
+/**
+ * 关闭全局确认弹窗
+ */
+window.closeConfirmDialog = function(overlay) {
+  const dialog = overlay.querySelector('.global-confirm-dialog');
+  overlay.classList.remove('show');
+  dialog.classList.remove('show');
+  
+  setTimeout(() => {
+    if (overlay.parentNode) {
+      overlay.parentNode.removeChild(overlay);
+    }
+  }, 200);
+};

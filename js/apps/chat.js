@@ -1024,46 +1024,72 @@ const ChatApp = {
   },
   
   clearMessages() {
-    if (!confirm('确定要清空此传讯的所有消息吗？此操作不可恢复。')) return;
-    
-    const contactId = this.currentChatId;
-    if (!contactId) return;
-    
-    // 清空消息
-    this.saveChatMessages(contactId, []);
-    
-    // 更新会话的最后消息
-    const sessions = this.getChatSessions();
-    const session = sessions.find(s => s.contactId === contactId);
-    if (session) {
-      session.lastMessage = '暂无消息';
-      session.lastTime = null;
-      this.saveChatSessions(sessions);
-    }
-    
-    this.renderSettingsPage();
-    this.showToast('已清空传讯记录');
+    window.showConfirmDialog({
+      title: '清空传讯记录',
+      message: '确定要清空此传讯的所有消息吗？此操作不可恢复。',
+      confirmText: '清空',
+      cancelText: '取消',
+      danger: true,
+      onConfirm: () => {
+        const contactId = this.currentChatId;
+        if (!contactId) return;
+        
+        // 清空消息
+        this.saveChatMessages(contactId, []);
+        
+        // 更新会话的最后消息
+        const sessions = this.getChatSessions();
+        const session = sessions.find(s => s.contactId === contactId);
+        if (session) {
+          session.lastMessage = '暂无消息';
+          session.lastTime = null;
+          this.saveChatSessions(sessions);
+        }
+        
+        // 刷新聊天详情页和设置页面
+        this.refreshMessages();
+        this.renderSettingsPage();
+        this.showToast('已清空传讯记录');
+      }
+    });
   },
   
   deleteChat() {
-    if (!confirm('确定要删除此传讯吗？所有消息将被删除，此操作不可恢复。')) return;
-    
-    const contactId = this.currentChatId;
-    if (!contactId) return;
-    
-    // 删除会话
-    let sessions = this.getChatSessions();
-    sessions = sessions.filter(s => s.contactId !== contactId);
-    this.saveChatSessions(sessions);
-    
-    // 删除消息
-    if (typeof Storage !== 'undefined' && Storage.remove) {
-      Storage.remove('chat-messages-' + contactId);
-    }
-    
-    this.isInSettingsPage = false;
-    this.backToChatList();
-    this.showToast('已删除传讯');
+    window.showConfirmDialog({
+      title: '删除传讯',
+      message: '确定要删除此传讯吗？所有消息、记忆和相关数据都将被删除，此操作不可恢复。',
+      confirmText: '删除',
+      cancelText: '取消',
+      danger: true,
+      onConfirm: () => {
+        const contactId = this.currentChatId;
+        if (!contactId) return;
+        
+        // 删除会话
+        let sessions = this.getChatSessions();
+        sessions = sessions.filter(s => s.contactId !== contactId);
+        this.saveChatSessions(sessions);
+        
+        // 删除消息
+        if (typeof Storage !== 'undefined' && Storage.remove) {
+          Storage.remove('chat-messages-' + contactId);
+        }
+        
+        // 删除记忆（预留，等记忆系统做好后添加具体实现）
+        if (typeof Storage !== 'undefined' && Storage.remove) {
+          Storage.remove('chat-memory-short-' + contactId);
+          Storage.remove('chat-memory-long-' + contactId);
+          Storage.remove('chat-memory-character-' + contactId);
+        }
+        
+        // 删除其他相关数据（预留）
+        // TODO: 删除该联系人的情侣空间、陪伴记录、语录库等相关数据
+        
+        this.isInSettingsPage = false;
+        this.backToChatList();
+        this.showToast('已删除传讯及相关数据');
+      }
+    });
   },
   
   showToast(message) {

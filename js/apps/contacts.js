@@ -1084,10 +1084,17 @@ const ContactsApp = {
     const contact = this.getContactById(id);
     if (!contact) return;
     
-    if (confirm(`确定要销毁「${contact.name}」的档案吗？销毁后无法恢复。`)) {
-      this.deleteContact(id);
-      this.renderList();
-    }
+    window.showConfirmDialog({
+      title: '销毁档案',
+      message: `确定要销毁「${contact.name}」的档案吗？销毁后无法恢复。`,
+      confirmText: '销毁',
+      cancelText: '取消',
+      danger: true,
+      onConfirm: () => {
+        this.deleteContact(id);
+        this.renderList();
+      }
+    });
   },
   
   // ==================== 返回主页 ====================

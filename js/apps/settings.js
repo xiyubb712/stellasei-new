@@ -520,13 +520,20 @@ const SettingsApp = {
   },
   
   deleteApiConfig(apiId) {
-    if (!confirm('确定要删除这个API配置吗？')) return;
-    
-    const apiList = this.getChatApiList();
-    const newList = apiList.filter(a => a.id !== apiId);
-    this.saveChatApiList(newList);
-    this.showToast('配置已删除');
-    this.showChatApiList();
+    window.showConfirmDialog({
+      title: '删除API配置',
+      message: '确定要删除这个API配置吗？',
+      confirmText: '删除',
+      cancelText: '取消',
+      danger: true,
+      onConfirm: () => {
+        const apiList = this.getChatApiList();
+        const newList = apiList.filter(a => a.id !== apiId);
+        this.saveChatApiList(newList);
+        this.showToast('配置已删除');
+        this.showChatApiList();
+      }
+    });
   },
   
   duplicateApiConfig(apiId) {
@@ -962,13 +969,20 @@ const SettingsApp = {
   },
   
   deleteVoiceApiConfig(apiId) {
-    if (!confirm('确定要删除这个语音配置吗？')) return;
-    
-    const apiList = this.getVoiceApiList();
-    const newList = apiList.filter(a => a.id !== apiId);
-    this.saveVoiceApiList(newList);
-    this.showToast('语音配置已删除');
-    this.showVoiceApiList();
+    window.showConfirmDialog({
+      title: '删除语音配置',
+      message: '确定要删除这个语音配置吗？',
+      confirmText: '删除',
+      cancelText: '取消',
+      danger: true,
+      onConfirm: () => {
+        const apiList = this.getVoiceApiList();
+        const newList = apiList.filter(a => a.id !== apiId);
+        this.saveVoiceApiList(newList);
+        this.showToast('语音配置已删除');
+        this.showVoiceApiList();
+      }
+    });
   },
   
   duplicateVoiceApiConfig(apiId) {
@@ -1431,13 +1445,20 @@ const SettingsApp = {
   },
   
   deleteImageApiConfig(apiId) {
-    if (!confirm('确定要删除这个生图配置吗？')) return;
-    
-    const apiList = this.getImageApiList();
-    const newList = apiList.filter(a => a.id !== apiId);
-    this.saveImageApiList(newList);
-    this.showToast('生图配置已删除');
-    this.showImageApiList();
+    window.showConfirmDialog({
+      title: '删除生图配置',
+      message: '确定要删除这个生图配置吗？',
+      confirmText: '删除',
+      cancelText: '取消',
+      danger: true,
+      onConfirm: () => {
+        const apiList = this.getImageApiList();
+        const newList = apiList.filter(a => a.id !== apiId);
+        this.saveImageApiList(newList);
+        this.showToast('生图配置已删除');
+        this.showImageApiList();
+      }
+    });
   },
   
   duplicateImageApiConfig(apiId) {
@@ -1826,25 +1847,28 @@ const SettingsApp = {
   
   // ==================== 刷新应用 ====================
   async refreshApp() {
-    if (!confirm('确定要刷新应用吗？\n\n这会清除缓存并重新加载页面，确保你看到最新的代码效果。')) {
-      return;
-    }
-    
-    this.showToast('正在刷新应用...');
-    
-    try {
-      // 1. 注销所有 service worker
-      if ('serviceWorker' in navigator) {
-        const registrations = await navigator.serviceWorker.getRegistrations();
-        for (const registration of registrations) {
-          await registration.unregister();
-          console.log('[刷新] Service worker 已注销');
-        }
-      }
-      
-      // 2. 清除所有缓存
-      if ('caches' in window) {
-        const cacheNames = await caches.keys();
+    window.showConfirmDialog({
+      title: '刷新应用',
+      message: '确定要刷新应用吗？\n\n这会清除缓存并重新加载页面，确保你看到最新的代码效果。',
+      confirmText: '刷新',
+      cancelText: '取消',
+      danger: false,
+      onConfirm: async () => {
+        this.showToast('正在刷新应用...');
+        
+        try {
+          // 1. 注销所有 service worker
+          if ('serviceWorker' in navigator) {
+            const registrations = await navigator.serviceWorker.getRegistrations();
+            for (const registration of registrations) {
+              await registration.unregister();
+              console.log('[刷新] Service worker 已注销');
+            }
+          }
+          
+          // 2. 清除所有缓存
+          if ('caches' in window) {
+            const cacheNames = await caches.keys();
         for (const cacheName of cacheNames) {
           await caches.delete(cacheName);
           console.log('[刷新] 缓存已删除:', cacheName);
@@ -1870,6 +1894,8 @@ const SettingsApp = {
         window.location.reload(true);
       }, 500);
     }
+      }
+    });
   },
   
   // ==================== 数据功能 ====================
@@ -1897,11 +1923,18 @@ const SettingsApp = {
       reader.onload = (e) => {
         try {
           const data = JSON.parse(e.target.result);
-          if (confirm('确定要导入这些数据吗？这会覆盖当前所有数据！')) {
-            Storage.importAllLS(data);
-            this.showToast('数据已导入');
-            setTimeout(() => location.reload(), 1000);
-          }
+          window.showConfirmDialog({
+            title: '导入数据',
+            message: '确定要导入这些数据吗？这会覆盖当前所有数据！',
+            confirmText: '导入',
+            cancelText: '取消',
+            danger: true,
+            onConfirm: () => {
+              Storage.importAllLS(data);
+              this.showToast('数据已导入');
+              setTimeout(() => location.reload(), 1000);
+            }
+          });
         } catch (err) {
           this.showToast('导入失败 · 文件格式错误');
         }
@@ -1916,13 +1949,27 @@ const SettingsApp = {
   },
   
   clearAllData() {
-    if (confirm('确定要清除所有数据吗？此操作不可恢复！')) {
-      if (confirm('再次确认 · 真的要清除所有数据吗？')) {
-        Storage.clear();
-        this.showToast('数据已清除');
-        setTimeout(() => location.reload(), 1000);
+    window.showConfirmDialog({
+      title: '清除所有数据',
+      message: '确定要清除所有数据吗？此操作不可恢复！',
+      confirmText: '继续',
+      cancelText: '取消',
+      danger: true,
+      onConfirm: () => {
+        window.showConfirmDialog({
+          title: '再次确认',
+          message: '真的要清除所有数据吗？所有设置、聊天记录、联系人等都将被删除！',
+          confirmText: '确认清除',
+          cancelText: '取消',
+          danger: true,
+          onConfirm: () => {
+            Storage.clear();
+            this.showToast('数据已清除');
+            setTimeout(() => location.reload(), 1000);
+          }
+        });
       }
-    }
+    });
   },
   
   // ==================== 工具 ====================
